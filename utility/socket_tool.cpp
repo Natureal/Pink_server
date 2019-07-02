@@ -8,19 +8,7 @@ int set_nonblocking(const int fd){
 	return old_option;
 }
 
-
-void add_signal(const int sig, void (handler)(int), bool restart = true){
-	struct sigaction sa;
-	memset(&sa, '\0', sizeof(sa));
-	sa.sa_handler = handler;
-	if(restart){
-		sa.sa_flags |= SA_RESTART;
-	}
-	sigfillset(&sa.sa_mask);
-	assert(sigaction(sig, &sa, NULL) != -1);
-}
-
-int socket_bind_listen(const int port){
+int bind_and_listen(const int port){
 	// 检查端口号范围
 	if(port <= 1024 || port >= 65535){
 		port = 7777;

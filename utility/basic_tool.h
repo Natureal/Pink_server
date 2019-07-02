@@ -15,5 +15,6 @@ typedef struct configuration{
 }conf_t;
 
 int import_conf(const char *filename, conf_t *conf);
+void add_signal(const int sig, void (handler)(int), bool restart = true);
 
 #endif
