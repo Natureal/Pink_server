@@ -1,6 +1,4 @@
-#include "pink_epoll.h"
-
-struct epoll_event *events;
+#include "epoll_tool.h"
 
 int pink_epoll_create(const int size){
 	int epoll_fd = epoll_create(size);
@@ -35,7 +33,7 @@ void pink_epoll_removefd(int epollfd, int fd){
 	}
 }
 
-int pink_epoll_wait(int epollfd, epoll_event *events, int max_event_number, int timeout = -1){
+int pink_epoll_wait(int epollfd, epoll_event *events, int max_event_number, int timeout){
 	int event_number = epoll_wait(epollfd, events, max_event_number, timeout);
 	return event_number;
 }
