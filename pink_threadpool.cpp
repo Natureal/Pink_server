@@ -7,29 +7,31 @@ threadpool<T>::threadpool(int thread_number, int max_requests):
 	thread_number(thread_number), max_requests(max_requests),
 	thread_stop(false), threads(NULL)
 {
-	if((thread_number <= 0) || (max_requests <= 0)){
-		throw std::exception();
-	}
+	if((thread_number <= 0) || (max_requests <= 0))
+		goto error;
 	
-	// 初始化线程数组
-	threads = new pthread_t[thread_number];
-	if(!threads){
-		throw std::exception();
-	}
+	// 初始化线程数组 unsigned long int[thread_number]
+	threads = std::make_shared<pthread_t>(new pthread_t[thread_number]);
+	if(!threads)
+		goto error;
 
 	// 创建 thread_number 个线程，并将它们都设置为脱离线程
 	for(int i = 0; i < thread_number; ++i){
 		printf("create the %dth thread\n", i);
 		if(pthread_create(threads + i, NULL, worker, this) != 0){
 			delete[] threads;
-			throw std::exception();
+			goto error;
 		}
 		// 将所有进程都标记为脱离模式
 		if(pthread_detach(threads[i])){
 			delete[] threads;
-			throw std:;exception();
+			goto error;
 		}
 	}
+
+error:
+	perror("create threadpool failed");
+	throw std::exception();
 }
 
 // 析构函数
@@ -43,14 +45,15 @@ threadpool<T>::~threadpool(){
 template<typename T>
 bool threadpool<T>::append(T *requests){
 	// 操作工作队列时一定要加锁，因为它被所有线程共享
-	queue_locker.lock();
+	if(!queue_locker.lock()) return false;
+
 	if(work_queue.size() > max_requests){
 		queue_locker.unlock();
 		return false;
 	}
 	work_queue.push_back(request);
-	queue_locker.unlock();
-	queue_stat.post();
+	if(!queue_locker.unlock()) return false;
+	if(!queue_stat.post()) return false;
 	return true;
 }
 

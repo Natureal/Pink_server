@@ -1,9 +1,12 @@
 #include <iostream>
+#include <vector>
 #include "utility/basic_tool.h"
 #include "utility/socket_tool.h"
 #include "pink_epoll.h"
 
-const char *conf_file = "pink.conf";
+const char *conf_file = "pink_conf.conf";
+const int PRE_FD = 10000; // 预分配的FD数量
+const int MAX_FD = 65535;
 
 int main(int argc, char *argv[]){
 
@@ -14,26 +17,37 @@ int main(int argc, char *argv[]){
 	add_signal(SIGPIPE, SIG_IGN);
 
 	// 初始化非阻塞监听socket
-	int listenfd = bind_and_listen(conf.port);
+	int listen;
+	if((listenfd = bind_and_listen(conf.port)) < 0)
+		return 1;
+
 	set_nonblocking(listenfd);
 
 	// 创建epoll fd，并添加监听socket
-	int epollfd = pink_epoll_create(5);
+	int epollfd;
+	if((epollfd = pink_epoll_create(5)) < 0)
+		return 1;
+	
 	extern epoll_event *events;
 
-	pink_epoll_addfd(epollfd, listenfd, (EPOLLIN | EPOLLET | EPOLLRDHUP), true);
+	if(pink_epoll_addfd(epollfd, listenfd, (EPOLLIN | EPOLLET | EPOLLRDHUP), true) < 0)
+		return 1;
 
 	// 创建线程池
-	
 	threadpool<http_conn> *threadpool = NULL;
 	try{
 		threadpool = new threadpool<http_conn>;
 	}
 	catch( ... ){
-		cout << "create threadpool failed" << endl;
 		return 1;
 	}
 	
+	// 预分配PRE_FD的http connection
+	std::shared_ptr<vector<pink_http_conn *> > users(new pink_http_conn[PRE_FD]);
+	if(!users){
+		perror("create users failed");
+		return 1;
+	}
 
 	// 运行服务器
 	while(true){
@@ -44,19 +58,25 @@ int main(int argc, char *argv[]){
 		int fd = events[i].data.fd;
 		// 监听fd上有事件
 		if(fd == listenfd){
-			int connfd = accept_conn(listenfd);
-			if(connfd < 0){
+			sockaddr_in client_addr;
+			int connfd = accept_conn(listenfd, client_addr);
+			if(connfd < 0)
+				continue;
+			if(connfd >= MAX_FD){
+				show_error(connfd, "Internal server busy");
 				continue;
 			}
-
-			
+			if(connfd >= users.size()){
+				users.reserve(users.size() + 1000);
+			}
+			users[connfd].init(connfd, client_addr);
 		}
 		// 发生异常
 		else if(events[i].events & (EPOLLRDHUP || EPOLLHUP || EPOLLERR)){
-			
+			users[fd].close_conn();
 		}
 		else if(events[i].events & (EPOLLIN)){
-
+			
 		}
 		else if(events[i])
 	}

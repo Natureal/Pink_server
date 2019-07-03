@@ -11,6 +11,6 @@ const int LISTENQUEUE_LEN = 1024;
 
 int set_nonblocking(const int fd);
 int bind_and_listen(const int port);
-void accept_conn(const int listenfd);
+void accept_conn(const int listenfd, sockaddr_in &client_addr);
 
 #endif

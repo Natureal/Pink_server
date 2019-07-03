@@ -19,19 +19,10 @@
 #include <stdarg.h>    // standard arguments，为了让函数能够接受可变参数 ...
 #include <errno.h>     // 定义了通过错误码来回报错误信息的宏
 #include <sys/uio.h>   // writev
-#include "locker.h"    // 自定义的锁
+#include "utility/IPC_tool.h" 
 #include "pink_epoll.h"
 
-// GET：向特定的资源发出请求
-// POST：向指定资源提交数据进行处理请求（如：提交表单，上传文件）
-// HEAD：类似GET请求，只不过返回的响应中没有具有的内容，只有报头
-// PUT：向指定资源位置上传其最新内容
-// DELETE：请求服务器删除Request-URI所标识的资源
-// TRACE：回显服务器收到的请求，主要用于测试或诊断
-// OPTIONS：返回服务器针对特定资源所支持的HTTP请求方法，也可以发送'*'来测试服务器的功能性
-// CONNECT：HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器
-
-class http_conn{
+class pink_http_conn{
 public:
 	static const int FILENAME_LEN = 1024;        // 文件名最大长度
 	static const int READ_BUFFER_SIZE = 2048;   // 读缓冲区的大小
@@ -54,8 +45,8 @@ public:
 	enum LINE_STATUS{ LINE_OK = 0, LINE_BAD, LINE_OPEN };
 
 public:
-	http_conn(){}
-	~http_conn(){}
+	pink_http_conn(){}
+	~pink_http_conn(){}
 
 public:
 	// 初始化新接受的连接
@@ -82,7 +73,7 @@ private:
 	HTTP_CODE parse_headers(char *text);
 	HTTP_CODE parse_content(char *text);
 	HTTP_CODE do_request();
-	char* get_line(){ return m_read_buf + m_start_line; }
+	char* get_line(){ return read_buf + start_line; }
 	LINE_STATUS parse_line();
 	
 	// 下面这一组函数被process_write调用以填充HTTP应答
@@ -96,34 +87,34 @@ private:
 	bool add_blank_line();
 
 public:
-	static int m_epollfd;               // 所有socket上的事件都被注册到同一个epoll内核事件表中
-	static int m_user_count;            // 统计用户数量
+	static int epollfd;               // 所有socket上的事件都被注册到同一个epoll内核事件表中
+	static int user_count;            // 统计用户数量
 
 private:
-	int m_sockfd;                       // 该HTTP连接的socket和对方的socket地址
-	sockaddr_in m_address;
+	int sockfd;                       // 该HTTP连接的socket
+	sockaddr_in address;			  // 对方的socket地址
 	
-	char m_read_buf[READ_BUFFER_SIZE];  // 读缓冲区
-	int m_read_idx;                     // 已经读入的客户数据最后一个字节的下一个位置
-	int m_checked_idx;                  // 当前正在分析的字符在缓冲区的位置
-	int m_start_line;                   // 需要被解析的行的起始位置
-	char m_write_buf[WRITE_BUFFER_SIZE];// 写缓冲区
-	int m_write_idx;                    // 写缓冲区中待发送的字节
+	char read_buf[READ_BUFFER_SIZE];  // 读缓冲区
+	int read_idx;                     // 已经读入的客户数据最后一个字节的下一个位置
+	int checked_idx;                  // 当前正在分析的字符在缓冲区的位置
+	int start_line;                   // 需要被解析的行的起始位置
+	char write_buf[WRITE_BUFFER_SIZE];// 写缓冲区
+	int write_idx;                    // 写缓冲区中待发送的字节
 	
-	CHECK_STATE m_check_state;          // 主状态机的当前状态
-	METHOD m_method;                    // 请求方法
+	CHECK_STATE check_state;          // 主状态机的当前状态
+	METHOD method;                    // 请求方法
 
-	char m_real_file[FILENAME_LEN];     // 客户请求的文件的完整路径，内容为：doc_root(网站根目录） + m_url
-	char *m_url;                        // 客户请求的目标文件的文件名
-	char *m_version;                    // HTTP协议版本号，这里仅支持HTTP/1.1
-	char *m_host;                       // 主机名
-	int m_content_length;               // HTTP请求的消息体长度
-	bool m_linger;                      // HTTP请求是否要求保持连接
+	char real_file[FILENAME_LEN];     // 客户请求的文件的完整路径，内容为：doc_root(网站根目录） + m_url
+	char *url;                        // 客户请求的目标文件的文件名
+	char *version;                    // HTTP协议版本号，这里仅支持HTTP/1.1
+	char *host;                       // 主机名
+	int content_length;               // HTTP请求的消息体长度
+	bool linger;                      // HTTP请求是否要求保持连接
 	
-	char *m_file_address;               // 客户请求的目标文件被mmap到内存中的起始位置
+	char *file_address;               // 客户请求的目标文件被mmap到内存中的起始位置
 
 	
-	struct stat m_file_stat;            // 目标文件的状态，通过它判断文件是否存在，是否为目录，是否可读，文件大小等
+	struct stat file_stat;            // 目标文件的状态，通过它判断文件是否存在，是否为目录，是否可读，文件大小等
 	// 采用 writev() 聚集写，收集内存中分散的若干缓冲区，写至文件的连续区域中
 	/*
 	   struct iovec{
@@ -132,8 +123,8 @@ private:
 	   }
 
 	*/
-	struct iovec m_iv[2];
-	int m_iv_count;                      // 表示被写内存块的数量
+	struct iovec iv[2];
+	int iv_count;                      // 表示被写内存块的数量
 };
 
 #endif

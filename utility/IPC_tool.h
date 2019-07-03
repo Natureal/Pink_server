@@ -1,5 +1,5 @@
-#ifndef LOCKER_H
-#define LOCKER_H
+#ifndef IPC_TOOL_H
+#define IPC_TOOL_H
 
 #include <exception>
 #include <pthread.h>
