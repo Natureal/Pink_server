@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <exception>
 #include <pthread.h>
-#include "utility/IPC_tool.h"
+#include "tools/IPC_tool.h"
 
 // 半同步/半反应堆形式
 
