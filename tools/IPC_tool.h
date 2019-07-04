@@ -10,22 +10,22 @@
 class sem{
 public:
 	sem(){
-		if(sem_init(&sem, 0, 0) != 0){
+		if(sem_init(&s, 0, 0) != 0){
 			throw std::exception();
 		}
 	}
 	~sem(){
-		sem_destroy(&sem);
+		sem_destroy(&s);
 	}
 	bool wait(){
-		return sem_wait(&sem) == 0;
+		return sem_wait(&s) == 0;
 	}
 	bool post(){
-		return sem_post(&sem) == 0;
+		return sem_post(&s) == 0;
 	}
 
 private:
-	sem_t sem;
+	sem_t s;
 };
 
 // 互斥锁
@@ -33,23 +33,23 @@ private:
 class mutex{
 public:
 	mutex(){
-		if(pthread_mutex_init(&mutex, NULL) != 0){
+		if(pthread_mutex_init(&m, NULL) != 0){
 			throw std::exception();
 		}
 
 	}
 	~mutex(){
-		pthread_mutex_destroy(&mutex);
+		pthread_mutex_destroy(&m);
 	}
 	bool lock(){
-		return pthread_mutex_lock(&mutex) == 0;
+		return pthread_mutex_lock(&m) == 0;
 	}
 	bool unlock(){
-		return pthread_mutex_unlock(&mutex) == 0;
+		return pthread_mutex_unlock(&m) == 0;
 	}
 
 private:
-	pthread_mutex_t mutex;
+	pthread_mutex_t m;
 };
 
 
@@ -57,33 +57,33 @@ private:
 class cond{
 public:
 	cond(){
-		if(pthread_mutex_init(&mutex, NULL) != 0){
+		if(pthread_mutex_init(&m, NULL) != 0){
 			throw std::exception();
 		}
-		if(pthread_cond_init(&cond, NULL) != 0){
+		if(pthread_cond_init(&c, NULL) != 0){
 			// 如果构造函数出问题，应该立即释放已经成功分配的资源
-			pthread_mutex_destroy(&mutex);
+			pthread_mutex_destroy(&m);
 			throw std::exception();
 		}
 	}
 	~cond(){
-		pthread_mutex_destroy(&mutex);
-		pthread_cond_destroy(&cond);
+		pthread_mutex_destroy(&m);
+		pthread_cond_destroy(&c);
 	}
 	bool wait(){
 		int ret = 0;
-		pthread_mutex_lock(&mutex);
-		ret = pthread_cond_wait(&cond, &mutex);
-		pthread_mutex_unlock(&mutex);
+		pthread_mutex_lock(&m);
+		ret = pthread_cond_wait(&c, &m);
+		pthread_mutex_unlock(&m);
 		return ret == 0;
 	}
 	bool signal(){
-		return pthread_cond_signal(&cond) == 0;
+		return pthread_cond_signal(&c) == 0;
 	}
 
 private:
-	pthread_mutex_t mutex;
-	pthread_cond_t cond;
+	pthread_mutex_t m;
+	pthread_cond_t c;
 };
 
 

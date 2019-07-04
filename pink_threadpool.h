@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <exception>
 #include <pthread.h>
+#include <memory>
 #include "tools/IPC_tool.h"
 
 // 半同步/半反应堆形式
@@ -26,9 +27,9 @@ private:
 private:
 	int thread_number; // 线程池中的线程数
 	int max_requests; // 允许的最大请求数
-	std::shared_ptr<pthread_t> *threads; // 进程池数组
+	std::shared_ptr<pthread_t> threads; // 进程池数组
 	std::list<T*> work_queue; // 请求队列
-	locker queue_locker; // 保护请求队列的互斥锁
+	mutex queue_locker; // 保护请求队列的互斥锁
 	sem queue_stat; // 是否有任务需要处理
 	bool thread_stop; // 是否结束线程
 };

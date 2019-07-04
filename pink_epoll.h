@@ -1,6 +1,8 @@
 #ifndef PINK_EPOLL_H
 #define PINK_EPOLL_H
 
+#include <stdio.h>
+#include <errno.h>
 #include <sys/epoll.h>
 
 const int MAX_EVENT_NUMBER = 10000;

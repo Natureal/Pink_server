@@ -18,12 +18,13 @@ threadpool<T>::threadpool(int thread_number, int max_requests):
 	// 创建 thread_number 个线程，并将它们都设置为脱离线程
 	for(int i = 0; i < thread_number; ++i){
 		printf("create the %dth thread\n", i);
-		if(pthread_create(threads + i, NULL, worker, this) != 0){
+		// this 为 worker 函数的传入参数
+		if(pthread_create(threads.get() + i, NULL, worker, this) != 0){
 			delete[] threads;
 			goto error;
 		}
 		// 将所有进程都标记为脱离模式
-		if(pthread_detach(threads[i])){
+		if(pthread_detach(*(threads.get() + i))){
 			delete[] threads;
 			goto error;
 		}
@@ -43,7 +44,7 @@ threadpool<T>::~threadpool(){
 
 // 往请求队列里添加任务
 template<typename T>
-bool threadpool<T>::append(T *requests){
+bool threadpool<T>::append(T *request){
 	// 操作工作队列时一定要加锁，因为它被所有线程共享
 	if(!queue_locker.lock()) return false;
 
@@ -68,7 +69,7 @@ void *threadpool<T>::worker(void *arg){
 template<typename T>
 void threadpool<T>::run(){
 	// 线程循环（阻塞）等待工作队列来任务
-	while(!m_stop){
+	while(!thread_stop){
 		queue_stat.wait(); // 等待任务处理的信号
 		queue_locker.lock(); // 锁住工作队列
 		if(work_queue.empty()){

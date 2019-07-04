@@ -54,3 +54,8 @@ int accept_conn(const int listenfd, sockaddr_in &client_addr){
 	return connfd;
 }
 
+void send_error(const int connfd, const char *info){
+	cout << string(info) << endl;
+	send(connfd, info, strlen(info), 0);
+	close(connfd);
+}

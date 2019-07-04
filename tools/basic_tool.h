@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 
-const short PATH_LEN = 128
+const short PATH_LEN = 128;
 const short IMPORT_CONF_SUCCESS = 0;
 const short IMPORT_CONF_ERROR = -1;
 
@@ -16,5 +16,6 @@ typedef struct configuration{
 
 int import_conf(const char *filename, conf_t *conf);
 void add_signal(const int sig, void (handler)(int), bool restart = true);
+
 
 #endif
