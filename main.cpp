@@ -11,6 +11,8 @@ const char *conf_file = "pink_conf.conf";
 const int PRE_FD = 10000; // 预分配的FD数量
 const int MAX_FD = 65535;
 
+extern epoll_event *events;
+
 int main(int argc, char *argv[]){
 
 	conf_t conf;
@@ -30,8 +32,6 @@ int main(int argc, char *argv[]){
 	int epollfd;
 	if((epollfd = pink_epoll_create(5)) < 0)
 		return 1;
-	
-	extern epoll_event *events;
 
 	if(pink_epoll_addfd(epollfd, listenfd, (EPOLLIN | EPOLLET | EPOLLRDHUP), true) < 0)
 		return 1;
@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
 		t_pool = new threadpool<pink_http_conn >;
 	}
 	catch( ... ){
+		perror("create threadpool failed");
 		return 1;
 	}
 

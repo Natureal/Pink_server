@@ -7,8 +7,6 @@
 
 const int MAX_EVENT_NUMBER = 10000;
 
-epoll_event *events;
-
 int pink_epoll_create(const int size);
 int pink_epoll_addfd(int epollfd, int fd, int events, bool one_shot);
 int pink_epoll_modfd(int epollfd, int fd, int events);

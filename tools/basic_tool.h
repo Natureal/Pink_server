@@ -3,6 +3,10 @@
 
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <string.h>
+#include <signal.h>
+#include <assert.h>
 
 const short PATH_LEN = 128;
 const short IMPORT_CONF_SUCCESS = 0;

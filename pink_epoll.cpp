@@ -1,5 +1,7 @@
 #include "pink_epoll.h"
 
+epoll_event *events;
+
 int pink_epoll_create(const int size){
 	int epoll_fd = epoll_create(size);
 	if(epoll_fd == -1){
