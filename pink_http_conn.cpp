@@ -1,17 +1,5 @@
 #include "pink_http_conn.h"
 
-// 定义HTTP相应的一些状态信息
-const char *ok_200_title = "OK";
-const char *error_400_title = "Bad Request";
-const char *error_400_form = "Your request has bad syntax or is inherently impossible to satisfy.\n"; 
-const char *error_403_title = "Forbidden";
-const char *error_403_form = "You do not have permission to get the file from this server.\n";
-const char *error_404_title = "Not Found";
-const char *error_404_form = "The requested file was not found on this server.\n";
-const char *error_500_title = "Internal Error";
-const char *error_500_form = "There was an unusual problem serving the requested file.\n";
-const char *doc_root = "/var/www/html";
-
 int pink_http_conn::user_count = 0;
 int pink_http_conn::epollfd = -1;
 
@@ -29,29 +17,49 @@ void pink_http_conn::init(int sockfd, const sockaddr_in &addr){
 	// 如下两行可以避免TIME_WAIT，仅用于测试，实际中应该注释掉
 	//int reuse = 1;
 	//etsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+
+	//std::cout << "epoll fd: " << epollfd << " , sockfd: " << sockfd << std::endl; // for debug
+
 	pink_epoll_addfd(epollfd, sockfd, (EPOLLIN | EPOLLET | EPOLLRDHUP), true);
+	set_nonblocking(sockfd);
+
 	user_count++;
 	
 	this->init();
 }
 
 void pink_http_conn::init(){
-	check_state = CHECK_STATE_REQUESTLINE;
+
 	linger = false; // 不保持HTTP连接
 	
-	method = GET;
-	url = 0;
-	version = 0;
-	content_length = 0;
-	host = 0; // 主机名
-	start_line = 0; // 正在解析的行的起始位置
 	checked_idx = 0;
 	read_idx = 0;
 	write_idx = 0;
 	memset(read_buf, '\0', READ_BUFFER_SIZE);
 	memset(write_buf, '\0', WRITE_BUFFER_SIZE);
 	memset(real_file, '\0', FILENAME_LEN);
+
+	machine.init(read_buf, write_buf);
+
 }
+
+// 由线程池中的工作线程调用，是处理HTTP请求的入口函数
+void pink_http_conn::process(){
+	HTTP_CODE read_ret = machine.process_read();
+	if(read_ret == NO_REQUEST){
+		// 请求还不完整，通知epoll，再读
+		pink_epoll_modfd(epollfd, sockfd, EPOLLIN);
+		return;
+	}
+
+	bool write_ret = machine.process_write(read_ret);
+	if(!write_ret){
+		close_conn();
+	}
+	// 准备好写的数据了，通知epoll，写出
+	pink_epoll_modfd(epollfd, sockfd, EPOLLOUT);
+}
+
 
 // 循环读取客户数据，直到无数据或者对方关系连接
 bool pink_http_conn::read(){
@@ -119,201 +127,6 @@ bool pink_http_conn::write(){
 	}
 }
 
-// 从状态机
-pink_http_conn::LINE_STATUS pink_http_conn::parse_line(){
-	char temp;
-	for(; checked_idx < read_idx; ++checked_idx){
-		temp = read_buf[checked_idx];
-		if(temp == '\r'){
-			if((checked_idx + 1) == read_idx){
-				return LINE_OPEN;
-			}
-			else if(read_buf[checked_idx + 1] == '\n'){
-				read_buf[checked_idx++] = '\0';
-				read_buf[checked_idx++] = '\0';
-				return LINE_OK;
-			}
-			return LINE_BAD;
-		}
-		else if(temp == '\n'){
-			if((checked_idx > 1) && (read_buf[checked_idx - 1] == '\r')){
-				read_buf[checked_idx - 1] = '\0';
-				read_buf[checked_idx++] = '\0';
-				return LINE_OK;
-			}
-			return LINE_BAD;
-		}
-	}
-	return LINE_OPEN;
-}
-
-// 解析HTTP请求行，获取请求方法，目标URL，以及HTTP版本号
-pink_http_conn::HTTP_CODE pink_http_conn::parse_request_line(char *text){
-	// strpbrk(): string pointer break
-	// 找到任意字符出现的第一个位置
-	url = strpbrk(text, " \t");
-	if(!url){
-		return BAD_REQUEST;
-	}
-	*url++ = '\0';
-
-	if(strcasecmp(text, "GET") == 0){
-		method = GET;
-	}
-	else{
-		// 目前只处理GET
-		return BAD_REQUEST;
-	}
-
-	url += strspn(url, " \t");
-	version = strpbrk(url, " \t");
-	if(!version){
-		return BAD_REQUEST;
-	}
-	*version++ = '\0';
-	version += strspn(version, " \t");
-	if(strcasecmp(version, "HTTP/1.1") != 0){
-		return BAD_REQUEST;
-	}
-	if(strncasecmp(url, "http://", 7) == 0){
-		url += 7;
-		url = strchr(url, '/');
-	}
-
-	if(!url || url[0] != '/'){
-		return BAD_REQUEST;
-	}
-
-	check_state = CHECK_STATE_HEADER;
-	
-	// 尚未完成
-	return NO_REQUEST;
-}
-
-// 解析HTTP请求的一个头部信息
-pink_http_conn::HTTP_CODE pink_http_conn::parse_headers(char *text){
-	// 遇到空行，解析完毕
-	if(text[0] == '\0'){
-		// 如果该HTTP请求还有消息体，则还需要读取 m_content_length 字节的消息体
-		// 转到 CHECK_STATE_CONTENT 状态
-		if(content_length != 0){
-			check_state = CHECK_STATE_CONTENT;
-			// 未完成
-			return NO_REQUEST;
-		}
-		// 完整
-		return GET_REQUEST;
-	}
-	// 处理connection头部字段
-	else if(strncasecmp(text, "Connection:", 11) == 0){
-		text += 11;
-		text += strspn(text, " \t");
-		if(strcasecmp(text, "keep-alive") == 0){
-			linger = true;
-		}
-	}
-	// 处理Content-Length头部字段
-	else if(strncasecmp(text, "Content-Length", 15) == 0){
-		text += 15;
-		text += strspn(text, " \t");
-		content_length = atol(text);
-	}
-	// 处理Host头部字段
-	else if(strncasecmp(text, "Host:", 5) == 0){
-		text += 5;
-		text += strspn(text, " \t");
-		host = text;
-	}
-	else{
-		printf("oops! unknow header %s\n", text);
-	}
-	
-	// 未完成
-	return NO_REQUEST;
-}
-
-// 这里并没有真正解析HTTP请求的消息体，只是判断其是否被完整地读入了
-pink_http_conn::HTTP_CODE pink_http_conn::parse_content(char *text){
-	if(read_idx >= (content_length + checked_idx)){
-		text[content_length] = '\0';
-		return GET_REQUEST;
-	}
-	return NO_REQUEST;
-}
-
-// 主状态机
-// 调用 parse_line(), parse_request_line(), parse_headers(), parse_content()
-pink_http_conn::HTTP_CODE pink_http_conn::process_read(){
-	LINE_STATUS line_status = LINE_OK;
-	HTTP_CODE ret = NO_REQUEST;
-	char *text = 0;
-
-	while(((check_state == CHECK_STATE_CONTENT) && (line_status == LINE_OK))
-			|| ((line_status = parse_line()) == LINE_OK)){
-		text = get_line();
-		start_line = checked_idx;
-		printf("got 1 http line: %s\n", text);
-
-		switch(check_state){
-			case CHECK_STATE_REQUESTLINE:{
-				ret = parse_request_line(text);
-				if(ret == BAD_REQUEST){
-					return BAD_REQUEST;
-				}
-				break;
-			}
-			case CHECK_STATE_HEADER:{
-				ret = parse_headers(text);
-				if(ret == BAD_REQUEST){
-					return BAD_REQUEST;
-				}
-				else if(ret == GET_REQUEST){
-					return do_request();
-				}
-				break;
-			}
-			case CHECK_STATE_CONTENT:{
-				ret = parse_content(text);
-				if(ret == GET_REQUEST){
-					return do_request();
-				}
-				line_status = LINE_OPEN;
-				break;
-			}
-			default:{
-				return INTERNAL_ERROR;
-			}
-		}
-	}
-
-	return NO_REQUEST;
-}
-
-// 当得到一个完整，正确的HTTP请求时，我们就开始分析目标文件。
-// 如果目标存在，对所有用户可读，且不是目录，就用mmap将其映射到m_file_address处。
-pink_http_conn::HTTP_CODE pink_http_conn::do_request(){
-	strcpy(real_file, doc_root);
-	int len = strlen(doc_root);
-	strncpy(real_file + len, url, FILENAME_LEN - len - 1);
-	if(stat(real_file, &file_stat) < 0){
-		return NO_RESOURCE;
-	}
-	
-	// S_IROTH：其他用户具有可读取权限
-	if(!(file_stat.st_mode & S_IROTH)){
-		return FORBIDDEN_REQUEST;
-	}
-
-	if(S_ISDIR(file_stat.st_mode)){
-		return BAD_REQUEST;
-	}
-
-	int fd = open(real_file, O_RDONLY);
-	file_address = (char*)mmap(0, file_stat.st_size, PROT_READ,
-									MAP_PRIVATE, fd, 0);
-	close(fd);
-	return FILE_REQUEST;
-}
 
 void pink_http_conn::unmap(){
 	if(file_address){
@@ -430,23 +243,5 @@ bool pink_http_conn::process_write(HTTP_CODE ret){
 	return true;
 }
 												
-// 由线程池中的工作线程调用，是处理HTTP请求的入口函数
-void pink_http_conn::process(){
-	HTTP_CODE read_ret = process_read();
-	if(read_ret == NO_REQUEST){
-		// 请求还不完整，通知epoll，再读
-		pink_epoll_modfd(epollfd, sockfd, EPOLLIN);
-		return;
-	}
-
-	bool write_ret = process_write(read_ret);
-	if(!write_ret){
-		close_conn();
-	}
-	// 准备好写的数据了，通知epoll，写出
-	pink_epoll_modfd(epollfd, sockfd, EPOLLOUT);
-}
-
-
 
 

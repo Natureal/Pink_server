@@ -26,12 +26,16 @@ int main(int argc, char *argv[]){
 	if((listenfd = bind_and_listen(conf.port)) < 0)
 		return 1;
 
+	//std::cout << "listenfd: " << listenfd << std::endl; // for debug
+
 	set_nonblocking(listenfd);
 
 	// 创建epoll fd，并添加监听socket
 	int epollfd;
 	if((epollfd = pink_epoll_create(5)) < 0)
 		return 1;
+
+	//std::cout << "epollfd: " << epollfd << std::endl; for debug
 
 	if(pink_epoll_addfd(epollfd, listenfd, (EPOLLIN | EPOLLET | EPOLLRDHUP), true) < 0)
 		return 1;
@@ -49,6 +53,7 @@ int main(int argc, char *argv[]){
 	// 预分配PRE_FD的http connection
 	pink_http_conn temp;
 	std::vector<pink_http_conn > *users = new std::vector<pink_http_conn>(PRE_FD, temp);
+	pink_http_conn::epollfd = epollfd;
 
 	// 运行服务器
 	while(true){
@@ -71,20 +76,36 @@ int main(int argc, char *argv[]){
 					users->reserve(users->size() + 1000);
 				}
 				(*users)[connfd].init(connfd, client_addr);
+
+				std::cout << "accpeted a connection as: " << connfd << std::endl; // for debug
 			}
 			// 发生异常
-			else if(events[i].events & (EPOLLRDHUP || EPOLLHUP || EPOLLERR)){
+			else if(events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)){
+				std::cout << "exception event from: " << fd << "events: " << events[i].events << std::endl; // for debug
+				if(events[i].events & EPOLLRDHUP)
+					std::cout << "EPOLLRDHUP, ";
+				if(events[i].events & EPOLLHUP)
+					std::cout << "EPOLLHUP, ";
+				if(events[i].events & EPOLLERR)
+					std::cout << "EPOLLERR";
+				std::cout << std::endl;
+
 				(*users)[fd].close_conn();
 			}
 			else if(events[i].events & (EPOLLIN)){
+				std::cout << "read event from: " << fd << std::endl; // for debug
+
 				if((*users)[fd].read()){
 					t_pool->append(&((*users)[fd]));
+					std::cout << "append pthread success" << std::endl;
 				}
 				else{
 					(*users)[fd].close_conn();
 				}
 			}
 			else if(events[i].events & (EPOLLOUT)){
+				std::cout << "write event from: " << fd << std::endl; // for debug
+
 				if((*users)[fd].write()){
 					(*users)[fd].close_conn();
 				}
