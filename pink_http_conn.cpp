@@ -34,22 +34,21 @@ void pink_http_conn::init(){
 	write_idx = 0;
 	memset(read_buf, '\0', READ_BUFFER_SIZE);
 	memset(write_buf, '\0', WRITE_BUFFER_SIZE);
-	memset(real_file, '\0', FILENAME_LEN);
 
-	machine.init(read_buf, write_buf);
-
+	machine.init(read_buf, write_buf, &read_idx, &write_idx, 
+							READ_BUFFER_SIZE, WRITE_BUFFER_SIZE);
 }
 
 // 由线程池中的工作线程调用，是处理HTTP请求的入口函数
 void pink_http_conn::process(){
-	HTTP_CODE read_ret = machine.process_read(read_idx);
-	if(read_ret == NOT_COMPLETED){
+	pink_http_machine::HTTP_CODE read_ret = machine.process_read();
+	if(read_ret == pink_http_machine::NOT_COMPLETED){
 		// 请求还不完整，通知epoll，再读
 		pink_epoll_modfd(epollfd, sockfd, EPOLLIN);
 		return;
 	}
 
-	bool write_ret = machine.process_write(read_ret);
+	bool write_ret = machine.process_write(read_ret, iv, iv_count);
 	if(!write_ret){
 		close_conn();
 	}
@@ -96,12 +95,16 @@ bool pink_http_conn::write(){
 
 	while(1){
 		temp = writev(sockfd, iv, iv_count);
+		std::cout << "HERE!!!!!!!!!!!!!!!!" << std::endl;
+		// writev 出错，返回 -1
 		if(temp <= -1){
 			// TCP 写缓冲区没有空间，等待下一轮 EPOLLOUT 事件
+			// EAGAIN: Resource temporarily unavailable
 			if(errno == EAGAIN){
 				pink_epoll_modfd(epollfd, sockfd, EPOLLOUT);
 				return true;
 			}
+			// 其他错误原因，就不返回了
 			machine.unmap();
 			return false;
 		}
@@ -111,13 +114,13 @@ bool pink_http_conn::write(){
 		if(bytes_to_send <= bytes_have_sent){
 			// 发送HTTP响应成功，根据HTTP请求中的Connection字段决定是否关闭连接
 			machine.unmap();
-			if(machine.linger){
+			if(machine.get_linger()){
 				init();
 				pink_epoll_modfd(epollfd, sockfd, EPOLLIN);
 				return true;
 			}
 			else{
-				pink_epoll_modfd(epollfd, sockfd, EPOLLIN);
+				//pink_epoll_modfd(epollfd, sockfd, EPOLLIN);
 				return false;
 			}
 		}

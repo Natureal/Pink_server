@@ -8,7 +8,7 @@
 #include "pink_epoll.h"
 
 const char *conf_file = "pink_conf.conf";
-extern con_t conf = read_conf(conf_file);
+conf_t conf;
 
 const int PRE_FD = 10000; // 预分配的FD数量
 const int MAX_FD = 65535;
@@ -17,6 +17,11 @@ extern epoll_event *events;
 
 
 int main(int argc, char *argv[]){
+
+	if(read_conf(conf_file, conf) < 0){
+		perror("Read conf file failed");
+		return 1;
+	}
 
 	// 忽略 SIGPIPE 信号：向没有读端的管道写数据，比如对方关闭连接后还写数据
 	add_signal(SIGPIPE, SIG_IGN);
@@ -81,7 +86,7 @@ int main(int argc, char *argv[]){
 			}
 			// 发生异常
 			else if(events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)){
-				std::cout << "exception event from: " << fd << "events: " << events[i].events << std::endl; // for debug
+				std::cout << "exception event from: " << fd << ", events: " << events[i].events << std::endl; // for debug
 				if(events[i].events & EPOLLRDHUP)
 					std::cout << "EPOLLRDHUP, ";
 				if(events[i].events & EPOLLHUP)
@@ -106,7 +111,7 @@ int main(int argc, char *argv[]){
 			else if(events[i].events & (EPOLLOUT)){
 				std::cout << "write event from: " << fd << std::endl; // for debug
 
-				if((*users)[fd].write()){
+				if(!(*users)[fd].write()){
 					(*users)[fd].close_conn();
 				}
 			}

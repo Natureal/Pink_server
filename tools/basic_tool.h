@@ -18,7 +18,7 @@ typedef struct configuration{
 	int max_thread_number;
 }conf_t;
 
-conf_t read_conf(const char *filename);
+int read_conf(const char *filename, conf_t &conf);
 void add_signal(const int sig, void (handler)(int), bool restart = true);
 
 

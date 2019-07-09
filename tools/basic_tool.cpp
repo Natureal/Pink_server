@@ -1,7 +1,6 @@
 #include "basic_tool.h"
 
-conf_t read_conf(const char *filename){
-	conf_t temp_conf;
+int read_conf(const char *filename, conf_t &conf){
 
 	std::ifstream conf_file(filename);
 	if(!conf_file.is_open()){
@@ -14,18 +13,16 @@ conf_t read_conf(const char *filename){
 		getline(conf_file, str_line);
 		size_t pos = str_line.find('=');
 		std::string key = str_line.substr(0, pos);
-		std::string val = str_line.substr(pos + 1, str_line.len());
+		std::string val = str_line.substr(pos + 1, str_line.length());
 
-		switch(key){
-			case "port":
-				temp_conf.port = atoi(val);
-				break;
-			case "doc_root":
-				strcpy(temp_conf.doc_root, val.c_str());
-				break;
-			case "max_thread_number":
-				temp_conf.max_thread_number = atoi(val);
-				break;
+		if(key == "port"){
+			conf.port = atoi(val.c_str());
+		}
+		else if(key == "doc_root"){
+			strcpy(conf.doc_root, val.c_str());
+		}
+		else if(key == "max_thread_number"){
+			conf.max_thread_number = atoi(val.c_str());
 		}
 	}
 	return IMPORT_CONF_SUCCESS;

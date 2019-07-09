@@ -34,10 +34,6 @@ public:
 	static int epollfd;               // 所有socket上的事件都被注册到同一个epoll内核事件表中
 	static int user_count;            // 统计用户数量
 
-	// 处理HTTP请求的可能结果
-	enum HTTP_CODE{ NOT_COMPLETED, GET_REQUEST, BAD_REQUEST, NO_RESOURCE, FORBIDDEN_REQUEST, 
-				FILE_REQUEST, INTERNAL_ERROR, CLOSED_CONNECTION};
-
 private:
 	int sockfd;                       // 该HTTP连接的socket
 	sockaddr_in address;			  // 对方的socket地址
@@ -48,7 +44,19 @@ private:
 	char write_buf[WRITE_BUFFER_SIZE];// 写缓冲区
 	int write_idx;                    // 写缓冲区中待发送的字节
 
+	// 采用 writev() 聚集写（gather write），收集内存中分散的若干缓冲区，写至文件的连续区域中
+	/*
+	   struct iovec{
+			ptr_t iov_base; // starting address
+			size_t iov_len; // length in bytes
+	   }
+
+	*/
+	struct iovec iv[2];
+	int iv_count;                      // 表示被写内存块的数量
+
 	pink_http_machine machine;
+
 
 };
 

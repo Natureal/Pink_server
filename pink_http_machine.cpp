@@ -1,5 +1,9 @@
 #include "pink_http_machine.h"
 
+using std::string;
+using std::unordered_map;
+
+
 // 定义HTTP相应的一些状态信息
 const char *ok_200_title = "OK";
 const char *error_400_title = "Bad Request";
@@ -10,6 +14,7 @@ const char *error_404_title = "Not Found";
 const char *error_404_form = "The requested file was not found on this server.\n";
 const char *error_500_title = "Internal Error";
 const char *error_500_form = "There was an unusual problem serving the requested file.\n";
+
 
 extern conf_t conf;
 constexpr int pink_http_machine::FILENAME_LEN; // 静态成员的类外声明
@@ -23,45 +28,50 @@ std::unordered_map<string, string> pink_http_machine::mime_map_init(){
 	std::unordered_map<string, string> temp;
 
 	temp.insert(make_pair(string("text/html"), string(".html")));
-	temp.insert(make_pair(string("text/plain", string(""))));
-	temp.insert(make_pair(string("text/xml", string(".xml"))));
-	temp.insert(make_pair(string("text/css", string(".css"))));
+	temp.insert(make_pair(string("text/plain"), string("")));
+	temp.insert(make_pair(string("text/xml"), string(".xml")));
+	temp.insert(make_pair(string("text/css"), string(".css")));
 
 
-	temp.insert(make_pair(string("application/xml", string(".xml"))));
-	temp.insert(make_pair(string("application/xhtml+xml", string("xhtml"))));
+	temp.insert(make_pair(string("application/xml"), string(".xml")));
+	temp.insert(make_pair(string("application/xhtml+xml"), string("xhtml")));
 
-	temp.insert(make_pair(string("image/png", string(".png"))));
-	temp.insert(make_pair(string("image/gif", string(".gif"))));
+	temp.insert(make_pair(string("image/png"), string(".png")));
+	temp.insert(make_pair(string("image/gif"), string(".gif")));
 
-	temp.insert(make_pair(string("application/pdf", string(".pdf"))));
-	temp.insert(make_pair(string("application/rtf", string(".rtf"))));
+	temp.insert(make_pair(string("application/pdf"), string(".pdf")));
+	temp.insert(make_pair(string("application/rtf"), string(".rtf")));
 	
-	temp.insert(make_pair(string("application/vnd.ms-powerpoint", string(".ppt"))));
-	temp.insert(make_pair(string("application/vnd.ms-excel", string(".xls"))));
-	temp.insert(make_pair(string("application/msword", string(".doc"))));
+	temp.insert(make_pair(string("application/vnd.ms-powerpoint"), string(".ppt")));
+	temp.insert(make_pair(string("application/vnd.ms-excel"), string(".xls")));
+	temp.insert(make_pair(string("application/msword"), string(".doc")));
 	
 
-	temp.insert(make_pair(string("audio/basic", string(".au"))));
-	temp.insert(make_pair(string("video/mpeg", string(".mpeg"))));
-	temp.insert(make_pair(string("video/x-msvideo", string(".avi"))));
+	temp.insert(make_pair(string("audio/basic"), string(".au")));
+	temp.insert(make_pair(string("video/mpeg"), string(".mpeg")));
+	temp.insert(make_pair(string("video/x-msvideo"), string(".avi")));
 
-	temp.insert(make_pair(string("application/x-gzip", string(".gz"))));
-	temp.insert(make_pair(string("application/x-tar", string(".tar"))));
+	temp.insert(make_pair(string("application/x-gzip"), string(".gz")));
+	temp.insert(make_pair(string("application/x-tar"), string(".tar")));
 
-	temp.insert(make_pair(string("audio/x-pn-realaudio", string(".ram"))));
-	temp.insert(make_pair(string("audio/x-midi", string(".midi"))));
+	temp.insert(make_pair(string("audio/x-pn-realaudio"), string(".ram")));
+	temp.insert(make_pair(string("audio/x-midi"), string(".midi")));
 
 	return temp;
 }
 
-void pink_http_machine::init(char *read_buf, char *write_buf){
+void pink_http_machine::init(char *read_buf, char *write_buf, int *read_idx, 
+			int *write_idx, const int read_buf_size, const int write_buf_size){
 
 	check_state = CHECK_STATE_REQUESTLINE;
 	checked_idx = 0;
-	start_line = 0;
+	start_of_line = 0;
 	m_read_buf = read_buf;
 	m_write_buf = write_buf;
+	m_read_idx = read_idx;
+	m_write_idx = write_idx;
+	m_read_buf_size = read_buf_size;
+	m_write_buf_size = write_buf_size;
 
 	method = GET;
 	url = nullptr;
@@ -81,22 +91,23 @@ void pink_http_machine::init(char *read_buf, char *write_buf){
 	referer = nullptr;
 	user_agent = nullptr;
 
+	memset(request_file, '\0', FILENAME_LEN);
 	file_address = nullptr;
 
 }
 
 // 主状态机
 // 调用 parse_line(), parse_request_line(), parse_headers(), parse_content()
-pink_http_machine::HTTP_CODE pink_http_machine::process_read(int &read_idx){
+pink_http_machine::HTTP_CODE pink_http_machine::process_read(){
 	LINE_STATUS line_status = LINE_OK;
 	HTTP_CODE ret = NOT_COMPLETED;
 	char *text = nullptr;
 
 	while(((check_state == CHECK_STATE_CONTENT) && (line_status == LINE_OK))
-			|| ((line_status = parse_line(&read_idx) == LINE_OK)){
+			|| ((line_status = parse_line()) == LINE_OK)){
 
-		text = read_buf + start_of_line;
-		start_line = checked_idx;
+		text = m_read_buf + start_of_line;
+		start_of_line = checked_idx;
 
 		printf("got a http line: %s\n", text);
 
@@ -119,7 +130,7 @@ pink_http_machine::HTTP_CODE pink_http_machine::process_read(int &read_idx){
 				break;
 			}
 			case CHECK_STATE_CONTENT:{
-				ret = parse_content(text, read_idx);
+				ret = parse_content(text);
 				if(ret == GET_REQUEST){
 					return do_request();
 				}
@@ -135,26 +146,26 @@ pink_http_machine::HTTP_CODE pink_http_machine::process_read(int &read_idx){
 	return NOT_COMPLETED;
 }
 
-// 从状态机，主要工作是读取 read_buf 中的一行
-pink_http_machine::LINE_STATUS pink_http_machine::parse_line(int &read_idx){
+// 从状态机，主要工作是读取 m_read_buf 中的一行
+pink_http_machine::LINE_STATUS pink_http_machine::parse_line(){
 	char temp;
-	for(; checked_idx < read_idx; ++checked_idx){
-		temp = read_buf[checked_idx];
+	for(; checked_idx < *m_read_idx; ++checked_idx){
+		temp = m_read_buf[checked_idx];
 		if(temp == '\r'){
-			if((checked_idx + 1) == read_idx){
+			if((checked_idx + 1) == *m_read_idx){
 				return LINE_OPEN; // 还没读完
 			}
-			else if(read_buf[checked_idx + 1] == '\n'){ // 读完了
-				read_buf[checked_idx++] = '\0';
-				read_buf[checked_idx++] = '\0';
+			else if(m_read_buf[checked_idx + 1] == '\n'){ // 读完了
+				m_read_buf[checked_idx++] = '\0';
+				m_read_buf[checked_idx++] = '\0';
 				return LINE_OK;
 			}
 			return LINE_BAD;
 		}
 		else if(temp == '\n'){
-			if((checked_idx > 1) && (read_buf[checked_idx - 1] == '\r')){ // 读完了
-				read_buf[checked_idx - 1] = '\0';
-				read_buf[checked_idx++] = '\0';
+			if((checked_idx > 1) && (m_read_buf[checked_idx - 1] == '\r')){ // 读完了
+				m_read_buf[checked_idx - 1] = '\0';
+				m_read_buf[checked_idx++] = '\0';
 				return LINE_OK;
 			}
 			return LINE_BAD; // 这行有问题
@@ -229,7 +240,7 @@ pink_http_machine::HTTP_CODE pink_http_machine::parse_request_line(char *text){
 	return NOT_COMPLETED;
 }
 
-inline bool check_and_move(char *text, char *prefix){
+inline bool check_and_move(char *text, const char *prefix){
 	int len = strlen(prefix);
 	if(strncasecmp(text, prefix, len) == 0){
 		text += len;
@@ -255,7 +266,6 @@ pink_http_machine::HTTP_CODE pink_http_machine::parse_headers(char *text){
 	}
 	// 处理connection头部字段
 	else if(check_and_move(text, "Connection:")){
-		connection = text;
 		if(strcasecmp(text, "keep-alive") == 0){
 			linger = true;
 		}
@@ -315,9 +325,9 @@ pink_http_machine::HTTP_CODE pink_http_machine::parse_headers(char *text){
 
 
 // 这里并没有真正解析HTTP请求的消息体，只是判断其是否被完整地读入了
-pink_http_machine::HTTP_CODE pink_http_machine::parse_content(char *text, int &read_idx){
+pink_http_machine::HTTP_CODE pink_http_machine::parse_content(char *text){
 	// 至此, checked_idx 是请求行+所有头部的长度
-	if(read_idx >= (checked_idx + content_length)){
+	if(*m_read_idx >= (checked_idx + content_length)){
 		text[content_length] = '\0';
 		return GET_REQUEST;
 	}
@@ -371,7 +381,8 @@ pink_http_machine::HTTP_CODE pink_http_machine::do_request(){
 // process_write 相关=======================================================================
 
 // 根据服务器处理HTTP请求的结果，决定返回给客户端的内容
-bool pink_http_machine::process_write(HTTP_CODE ret){
+bool pink_http_machine::process_write(HTTP_CODE ret, struct iovec *iv, int &iv_count){
+
 	switch(ret){
 		case INTERNAL_ERROR:{
 			add_status_line(500, error_500_title);
@@ -381,6 +392,7 @@ bool pink_http_machine::process_write(HTTP_CODE ret){
 			}
 			break;
 		}
+		// 请求无法解析
 		case BAD_REQUEST:{
 			add_status_line(400, error_400_title);
 			add_headers(strlen(error_400_form));
@@ -389,6 +401,7 @@ bool pink_http_machine::process_write(HTTP_CODE ret){
 			}
 			break;
 		}
+		// 未找到资源
 		case NO_RESOURCE:{
 			add_status_line(404, error_404_title);
 			add_headers(strlen(error_404_form));
@@ -397,6 +410,7 @@ bool pink_http_machine::process_write(HTTP_CODE ret){
 			}
 			break;
 		}
+		// 没有权限，拒绝提供服务
 		case FORBIDDEN_REQUEST:{
 			add_status_line(403, error_403_title);
 			add_headers(strlen(error_403_form));
@@ -405,12 +419,13 @@ bool pink_http_machine::process_write(HTTP_CODE ret){
 			}
 			break;
 		}
+		// 请求成功
 		case FILE_REQUEST:{
 			add_status_line(200, ok_200_title);
 			if(file_stat.st_size != 0){
 				add_headers(file_stat.st_size);
-				iv[0].iov_base = write_buf;
-				iv[0].iov_len = write_idx;
+				iv[0].iov_base = m_write_buf;
+				iv[0].iov_len = *m_write_idx;
 				iv[1].iov_base = file_address;
 				iv[1].iov_len = file_stat.st_size;
 				iv_count = 2;
@@ -429,30 +444,30 @@ bool pink_http_machine::process_write(HTTP_CODE ret){
 		}
 	}
 	
-	iv[0].iov_base = write_buf;
-	iv[0].iov_len = write_idx;
+	iv[0].iov_base = m_write_buf;
+	iv[0].iov_len = *m_write_idx;
 	iv_count = 1;
 	return true;
 }
 
 // 工具函数，往写缓冲区中写入待发送的数据
 bool pink_http_machine::add_response(const char *format, ...){
-	if(write_idx >= WRITE_BUFFER_SIZE){
+	if(*m_write_idx >= m_write_buf_size){
 		return false;
 	}
 	va_list arg_list;
 	va_start(arg_list, format);
 	// 以format格式把arg_list里的参数输出到字符串中
 	// vsnprinf(): Write formatted data from variable argument list to sized buffer
-	int len = vsnprintf(write_buf + write_idx, WRITE_BUFFER_SIZE - 1 - write_idx, format, arg_list);
+	int len = vsnprintf(m_write_buf + *m_write_idx, m_write_buf_size - 1 - *m_write_idx, format, arg_list);
 	// The number of characters that would have been written if n had been sufficiently large, 
 	// not counting the terminating null character. If an encoding error occurs, a negative number is returned.
-	if(len + 1 > (WRITE_BUFFER_SIZE - 1 - write_idx)){
+	if(len + 1 > (m_write_buf_size - 1 - *m_write_idx)){
 		return false;
 	}
-	write_idx += len;
+	*m_write_idx += len;
 	va_end(arg_list);
-	
+
 	return true;
 }
 
@@ -482,9 +497,13 @@ bool pink_http_machine::add_content(const char *content){
 	return add_response("%s", content);
 }
 
+bool pink_http_machine::get_linger(){
+	return linger;
+}
+
 void pink_http_machine::unmap(){
 	if(file_address){
 		munmap(file_address, file_stat.st_size);
-		file_address = 0;
+		file_address = nullptr;
 	}
 }
