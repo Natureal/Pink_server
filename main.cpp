@@ -8,16 +8,16 @@
 #include "pink_epoll.h"
 
 const char *conf_file = "pink_conf.conf";
+extern con_t conf = read_conf(conf_file);
+
 const int PRE_FD = 10000; // 预分配的FD数量
 const int MAX_FD = 65535;
 
 extern epoll_event *events;
 
+
 int main(int argc, char *argv[]){
 
-	conf_t conf;
-	import_conf(conf_file, &conf);
-	
 	// 忽略 SIGPIPE 信号：向没有读端的管道写数据，比如对方关闭连接后还写数据
 	add_signal(SIGPIPE, SIG_IGN);
 

@@ -1,6 +1,8 @@
 #include "basic_tool.h"
 
-int import_conf(const char *filename, conf_t *conf){
+conf_t read_conf(const char *filename){
+	conf_t temp_conf;
+
 	std::ifstream conf_file(filename);
 	if(!conf_file.is_open()){
 		std::cout << "Cannot open the config file." << std::endl;
@@ -8,10 +10,23 @@ int import_conf(const char *filename, conf_t *conf){
 	}
 	std::string str_line;
 	while(!conf_file.eof()){
+
 		getline(conf_file, str_line);
 		size_t pos = str_line.find('=');
 		std::string key = str_line.substr(0, pos);
-		
+		std::string val = str_line.substr(pos + 1, str_line.len());
+
+		switch(key){
+			case "port":
+				temp_conf.port = atoi(val);
+				break;
+			case "doc_root":
+				strcpy(temp_conf.doc_root, val.c_str());
+				break;
+			case "max_thread_number":
+				temp_conf.max_thread_number = atoi(val);
+				break;
+		}
 	}
 	return IMPORT_CONF_SUCCESS;
 }
