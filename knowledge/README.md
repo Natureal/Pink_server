@@ -26,6 +26,6 @@
 
 - **Document Root**
 
-/home/naturain/Pink_server
+/home/naturain/Pink_server/web
 
 （注意不能让 URL 退到 docroot 之外，将文件系统暴露出来。）
