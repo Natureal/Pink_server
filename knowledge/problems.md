@@ -30,4 +30,23 @@ goto 有一个非常致命的缺点：不能跳过变量初始化。否则有:cr
 ### 10. extern 变量的初始化
 在变量初始化的文件中不要用 extern 了，否则会报错（或者警告）。
 
-### 11. 
+### 11. webbench 的请求报文格式
+由于 HTTP/1.1 普遍采用 Host 字段，所以原来的 URL 只是即相对资源路径。<br>
+Host 是 HTTP/1.1 特有的，具体和 1.0 的区别可以参考：https://www.cnblogs.com/sue7/p/9414311.html
+
+### 12. webbench 中的 write 和 read 为阻塞
+在第一次测试的时候 webbench 一直卡住，查了源码发现是其用了 read 阻塞读。
+
+### 13. 关闭连接时忘记 close(fd)
+
+### 14. EPOLLRDHUP 不可靠！
+在给监听 socket 开启 EPOLLRDHUP 后，客户端一连接上并发数据，这个错误就跳出来。
+EPOLLRDHUP indeed comes if you continue to poll after receiving a zero-byte read.
+
+参考：https://stackoverflow.com/questions/27175281/epollrdhup-not-reliable
+
+### 15. recv(, , 0) 返回 0，在尚未读入数据的情况下
+解决方法：给 recv() 的最后一个参数设置成 MSG_WAITALL
+
+### 16. epoll 中监听套接字的触发模式很重要
+详细：

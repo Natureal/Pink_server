@@ -35,8 +35,6 @@ int main(int argc, char *argv[]){
 	if((listenfd = bind_and_listen(conf.port)) < 0)
 		return 1;
 
-	//cout << "listenfd: " << listenfd << endl; // for debug
-
 	set_nonblocking(listenfd);
 
 	// 创建epoll fd，并添加监听socket
@@ -46,13 +44,13 @@ int main(int argc, char *argv[]){
 
 	//cout << "epollfd: " << epollfd << endl; for debug
 
-	if(pink_epoll_addfd(epollfd, listenfd, (EPOLLIN | EPOLLET | EPOLLRDHUP), true) < 0)
+	if(pink_epoll_addfd(epollfd, listenfd, (EPOLLIN), false) < 0)
 		return 1;
 
 	// 创建线程池
 	threadpool<pink_http_conn> *t_pool = nullptr;
 	try{
-		t_pool = new threadpool<pink_http_conn >;
+		t_pool = new threadpool<pink_http_conn >(conf.max_thread_number, 10000);
 	}
 	catch( ... ){
 		perror("create threadpool failed");
@@ -67,7 +65,12 @@ int main(int argc, char *argv[]){
 	// 运行服务器
 	while(true){
 
+		//cout << ".......waiting.........." << endl;
 		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
+		if(event_number < 0 && errno != EINTR){
+			perror("epoll failed:");
+			break;
+		}
 
 		for(int i = 0; i < event_number; ++i){
 			int fd = events[i].data.fd;
@@ -85,37 +88,40 @@ int main(int argc, char *argv[]){
 					users->reserve(users->size() + 1000);
 				}
 				(*users)[connfd].init(connfd, client_addr);
-
-				cout << "accpeted a connection as: " << connfd << endl; // for debug
+				//cout << "accpeted a connection as: " << connfd << endl; // for debug
 			}
 			// 发生异常
-			else if(events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)){
-				/*cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
-				if(events[i].events & EPOLLRDHUP)
-					cout << "EPOLLRDHUP, ";
+			else if(events[i].events & (EPOLLHUP | EPOLLERR)){
+				cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
 				if(events[i].events & EPOLLHUP)
 					cout << "EPOLLHUP, ";
 				if(events[i].events & EPOLLERR)
 					cout << "EPOLLERR";
 				cout << endl;
-				*/
-
+				
 				(*users)[fd].close_conn();
 			}
 			else if(events[i].events & (EPOLLIN)){
 				//cout << "read event from: " << fd << endl; // for debug
+				if(fd == -1){
+					continue;
+				}
 
 				if((*users)[fd].read()){
 					t_pool->append(&((*users)[fd]));
-					cout << "append pthread success for fd: " << fd << endl;
+					//cout << "append pthread success for fd: " << fd << endl;
 				}
 				else{
+					//cout << "nothing read" << endl;
 					(*users)[fd].close_conn();
 				}
 			}
 			else if(events[i].events & (EPOLLOUT)){
 				//cout << "write event from: " << fd << endl; // for debug
-
+				if(fd == -1){
+					cout << "fd has closed: " << fd << endl;
+					continue;
+				}
 				if(!(*users)[fd].write()){
 					(*users)[fd].close_conn();
 				}

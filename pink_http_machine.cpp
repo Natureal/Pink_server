@@ -103,8 +103,19 @@ pink_http_machine::HTTP_CODE pink_http_machine::process_read(){
 	HTTP_CODE ret = NOT_COMPLETED;
 	char *text = nullptr;
 
-	while(((check_state == CHECK_STATE_CONTENT) && (line_status == LINE_OK))
-			|| ((line_status = parse_line()) == LINE_OK)){
+	while(true){
+		if((check_state == CHECK_STATE_CONTENT) && (line_status == LINE_OK)){
+
+		}
+		else if((line_status = parse_line()) == LINE_OK){
+
+		}
+		else{
+			cout << "line_status" << endl;
+
+			break;
+		}
+
 
 		text = m_read_buf + start_of_line;
 		start_of_line = checked_idx;
@@ -213,7 +224,7 @@ pink_http_machine::HTTP_CODE pink_http_machine::parse_request_line(char *text){
 		return BAD_REQUEST;
 	}
 
-	// ==================================================================
+	// ==================================================================_
 	// 解析请求方法
 	method = parse_request_method(text);
 	if(method == UNKNOWN_METHOD){
@@ -221,7 +232,7 @@ pink_http_machine::HTTP_CODE pink_http_machine::parse_request_line(char *text){
 		return BAD_REQUEST;
 	}
 
-	// ==================================================================
+	// =================================================================++
 	// 解析 HTTP 版本
 	version = strpbrk(url, " \t");
 	if(!version){
@@ -477,12 +488,17 @@ bool pink_http_machine::add_status_line(int status, const char *title){
 
 bool pink_http_machine::add_headers(int content_len){
 	add_content_length(content_len);
+	add_content_type("text/html");
 	add_linger();
 	add_blank_line();
 }
 
 bool pink_http_machine::add_content_length(int content_len){
 	return add_response("Content-Length: %d\r\n", content_len);
+}
+
+bool pink_http_machine::add_content_type(const char *content_type){
+	return add_response("Content-Type: %s\r\n", content_type);
 }
 
 bool pink_http_machine::add_linger(){

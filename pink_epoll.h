@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <errno.h>
 #include <sys/epoll.h>
+#include <unistd.h>
 #include <iostream>
 
-const int MAX_EVENT_NUMBER = 10000;
+const int MAX_EVENT_NUMBER = 100000;
 
 int pink_epoll_create(const int size);
 int pink_epoll_addfd(int epollfd, int fd, int events, bool one_shot);

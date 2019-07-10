@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-const int LISTENQUEUE_LEN = 1024;
+const int LISTENQUEUE_LEN = 4096;
 
 int set_nonblocking(const int fd);
 int bind_and_listen(int port);

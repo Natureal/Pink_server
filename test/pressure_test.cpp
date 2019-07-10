@@ -10,9 +10,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <iostream>
 
-static const char* request_keep_alive = "GET http://localhost/index.html HTTP/1.1\r\nConnection: keep-alive\r\n\r\nxxxxxxxxxxxxxx";
-static const char* request_close = "GET http://localhost/index.html HTTP/1.1\r\nConnection: close\r\n\r\nxxxxxxxxxxxxxx";
+static const char* request_keep_alive = "GET /index.html HTTP/1.1\r\nConnection: keep-alive\r\nHost: 127.0.0.1\r\n\r\n";
+static const char* request_close = "GET http://127.0.0.1:3000/index.html HTTP/1.1\r\nConnection: close\r\n\r\nxxxxxxxxxxxxxx";
 const int MAX_EVENT_NUMBER = 10000;
 
 int set_nonblocking(int fd){
@@ -61,7 +62,7 @@ bool read_once(int sockfd, char* buffer, int len){
 	else if(bytes_read == 0){
 		return false;
 	}
-	printf("read in %d bytes from socket %d with content: \n %s\n", bytes_read,
+	printf("read in %d bytes from socket %d with content:\n %s\n", bytes_read,
 															sockfd, buffer);
 	return true;
 }
@@ -76,7 +77,7 @@ void start_conn(int epoll_fd, int num, const char *ip, int port){
 	address.sin_port = htons(port);
 	
 	for(int i = 0; i < num; ++i){
-		//sleep(1);
+		sleep(2);
 		int sockfd = socket(PF_INET, SOCK_STREAM, 0);
 		if(sockfd < 0){
 			continue;
@@ -84,6 +85,7 @@ void start_conn(int epoll_fd, int num, const char *ip, int port){
 		printf("create %dth sock and connect\n", i + 1);
 		ret = connect(sockfd, (struct sockaddr*)&address, sizeof(address));
 		if(ret == 0){
+			printf("Success.\n");
 			epoll_addfd(epoll_fd, sockfd, EPOLLOUT | EPOLLET | EPOLLERR);
 		}
 		else{
@@ -113,6 +115,7 @@ int main(int argc, char* argv[]){
 	int ret;
 
 	while(true){
+		std::cout << "............I am waiting...." << std::endl;
 		int event_number = epoll_wait(epoll_fd, events, MAX_EVENT_NUMBER, timeout);
 		for(int i = 0; i < event_number; ++i){
 			int sockfd = events[i].data.fd;
@@ -136,6 +139,7 @@ int main(int argc, char* argv[]){
 				event.events = EPOLLIN | EPOLLET | EPOLLERR;
 				event.data.fd = sockfd;
 				epoll_ctl(epoll_fd, EPOLL_CTL_MOD, sockfd, &event);
+				//close_conn(epoll_fd, sockfd);
 			}
 			else if(events[i].events & EPOLLERR){
 				printf("epoll error\n");

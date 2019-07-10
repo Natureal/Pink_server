@@ -16,6 +16,9 @@ int pink_epoll_addfd(int epollfd, int fd, int events, bool one_shot){
 	struct epoll_event event;
 	event.data.fd = fd;
 	event.events = events;
+	if(one_shot){
+		event.events |= EPOLLONESHOT;
+	}
 	if(epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event) == -1){
 		perror("add fd in epoll failed");
 		return -1;
@@ -33,10 +36,13 @@ int pink_epoll_modfd(int epollfd, int fd, int events){
 }
 
 int pink_epoll_removefd(int epollfd, int fd){
+	//std::cout << "remove fd: " << fd << std::endl;
 	if(epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, 0) == -1){
 		perror("remove fd from epoll failed");
 		return -1;
 	}
+	//std::cout << "close fd: " << fd << std::endl;	
+	close(fd);
 }
 
 int pink_epoll_wait(int epollfd, struct epoll_event *events, int max_event_number, int timeout){

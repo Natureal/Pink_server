@@ -15,12 +15,11 @@ void pink_http_conn::init(int sockfd, const sockaddr_in &addr){
 	this->sockfd = sockfd;
 	this->address = addr;
 	// 如下两行可以避免TIME_WAIT，仅用于测试，实际中应该注释掉
+	//
 	//int reuse = 1;
-	//etsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+	//setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 
-	//std::cout << "epoll fd: " << epollfd << " , sockfd: " << sockfd << std::endl; // for debug
-
-	pink_epoll_addfd(epollfd, sockfd, (EPOLLIN | EPOLLET | EPOLLRDHUP), true);
+	pink_epoll_addfd(epollfd, sockfd, (EPOLLIN | EPOLLET), true);
 	set_nonblocking(sockfd);
 
 	user_count++;
@@ -65,7 +64,9 @@ bool pink_http_conn::read(){
 
 	int bytes_read = 0;
 	while(true){
-		bytes_read = recv(sockfd, read_buf + read_idx, READ_BUFFER_SIZE - read_idx, 0);
+		bytes_read = recv(sockfd, read_buf + read_idx, 
+							READ_BUFFER_SIZE - read_idx, 0);
+		//std::cout << "bytes_read: " << bytes_read << std::endl;
 		if(bytes_read == -1){
 			if(errno == EAGAIN || errno == EWOULDBLOCK){
 				break;
@@ -95,9 +96,6 @@ bool pink_http_conn::write(){
 
 	while(1){
 		temp = writev(sockfd, iv, iv_count);
-		//std::cout << "bytes_to_send: " << bytes_to_send << std::endl;
-		//std::cout << "temp: " << temp << std::endl;
-		//std::cout << write_buf << std::endl;
 
 		// writev 出错，返回 -1
 		if(temp <= -1){
@@ -113,6 +111,8 @@ bool pink_http_conn::write(){
 		}
 
 		bytes_have_sent += temp; // index 意义上
+		//std::cout << "bytes_have_sent: " << bytes_have_sent << endl;
+
 		if(bytes_have_sent >= bytes_to_send){
 			// 发送HTTP响应成功，根据HTTP请求中的Connection字段决定是否关闭连接
 			machine.unmap();
