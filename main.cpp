@@ -90,7 +90,7 @@ int main(int argc, char *argv[]){
 			}
 			// 发生异常
 			else if(events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)){
-				cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
+				/*cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
 				if(events[i].events & EPOLLRDHUP)
 					cout << "EPOLLRDHUP, ";
 				if(events[i].events & EPOLLHUP)
@@ -98,22 +98,23 @@ int main(int argc, char *argv[]){
 				if(events[i].events & EPOLLERR)
 					cout << "EPOLLERR";
 				cout << endl;
+				*/
 
 				(*users)[fd].close_conn();
 			}
 			else if(events[i].events & (EPOLLIN)){
-				cout << "read event from: " << fd << endl; // for debug
+				//cout << "read event from: " << fd << endl; // for debug
 
 				if((*users)[fd].read()){
 					t_pool->append(&((*users)[fd]));
-					cout << "append pthread success" << endl;
+					cout << "append pthread success for fd: " << fd << endl;
 				}
 				else{
 					(*users)[fd].close_conn();
 				}
 			}
 			else if(events[i].events & (EPOLLOUT)){
-				cout << "write event from: " << fd << endl; // for debug
+				//cout << "write event from: " << fd << endl; // for debug
 
 				if(!(*users)[fd].write()){
 					(*users)[fd].close_conn();

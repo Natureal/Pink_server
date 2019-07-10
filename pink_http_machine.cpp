@@ -109,7 +109,7 @@ pink_http_machine::HTTP_CODE pink_http_machine::process_read(){
 		text = m_read_buf + start_of_line;
 		start_of_line = checked_idx;
 
-		printf("got a http line: %s\n", text);
+		//printf("got a http line: %s\n", text);
 
 		switch(check_state){
 			case CHECK_STATE_REQUESTLINE:{

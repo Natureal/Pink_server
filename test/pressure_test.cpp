@@ -127,7 +127,8 @@ int main(int argc, char* argv[]){
 				epoll_ctl(epoll_fd, EPOLL_CTL_MOD, sockfd, &event);
 			}
 			else if(events[i].events & EPOLLOUT){
-				ret = write_nbytes(sockfd, request_close, strlen(request_close));
+				ret = write_nbytes(sockfd, request_keep_alive,
+										strlen(request_keep_alive));
 				if(ret == 0){
 					close_conn(epoll_fd, sockfd);
 				}

@@ -5,6 +5,15 @@
 
 Motivation: 学习了书本上和一些开源小项目后，决定自己写一个 http server，实现一些自己的想法。并给它取了一个冷艳的名字: Pink。最终的期望它是一个优雅高效独特的 Server. :)
 
+## tools
+
+1. 测压工具 <br>
+(1) ./test/pressure_test.cpp <br>
+(2) 开源工具 webbench <br>
+
+2. 开发工具 <br>
+(1) ctags 源码定位工具 <br>
+(2) Sublime Text 3 <br>
 
 
 ## to do list:

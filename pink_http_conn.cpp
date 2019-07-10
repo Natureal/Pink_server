@@ -95,10 +95,9 @@ bool pink_http_conn::write(){
 
 	while(1){
 		temp = writev(sockfd, iv, iv_count);
-		std::cout << "HERE!!!!!!!!!!!!!!!!" << std::endl;
-		std::cout << "bytes_to_send: " << bytes_to_send << std::endl;
-		std::cout << "temp: " << temp << std::endl;
-		std::cout << write_buf << std::endl;
+		//std::cout << "bytes_to_send: " << bytes_to_send << std::endl;
+		//std::cout << "temp: " << temp << std::endl;
+		//std::cout << write_buf << std::endl;
 
 		// writev 出错，返回 -1
 		if(temp <= -1){
@@ -113,20 +112,16 @@ bool pink_http_conn::write(){
 			return false;
 		}
 
-		std::cout << "start writing" << std::endl;
-
 		bytes_have_sent += temp; // index 意义上
 		if(bytes_have_sent >= bytes_to_send){
 			// 发送HTTP响应成功，根据HTTP请求中的Connection字段决定是否关闭连接
 			machine.unmap();
-			std::cout << "linger: " << machine.get_linger() << std::endl;
 			if(machine.get_linger()){
 				init();
 				pink_epoll_modfd(epollfd, sockfd, EPOLLIN);
 				return true;
 			}
 			else{
-				//pink_epoll_modfd(epollfd, sockfd, EPOLLIN);
 				return false;
 			}
 		}
