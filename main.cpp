@@ -7,6 +7,10 @@
 #include "pink_threadpool.h"
 #include "pink_epoll.h"
 
+using std::vector;
+using std::cout;
+using std::endl;
+
 const char *conf_file = "pink_conf.conf";
 conf_t conf;
 
@@ -31,7 +35,7 @@ int main(int argc, char *argv[]){
 	if((listenfd = bind_and_listen(conf.port)) < 0)
 		return 1;
 
-	//std::cout << "listenfd: " << listenfd << std::endl; // for debug
+	//cout << "listenfd: " << listenfd << endl; // for debug
 
 	set_nonblocking(listenfd);
 
@@ -40,7 +44,7 @@ int main(int argc, char *argv[]){
 	if((epollfd = pink_epoll_create(5)) < 0)
 		return 1;
 
-	//std::cout << "epollfd: " << epollfd << std::endl; for debug
+	//cout << "epollfd: " << epollfd << endl; for debug
 
 	if(pink_epoll_addfd(epollfd, listenfd, (EPOLLIN | EPOLLET | EPOLLRDHUP), true) < 0)
 		return 1;
@@ -57,7 +61,7 @@ int main(int argc, char *argv[]){
 
 	// 预分配PRE_FD的http connection
 	pink_http_conn temp;
-	std::vector<pink_http_conn > *users = new std::vector<pink_http_conn>(PRE_FD, temp);
+	vector<pink_http_conn > *users = new vector<pink_http_conn>(PRE_FD, temp);
 	pink_http_conn::epollfd = epollfd;
 
 	// 运行服务器
@@ -82,34 +86,34 @@ int main(int argc, char *argv[]){
 				}
 				(*users)[connfd].init(connfd, client_addr);
 
-				std::cout << "accpeted a connection as: " << connfd << std::endl; // for debug
+				cout << "accpeted a connection as: " << connfd << endl; // for debug
 			}
 			// 发生异常
 			else if(events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)){
-				std::cout << "exception event from: " << fd << ", events: " << events[i].events << std::endl; // for debug
+				cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
 				if(events[i].events & EPOLLRDHUP)
-					std::cout << "EPOLLRDHUP, ";
+					cout << "EPOLLRDHUP, ";
 				if(events[i].events & EPOLLHUP)
-					std::cout << "EPOLLHUP, ";
+					cout << "EPOLLHUP, ";
 				if(events[i].events & EPOLLERR)
-					std::cout << "EPOLLERR";
-				std::cout << std::endl;
+					cout << "EPOLLERR";
+				cout << endl;
 
 				(*users)[fd].close_conn();
 			}
 			else if(events[i].events & (EPOLLIN)){
-				std::cout << "read event from: " << fd << std::endl; // for debug
+				cout << "read event from: " << fd << endl; // for debug
 
 				if((*users)[fd].read()){
 					t_pool->append(&((*users)[fd]));
-					std::cout << "append pthread success" << std::endl;
+					cout << "append pthread success" << endl;
 				}
 				else{
 					(*users)[fd].close_conn();
 				}
 			}
 			else if(events[i].events & (EPOLLOUT)){
-				std::cout << "write event from: " << fd << std::endl; // for debug
+				cout << "write event from: " << fd << endl; // for debug
 
 				if(!(*users)[fd].write()){
 					(*users)[fd].close_conn();
@@ -120,7 +124,7 @@ int main(int argc, char *argv[]){
 
 	close(epollfd);
 	close(listenfd);
-	std::vector<pink_http_conn >().swap(*users);
+	vector<pink_http_conn >().swap(*users);
 	users = nullptr;
 
 	delete t_pool;

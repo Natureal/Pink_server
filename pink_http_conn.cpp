@@ -84,7 +84,7 @@ bool pink_http_conn::read(){
 bool pink_http_conn::write(){
 	int temp = 0;
 	int bytes_have_sent = 0;
-	int bytes_to_send = write_idx;
+	int bytes_to_send = iv[0].iov_len + iv[1].iov_len;
 	
 	// 没东西写
 	if(bytes_to_send == 0){
@@ -96,6 +96,10 @@ bool pink_http_conn::write(){
 	while(1){
 		temp = writev(sockfd, iv, iv_count);
 		std::cout << "HERE!!!!!!!!!!!!!!!!" << std::endl;
+		std::cout << "bytes_to_send: " << bytes_to_send << std::endl;
+		std::cout << "temp: " << temp << std::endl;
+		std::cout << write_buf << std::endl;
+
 		// writev 出错，返回 -1
 		if(temp <= -1){
 			// TCP 写缓冲区没有空间，等待下一轮 EPOLLOUT 事件
@@ -109,11 +113,13 @@ bool pink_http_conn::write(){
 			return false;
 		}
 
-		bytes_to_send -= temp; // 这是 index 意义上的
+		std::cout << "start writing" << std::endl;
+
 		bytes_have_sent += temp; // index 意义上
-		if(bytes_to_send <= bytes_have_sent){
+		if(bytes_have_sent >= bytes_to_send){
 			// 发送HTTP响应成功，根据HTTP请求中的Connection字段决定是否关闭连接
 			machine.unmap();
+			std::cout << "linger: " << machine.get_linger() << std::endl;
 			if(machine.get_linger()){
 				init();
 				pink_epoll_modfd(epollfd, sockfd, EPOLLIN);

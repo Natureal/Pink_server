@@ -2,18 +2,18 @@
 
 int read_conf(const char *filename, conf_t &conf){
 
-	std::ifstream conf_file(filename);
+	ifstream conf_file(filename);
 	if(!conf_file.is_open()){
-		std::cout << "Cannot open the config file." << std::endl;
+		cout << "Cannot open the config file." << endl;
 		return IMPORT_CONF_ERROR;
 	}
-	std::string str_line;
+	string str_line;
 	while(!conf_file.eof()){
 
 		getline(conf_file, str_line);
 		size_t pos = str_line.find('=');
-		std::string key = str_line.substr(0, pos);
-		std::string val = str_line.substr(pos + 1, str_line.length());
+		string key = str_line.substr(0, pos);
+		string val = str_line.substr(pos + 1, str_line.length());
 
 		if(key == "port"){
 			conf.port = atoi(val.c_str());

@@ -8,6 +8,11 @@
 #include <signal.h>
 #include <assert.h>
 
+using std::string;
+using std::ifstream;
+using std::cout;
+using std::endl;
+
 const short PATH_LEN = 128;
 const short IMPORT_CONF_SUCCESS = 0;
 const short IMPORT_CONF_ERROR = -1;

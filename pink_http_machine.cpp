@@ -235,12 +235,12 @@ pink_http_machine::HTTP_CODE pink_http_machine::parse_request_line(char *text){
 	}
 
 	check_state = CHECK_STATE_HEADER;
-	
+
 	// 尚未完成全部解析
 	return NOT_COMPLETED;
 }
 
-inline bool check_and_move(char *text, const char *prefix){
+inline bool check_and_move(char *&text, const char *prefix){
 	int len = strlen(prefix);
 	if(strncasecmp(text, prefix, len) == 0){
 		text += len;

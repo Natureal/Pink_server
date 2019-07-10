@@ -11,7 +11,8 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-static const char* request = "GET http://localhost/index.html HTTP/1.1\r\nConnection: keep-alive\r\n\r\nxxxxxxxxxxxxxx";
+static const char* request_keep_alive = "GET http://localhost/index.html HTTP/1.1\r\nConnection: keep-alive\r\n\r\nxxxxxxxxxxxxxx";
+static const char* request_close = "GET http://localhost/index.html HTTP/1.1\r\nConnection: close\r\n\r\nxxxxxxxxxxxxxx";
 const int MAX_EVENT_NUMBER = 10000;
 
 int set_nonblocking(int fd){
@@ -21,10 +22,10 @@ int set_nonblocking(int fd){
 	return old_option;
 }
 
-void epoll_addfd(int epoll_fd, int fd){
+void epoll_addfd(int epoll_fd, int fd, const int events){
 	struct epoll_event event;
 	event.data.fd = fd;
-	event.events = EPOLLOUT | EPOLLET | EPOLLERR;
+	event.events = events;
 	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &event);
 	set_nonblocking(fd);
 }
@@ -60,7 +61,7 @@ bool read_once(int sockfd, char* buffer, int len){
 	else if(bytes_read == 0){
 		return false;
 	}
-	printf("read in %d bytes from socket %d with content: %s\n", bytes_read,
+	printf("read in %d bytes from socket %d with content: \n %s\n", bytes_read,
 															sockfd, buffer);
 	return true;
 }
@@ -80,11 +81,10 @@ void start_conn(int epoll_fd, int num, const char *ip, int port){
 		if(sockfd < 0){
 			continue;
 		}
-		printf("create %dth sock\n", i + 1);
+		printf("create %dth sock and connect\n", i + 1);
 		ret = connect(sockfd, (struct sockaddr*)&address, sizeof(address));
 		if(ret == 0){
-			printf("build connection %d\n", i + 1);
-			epoll_addfd(epoll_fd, sockfd);
+			epoll_addfd(epoll_fd, sockfd, EPOLLOUT | EPOLLET | EPOLLERR);
 		}
 		else{
 			printf("connect failed.\n");
@@ -127,7 +127,7 @@ int main(int argc, char* argv[]){
 				epoll_ctl(epoll_fd, EPOLL_CTL_MOD, sockfd, &event);
 			}
 			else if(events[i].events & EPOLLOUT){
-				ret = write_nbytes(sockfd, request, strlen(request));
+				ret = write_nbytes(sockfd, request_close, strlen(request_close));
 				if(ret == 0){
 					close_conn(epoll_fd, sockfd);
 				}
