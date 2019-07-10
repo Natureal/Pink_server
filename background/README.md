@@ -1,6 +1,3 @@
-# Pink
-A tiny http server
-
 ## 参考书籍
 
 （1）Linux高性能服务器编程
