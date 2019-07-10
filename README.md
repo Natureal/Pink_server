@@ -2,7 +2,7 @@
 
 
 
-## [基础知识](https://github.com/Natureal/Pink_server/blob/master/background/README.md)
+## [基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)
 
 
 ## to do list:
