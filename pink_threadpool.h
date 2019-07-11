@@ -8,6 +8,12 @@
 #include <memory>
 #include "tools/IPC_tool.h"
 
+using std::shared_ptr;
+using std::default_delete;
+using std::list;
+
+// 为了练习 shared_ptr，这里不使用 unique_ptr
+
 // 半同步/半反应堆形式
 
 // 线程池类
@@ -22,17 +28,16 @@ private:
 	// 不断从工作队列中取出任务并执行
 	// worker 作为 pthread_create 的第三个参数，必须为静态函数
 	static void *worker(void *arg);
-	std::shared_ptr<pthread_t> make_shared_array(size_t size);
+	shared_ptr<pthread_t> make_shared_array(size_t size);
 	void run();
 
 private:
 	int thread_number; // 线程池中的线程数
 	int max_requests; // 允许的最大请求数
 
-	// 这里使用智能指针纯属练习，实际上没有必要
-	std::shared_ptr<pthread_t> threads; // 进程池数组
+	shared_ptr<pthread_t> threads; // 进程池数组
 
-	std::list<T*> work_queue; // 请求队列
+	list<T*> work_queue; // 请求队列
 	mutex queue_locker; // 保护请求队列的互斥锁
 	sem queue_stat; // 是否有任务需要处理
 	bool thread_stop; // 是否结束线程
@@ -40,8 +45,8 @@ private:
 
 
 template<typename T>
-std::shared_ptr<pthread_t> threadpool<T>::make_shared_array(size_t size){
-    return std::shared_ptr<pthread_t> (new pthread_t[size], std::default_delete <pthread_t[]> ());
+shared_ptr<pthread_t> threadpool<T>::make_shared_array(size_t size){
+    return shared_ptr<pthread_t> (new pthread_t[size], default_delete <pthread_t[]> ());
 }
 
 // 构造函数

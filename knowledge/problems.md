@@ -50,3 +50,11 @@ EPOLLRDHUP indeed comes if you continue to poll after receiving a zero-byte read
 
 ### 16. epoll 中监听套接字的触发模式很重要
 详细：
+
+### 17. shared_ptr 操作数组的困难
+参考1：https://www.cnblogs.com/xiaoshiwang/p/9726511.html
+
+数组的智能指针的限制:
+1，unique_ptr的数组智能指针，没有*和->操作，但支持下标操作[]
+2，shared_ptr的数组智能指针，有*和->操作，但不支持下标操作[]，只能通过get()去访问数组的元素。
+3，shared_ptr的数组智能指针，必须要自定义deleter

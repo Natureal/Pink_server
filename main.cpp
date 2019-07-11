@@ -4,18 +4,20 @@
 #include "tools/basic_tool.h"
 #include "tools/socket_tool.h"
 #include "pink_http_conn.h"
+#include "pink_connpool.h"
 #include "pink_threadpool.h"
 #include "pink_epoll.h"
 
 using std::vector;
 using std::cout;
 using std::endl;
+using std::unique_ptr;
 
 const char *conf_file = "pink_conf.conf";
 conf_t conf;
 
-const int PRE_FD = 10000; // 预分配的FD数量
-const int MAX_FD = 65535;
+const int PRE_CONN = 10000; // 预分配的FD数量
+const int MAX_CONN = 10000;
 
 extern epoll_event *events;
 
@@ -41,6 +43,7 @@ int main(int argc, char *argv[]){
 	int epollfd;
 	if((epollfd = pink_epoll_create(5)) < 0)
 		return 1;
+	pink_http_conn::epollfd = epollfd;
 
 	//cout << "epollfd: " << epollfd << endl; for debug
 
@@ -48,23 +51,27 @@ int main(int argc, char *argv[]){
 		return 1;
 
 	// 创建线程池
-	threadpool<pink_http_conn> *t_pool = nullptr;
+	unique_ptr<threadpool<pink_http_conn> > t_pool = nullptr;
 	try{
-		t_pool = new threadpool<pink_http_conn >(conf.max_thread_number, 10000);
+		t_pool.reset(new threadpool<pink_http_conn>(conf.max_thread_number, 10000));
 	}
 	catch( ... ){
 		perror("create threadpool failed");
 		return 1;
 	}
 
-	// 预分配PRE_FD的http connection
-	pink_http_conn temp;
-	vector<pink_http_conn > *users = new vector<pink_http_conn>(PRE_FD, temp);
-	pink_http_conn::epollfd = epollfd;
+	// 创建连接池
+	unique_ptr<pink_connpool<pink_http_conn> > c_pool = nullptr;
+	try{
+		c_pool.reset(new pink_connpool<pink_http_conn>(PRE_CONN, MAX_CONN));
+	}
+	catch( ... ){
+		perror("create connection pool failed");
+		return 1;
+	}
 
 	// 运行服务器
 	while(true){
-
 		//cout << ".......waiting.........." << endl;
 		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
 		if(event_number < 0 && errno != EINTR){
@@ -80,26 +87,25 @@ int main(int argc, char *argv[]){
 				int connfd = accept_conn(listenfd, client_addr);
 				if(connfd < 0)
 					continue;
-				if(connfd >= MAX_FD){
+				// 连接池已经满了
+				int conn_id = c_pool->append_conn(connfd, client_addr);
+				if(conn_id < 0){
 					send_error(connfd, "Internal server busy");
 					continue;
 				}
-				if(connfd >= users->size()){
-					users->reserve(users->size() + 1000);
-				}
-				(*users)[connfd].init(connfd, client_addr);
-				//cout << "accpeted a connection as: " << connfd << endl; // for debug
+				//cout << "Accepted: " << connfd << " , conn_id: " << conn_id << endl;
 			}
 			// 发生异常
 			else if(events[i].events & (EPOLLHUP | EPOLLERR)){
-				cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
+				/*cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
 				if(events[i].events & EPOLLHUP)
 					cout << "EPOLLHUP, ";
 				if(events[i].events & EPOLLERR)
 					cout << "EPOLLERR";
 				cout << endl;
-				
-				(*users)[fd].close_conn();
+				*/
+
+				c_pool->close_conn(fd);
 			}
 			else if(events[i].events & (EPOLLIN)){
 				//cout << "read event from: " << fd << endl; // for debug
@@ -107,23 +113,24 @@ int main(int argc, char *argv[]){
 					continue;
 				}
 
-				if((*users)[fd].read()){
-					t_pool->append(&((*users)[fd]));
+				if(c_pool->read(fd)){
+					t_pool->append(&(c_pool->get_conn(fd)));
 					//cout << "append pthread success for fd: " << fd << endl;
 				}
 				else{
 					//cout << "nothing read" << endl;
-					(*users)[fd].close_conn();
+					c_pool->close_conn(fd);
 				}
 			}
 			else if(events[i].events & (EPOLLOUT)){
 				//cout << "write event from: " << fd << endl; // for debug
 				if(fd == -1){
-					cout << "fd has closed: " << fd << endl;
+					//cout << "fd has closed: " << fd << endl;
 					continue;
 				}
-				if(!(*users)[fd].write()){
-					(*users)[fd].close_conn();
+
+				if(!c_pool->write(fd)){
+					c_pool->close_conn(fd);
 				}
 			}
 		}
@@ -131,10 +138,6 @@ int main(int argc, char *argv[]){
 
 	close(epollfd);
 	close(listenfd);
-	vector<pink_http_conn >().swap(*users);
-	users = nullptr;
-
-	delete t_pool;
 
 	return 0;
 }
