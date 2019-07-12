@@ -3,7 +3,7 @@
 ## [基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)
 
 
-Motivation: 学习了书本上和一些开源小项目后，决定自己写一个 http server，实现一些自己的想法。并给它取了一个冷艳的名字: Pink。最终的期望它是一个优雅高效独特的 Server. :)
+Motivation: 学习了书本上和一些开源小项目后，决定自己写一个 http server，实现一些自己的想法。取名为 pink 。
 
 ## tools
 
