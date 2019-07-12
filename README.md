@@ -7,20 +7,20 @@ Motivation: 学习了书本上和一些开源小项目后，决定自己写一�
 
 ## tools
 
-1. 测压工具 <br>
+- **1. 测压工具 <br>**
 (1) ./test/pressure_test.cpp <br>
 (2) 开源工具 webbench <br>
 
-2. 开发工具 <br>
+- **2. 开发工具 <br>**
 (1) ctags 源码定位工具 <br>
 (2) Sublime Text 3 <br>
 
 
 ## to do list:
 
-1. 将线程池设置成自销毁(智能指针) Finished <br>
+1. 实现自销毁的线程池(智能指针) Finished <br>
 
-2. 封装一个自销毁的连接池(智能指针) Finished <br>
+2. 封装自销毁的连接池(智能指针) Finished <br>
 
 3. 实现定时器 <br>
 
