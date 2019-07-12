@@ -5,6 +5,7 @@
 #include <queue>
 #include <memory>
 #include <vector>
+#include "tools/socket_tool.h"
 
 using std::unique_ptr;
 using std::default_delete;

@@ -46,11 +46,10 @@ err:
 }
 
 int accept_conn(const int listenfd, sockaddr_in &client_addr){
-	bzero(&client_addr, sizeof(client_addr));
 	socklen_t client_addrlen = sizeof(client_addr);
 	int connfd = accept(listenfd, (struct sockaddr*)&client_addr, &client_addrlen);
 	if(connfd < 0){
-		perror("accept connection failed");
+		//perror("accept connection failed");
 		return -1;
 	}
 	return connfd;

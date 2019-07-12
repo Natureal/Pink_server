@@ -1,12 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <signal.h>
-#include "tools/basic_tool.h"
-#include "tools/socket_tool.h"
-#include "pink_http_conn.h"
-#include "pink_connpool.h"
-#include "pink_threadpool.h"
 #include "pink_epoll.h"
+#include "tools/pink_epoll_tool.h"
 
 using std::vector;
 using std::cout;
@@ -19,11 +15,7 @@ conf_t conf;
 const int PRE_CONN = 10000; // 预分配的FD数量
 const int MAX_CONN = 10000;
 
-extern epoll_event *events;
-
-
 int main(int argc, char *argv[]){
-
 	if(read_conf(conf_file, conf) < 0){
 		perror("Read conf file failed");
 		return 1;
@@ -36,7 +28,6 @@ int main(int argc, char *argv[]){
 	int listenfd;
 	if((listenfd = bind_and_listen(conf.port)) < 0)
 		return 1;
-
 	set_nonblocking(listenfd);
 
 	// 创建epoll fd，并添加监听socket
@@ -44,11 +35,6 @@ int main(int argc, char *argv[]){
 	if((epollfd = pink_epoll_create(5)) < 0)
 		return 1;
 	pink_http_conn::epollfd = epollfd;
-
-	//cout << "epollfd: " << epollfd << endl; for debug
-
-	if(pink_epoll_addfd(epollfd, listenfd, (EPOLLIN), false) < 0)
-		return 1;
 
 	// 创建线程池
 	unique_ptr<threadpool<pink_http_conn> > t_pool = nullptr;
@@ -70,77 +56,13 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	// 运行服务器
-	while(true){
-		//cout << ".......waiting.........." << endl;
-		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
-		if(event_number < 0 && errno != EINTR){
-			perror("epoll failed:");
-			break;
-		}
-
-		for(int i = 0; i < event_number; ++i){
-			int fd = events[i].data.fd;
-			// 监听fd上有事件
-			if(fd == listenfd){
-				sockaddr_in client_addr;
-				int connfd = accept_conn(listenfd, client_addr);
-				if(connfd < 0)
-					continue;
-				// 连接池已经满了
-				int conn_id = c_pool->append_conn(connfd, client_addr);
-				if(conn_id < 0){
-					send_error(connfd, "Internal server busy");
-					continue;
-				}
-				//cout << "Accepted: " << connfd << " , conn_id: " << conn_id << endl;
-			}
-			// 发生异常
-			else if(events[i].events & (EPOLLHUP | EPOLLERR)){
-				/*cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
-				if(events[i].events & EPOLLHUP)
-					cout << "EPOLLHUP, ";
-				if(events[i].events & EPOLLERR)
-					cout << "EPOLLERR";
-				cout << endl;
-				*/
-
-				c_pool->close_conn(fd);
-			}
-			else if(events[i].events & (EPOLLIN)){
-				//cout << "read event from: " << fd << endl; // for debug
-				if(fd == -1){
-					continue;
-				}
-
-				if(c_pool->read(fd)){
-					t_pool->append(&(c_pool->get_conn(fd)));
-					//cout << "append pthread success for fd: " << fd << endl;
-				}
-				else{
-					//cout << "nothing read" << endl;
-					c_pool->close_conn(fd);
-				}
-			}
-			else if(events[i].events & (EPOLLOUT)){
-				//cout << "write event from: " << fd << endl; // for debug
-				if(fd == -1){
-					//cout << "fd has closed: " << fd << endl;
-					continue;
-				}
-
-				if(!c_pool->write(fd)){
-					c_pool->close_conn(fd);
-				}
-			}
-		}
-	}
+	// 开启I/O复用
+	epoll_et(epollfd, listenfd, t_pool, c_pool);
+	//epoll_lt(epollfd, listenfd, t_pool, c_pool);
 
 	close(epollfd);
 	close(listenfd);
 
 	return 0;
 }
-
-
 

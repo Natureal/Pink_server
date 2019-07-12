@@ -1,18 +1,16 @@
 #ifndef PINK_EPOLL_H
 #define PINK_EPOLL_H
+#include "pink_threadpool.h"
+#include "pink_connpool.h"
+#include "pink_http_conn.h"
+#include "tools/pink_epoll_tool.h"
 
-#include <stdio.h>
-#include <errno.h>
-#include <sys/epoll.h>
-#include <unistd.h>
-#include <iostream>
+void epoll_et(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> > &t_pool,
+							unique_ptr<pink_connpool<pink_http_conn> > &c_pool);
 
-const int MAX_EVENT_NUMBER = 100000;
+void epoll_lt(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> > &t_pool,
+							unique_ptr<pink_connpool<pink_http_conn> > &c_pool);
 
-int pink_epoll_create(const int size);
-int pink_epoll_addfd(int epollfd, int fd, int events, bool one_shot);
-int pink_epoll_modfd(int epollfd, int fd, int events);
-int pink_epoll_removefd(int epollfd, int fd);
-int pink_epoll_wait(int epollfd, struct epoll_event *events, int max_event_number, int timeout = -1);
+
 
 #endif

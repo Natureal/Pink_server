@@ -1,51 +1,126 @@
 #include "pink_epoll.h"
 
-struct epoll_event *events;
+extern struct epoll_event *events;
 
-int pink_epoll_create(const int size){
-	int epoll_fd = epoll_create(size);
-	if(epoll_fd == -1){
-		perror("create epollfd faild");
-		return -1;
+void epoll_et(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> > &t_pool,
+							unique_ptr<pink_connpool<pink_http_conn> > &c_pool){
+
+	// ET 模式，带 EPOLLONESHOT
+	cout << "Using Epoll ET mode" << endl;
+	pink_epoll_addfd(epollfd, listenfd, (EPOLLIN | EPOLLET), true);
+
+	while(true){
+		//cout << ".......waiting.........." << endl;
+		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
+		if(event_number < 0 && errno != EINTR){
+			perror("epoll failed:");
+			break;
+		}
+		for(int i = 0; i < event_number; ++i){
+			int fd = events[i].data.fd;
+			if(fd == listenfd){
+				while(true){
+					sockaddr_in client_addr;
+					int connfd = accept_conn(listenfd, client_addr);
+					if(connfd < 0){
+						//cout << "Break" << endl;
+						break;
+					}
+					// 连接池已经满了
+					int conn_id = c_pool->append_conn(connfd, client_addr);
+					if(conn_id < 0){
+						send_error(connfd, "Internal server busy");
+						break;
+					}
+					//cout << "Accepted: " << connfd << " , conn_id: " << conn_id << endl;
+					pink_epoll_modfd(epollfd, listenfd, (EPOLLIN | EPOLLET), true);
+				}
+			}
+			else if(events[i].events & (EPOLLHUP | EPOLLERR)){
+				//cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
+				c_pool->close_conn(fd);
+			}
+			else if(events[i].events & (EPOLLIN)){
+				//cout << "read event from: " << fd << endl; // for debug
+				if(fd == -1){
+					continue;
+				}
+				if(c_pool->read(fd)){
+					t_pool->append(&(c_pool->get_conn(fd)));
+					//cout << "append pthread success for fd: " << fd << endl;
+				}
+				else{
+					c_pool->close_conn(fd);
+				}
+			}
+			else if(events[i].events & (EPOLLOUT)){
+				//cout << "write event from: " << fd << endl; // for debug
+				if(fd == -1){
+					continue;
+				}
+				if(!c_pool->write(fd)){
+					c_pool->close_conn(fd);
+				}
+			}
+		}
 	}
-	events = new struct epoll_event[MAX_EVENT_NUMBER];
-	return epoll_fd;
 }
 
-int pink_epoll_addfd(int epollfd, int fd, int events, bool one_shot){
-	struct epoll_event event;
-	event.data.fd = fd;
-	event.events = events;
-	if(one_shot){
-		event.events |= EPOLLONESHOT;
-	}
-	if(epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event) == -1){
-		perror("add fd in epoll failed");
-		return -1;
-	}
-}
+void epoll_lt(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> > &t_pool,
+							unique_ptr<pink_connpool<pink_http_conn> > &c_pool){
 
-int pink_epoll_modfd(int epollfd, int fd, int events){
-	struct epoll_event event;
-	event.data.fd = fd;
-	event.events = events;
-	if(epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event) == -1){
-		perror("modify fd in epoll failed");
-		return -1;
-	}
-}
+	// LT 模式，沒有 EPOLLONESHOT
+	cout << "Using Epoll LT mode" << endl;
+	pink_epoll_addfd(epollfd, listenfd, (EPOLLIN), false);
 
-int pink_epoll_removefd(int epollfd, int fd){
-	//std::cout << "remove fd: " << fd << std::endl;
-	if(epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, 0) == -1){
-		perror("remove fd from epoll failed");
-		return -1;
+	while(true){
+		//cout << ".......waiting.........." << endl;
+		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
+		if(event_number < 0 && errno != EINTR){
+			perror("epoll failed:");
+			break;
+		}
+		for(int i = 0; i < event_number; ++i){
+			int fd = events[i].data.fd;
+			if(fd == listenfd){
+				sockaddr_in client_addr;
+				int connfd = accept_conn(listenfd, client_addr);
+				if(connfd < 0)
+					break;
+				// 连接池已经满了
+				int conn_id = c_pool->append_conn(connfd, client_addr);
+				if(conn_id < 0){
+					send_error(connfd, "Internal server busy");
+					break;
+				}
+				//cout << "Accepted: " << connfd << " , conn_id: " << conn_id << endl;
+			}
+			else if(events[i].events & (EPOLLHUP | EPOLLERR)){
+				//cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
+				c_pool->close_conn(fd);
+			}
+			else if(events[i].events & (EPOLLIN)){
+				//cout << "read event from: " << fd << endl; // for debug
+				if(fd == -1){
+					continue;
+				}
+				if(c_pool->read(fd)){
+					t_pool->append(&(c_pool->get_conn(fd)));
+					//cout << "append pthread success for fd: " << fd << endl;
+				}
+				else{
+					c_pool->close_conn(fd);
+				}
+			}
+			else if(events[i].events & (EPOLLOUT)){
+				//cout << "write event from: " << fd << endl; // for debug
+				if(fd == -1){
+					continue;
+				}
+				if(!c_pool->write(fd)){
+					c_pool->close_conn(fd);
+				}
+			}
+		}
 	}
-	//std::cout << "close fd: " << fd << std::endl;	
-	close(fd);
-}
-
-int pink_epoll_wait(int epollfd, struct epoll_event *events, int max_event_number, int timeout){
-	int event_number = epoll_wait(epollfd, events, max_event_number, timeout);
-	return event_number;
 }
