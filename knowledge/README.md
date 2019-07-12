@@ -6,7 +6,7 @@
 
 ## HTTP Web 服务器概念
 
-![](imgs/http_web_server.png)
+![](../imgs/http_web_server.png)
 
 （1）建立连接
 
