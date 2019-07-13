@@ -34,31 +34,22 @@ void epoll_et(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> >
 					pink_epoll_modfd(epollfd, listenfd, listen_conn, (EPOLLIN | EPOLLET), true);
 				}
 			}
-			else if(events[i].events & (EPOLLHUP | EPOLLERR)){
-				//cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
-				cur_conn->close_conn();
-			}
 			else if(events[i].events & (EPOLLIN)){
 				//cout << "read event from: " << fd << endl; // for debug
-				if(fd == -1){
-					continue;
-				}
-				if(cur_conn->read()){
-					t_pool->append(cur_conn);
-					//cout << "append pthread success for fd: " << fd << endl;
-				}
-				else{
+				if(t_pool->append(cur_conn, pink_http_conn::READ) == false){
 					cur_conn->close_conn();
 				}
 			}
 			else if(events[i].events & (EPOLLOUT)){
-				//cout << "write event from: " << fd << endl; // for debug
-				if(fd == -1){
-					continue;
-				}
-				if(!cur_conn->write()){
+				//cout << "write event to: " << fd << endl; // for debug
+				if(t_pool->append(cur_conn, pink_http_conn::WRITE) == false){
 					cur_conn->close_conn();
 				}
+			}
+			else{
+				// 预留给其他 EPOLL 事件的接口
+				// 包括 EPOLLHUP | EPOLLERR
+				cur_conn->close_conn();
 			}
 		}
 	}
@@ -66,6 +57,7 @@ void epoll_et(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> >
 	delete listen_conn;
 
 }
+
 
 void epoll_lt(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> > &t_pool){
 
@@ -94,31 +86,22 @@ void epoll_lt(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> >
 				new_conn->init(connfd, client_addr);
 				//cout << "Accepted: " << connfd << " , conn_id: " << conn_id << endl;
 			}
-			else if(events[i].events & (EPOLLHUP | EPOLLERR)){
-				//cout << "exception event from: " << fd << ", events: " << events[i].events << endl; // for debug
-				cur_conn->close_conn();
-			}
 			else if(events[i].events & (EPOLLIN)){
 				//cout << "read event from: " << fd << endl; // for debug
-				if(fd == -1){
-					continue;
-				}
-				if(cur_conn->read()){
-					t_pool->append(cur_conn);
-					//cout << "append pthread success for fd: " << fd << endl;
-				}
-				else{
+				if(t_pool->append(cur_conn, pink_http_conn::READ) == false){
 					cur_conn->close_conn();
 				}
 			}
 			else if(events[i].events & (EPOLLOUT)){
-				//cout << "write event from: " << fd << endl; // for debug
-				if(fd == -1){
-					continue;
-				}
-				if(!cur_conn->write()){
+				//cout << "write event to: " << fd << endl; // for debug
+				if(t_pool->append(cur_conn, pink_http_conn::WRITE) == false){
 					cur_conn->close_conn();
 				}
+			}
+			else{
+				// 预留给其他 EPOLL 事件的接口
+				// 包括 EPOLLHUP | EPOLLERR
+				cur_conn->close_conn();
 			}
 		}
 	}

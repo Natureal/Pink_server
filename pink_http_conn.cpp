@@ -48,20 +48,32 @@ void pink_http_conn::init(){
 }
 
 // 由线程池中的工作线程调用，是处理HTTP请求的入口函数
-void pink_http_conn::process(){
-	pink_http_machine::HTTP_CODE read_ret = machine.process_read();
-	if(read_ret == pink_http_machine::NOT_COMPLETED){
-		// 请求还不完整，通知epoll，再读
-		pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
-		return;
-	}
+void pink_http_conn::process(int flag){
 
-	bool write_ret = machine.process_write(read_ret, iv, iv_count);
-	if(!write_ret){
-		close_conn();
+	if(flag == READ){
+		if(!read()){
+			close_conn();
+			return;
+		}
+		pink_http_machine::HTTP_CODE process_read_ret = machine.process_read();
+		if(process_read_ret == pink_http_machine::NOT_COMPLETED){
+			// 请求还不完整，通知epoll，再读
+			pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
+			return;
+		}
+		bool process_write_ret = machine.process_write(process_read_ret, iv, iv_count);
+		if(!process_write_ret){
+			close_conn();
+			return;
+		}
+		pink_epoll_modfd(epollfd, sockfd, this, (EPOLLOUT | EPOLLET), true);
 	}
-	// 准备好写的数据了，通知epoll，写出
-	pink_epoll_modfd(epollfd, sockfd, this, (EPOLLOUT | EPOLLET), true);
+	else if(flag == WRITE){
+		if(!write()){
+			close_conn();
+			return;
+		}
+	}
 }
 
 
@@ -132,7 +144,7 @@ bool pink_http_conn::write(){
 				return true;
 			}
 			else{
-				pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
+				//pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 				return false;
 			}
 		}

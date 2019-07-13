@@ -47,9 +47,13 @@ int main(int argc, char *argv[]){
 	}
 
 	// 开启I/O复用
-	//epoll_et(epollfd, listenfd, t_pool);
-	epoll_lt(epollfd, listenfd, t_pool);
-
+	if(conf.epoll_et){
+		epoll_et(epollfd, listenfd, t_pool);
+	}
+	else{
+		epoll_lt(epollfd, listenfd, t_pool);
+	}
+	
 	close(epollfd);
 	close(listenfd);
 

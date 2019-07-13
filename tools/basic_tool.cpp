@@ -24,6 +24,14 @@ int read_conf(const char *filename, conf_t &conf){
 		else if(key == "max_thread_number"){
 			conf.max_thread_number = atoi(val.c_str());
 		}
+		else if(key == "epoll"){
+			if(val == "et"){
+				conf.epoll_et = true;
+			}
+			else if(val == "lt"){
+				conf.epoll_et = false;
+			}
+		}
 	}
 	return IMPORT_CONF_SUCCESS;
 }

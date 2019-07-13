@@ -21,6 +21,7 @@ typedef struct configuration{
 	char doc_root[PATH_LEN];
 	int port;
 	int max_thread_number;
+	bool epoll_et;
 }conf_t;
 
 int read_conf(const char *filename, conf_t &conf);

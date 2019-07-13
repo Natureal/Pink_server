@@ -20,13 +20,15 @@ public:
 	// 关闭连接
 	void close_conn();
 	// 处理客户请求
-	void process();
+	void process(int flag);
 	// 非阻塞读
 	bool read();
 	// 非阻塞写
 	bool write();
 	// 获取 fd
 	int get_fd();
+
+	enum OP_TYPE{ READ = 0, WRITE };
 
 private:
 	// 空参初始化连接

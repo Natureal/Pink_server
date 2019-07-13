@@ -11,6 +11,8 @@
 using std::shared_ptr;
 using std::default_delete;
 using std::list;
+using std::pair;
+using std::make_pair;
 
 // 为了练习 shared_ptr，这里不使用 unique_ptr
 
@@ -22,7 +24,7 @@ class threadpool{
 public:
 	threadpool(int thread_number = 8, int max_requests = 10000);
 	~threadpool();
-	bool append(T *request);
+	bool append(T *request, int flag);
 
 private:
 	// 不断从工作队列中取出任务并执行
@@ -37,7 +39,7 @@ private:
 
 	shared_ptr<pthread_t> threads; // 进程池数组
 
-	list<T*> work_queue; // 请求队列
+	list<pair<T*, int> > work_queue; // 请求队列
 	mutex queue_locker; // 保护请求队列的互斥锁
 	sem queue_stat; // 是否有任务需要处理
 	bool thread_stop; // 是否结束线程
@@ -86,7 +88,7 @@ threadpool<T>::~threadpool(){
 
 // 往请求队列里添加任务
 template<typename T>
-bool threadpool<T>::append(T *request){
+bool threadpool<T>::append(T *request, int flag){
 	// 操作工作队列时一定要加锁，因为它被所有线程共享
 	if(!queue_locker.lock()) return false;
 
@@ -94,7 +96,7 @@ bool threadpool<T>::append(T *request){
 		queue_locker.unlock();
 		return false;
 	}
-	work_queue.push_back(request);
+	work_queue.push_back(make_pair(request, flag));
 	if(!queue_locker.unlock()) return false;
 	if(!queue_stat.post()) return false;
 	return true;
@@ -119,13 +121,13 @@ void threadpool<T>::run(){
 			continue;
 		}
 		// 取出工作队列中的元素
-		T *request = work_queue.front();
+		pair<T*, int> task = work_queue.front();
 		work_queue.pop_front();
 		queue_locker.unlock();
-		if(!request){
+		if(!task.first){
 			continue;
 		}
-		request->process();
+		task.first->process(task.second);
 	}
 }
 
