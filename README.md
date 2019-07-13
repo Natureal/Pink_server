@@ -40,7 +40,7 @@
 
 5. 优化并行模式
 
-6. 模板封装，降低耦合 To be continued
+6. 生产者消费者，降低耦合 To be continued
 
 7. 守护进程配置
 
