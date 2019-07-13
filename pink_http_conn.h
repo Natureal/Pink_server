@@ -15,14 +15,18 @@ public:
 
 	// 初始化新接受的连接
 	void init(int sockfd, const sockaddr_in &addr);
+	// 初始化监听fd，包装成一个 http_conn，其实只需要其 sockfd 属性
+	void init_listen(int sockfd);
 	// 关闭连接
-	void close_conn(bool read_close = true);
+	void close_conn();
 	// 处理客户请求
 	void process();
 	// 非阻塞读
 	bool read();
 	// 非阻塞写
 	bool write();
+	// 获取 fd
+	int get_fd();
 
 private:
 	// 空参初始化连接

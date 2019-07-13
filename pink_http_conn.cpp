@@ -3,12 +3,21 @@
 int pink_http_conn::user_count = 0;
 int pink_http_conn::epollfd = -1;
 
-void pink_http_conn::close_conn(bool read_close){
-	if(read_close && (sockfd != -1)){
+int pink_http_conn::get_fd(){
+	return sockfd;
+}
+
+void pink_http_conn::close_conn(){
+	if(sockfd != -1){
 		pink_epoll_removefd(epollfd, sockfd);
 		sockfd = -1;
 		user_count--;
 	}
+	delete this;
+}
+
+void pink_http_conn::init_listen(int sockfd){
+	this->sockfd = sockfd;
 }
 
 void pink_http_conn::init(int sockfd, const sockaddr_in &addr){
@@ -19,7 +28,7 @@ void pink_http_conn::init(int sockfd, const sockaddr_in &addr){
 	int reuse = 1;
 	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 
-	pink_epoll_addfd(epollfd, sockfd, (EPOLLIN | EPOLLET), true);
+	pink_epoll_addfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 	set_nonblocking(sockfd);
 
 	user_count++;
@@ -43,7 +52,7 @@ void pink_http_conn::process(){
 	pink_http_machine::HTTP_CODE read_ret = machine.process_read();
 	if(read_ret == pink_http_machine::NOT_COMPLETED){
 		// 请求还不完整，通知epoll，再读
-		pink_epoll_modfd(epollfd, sockfd, EPOLLIN | EPOLLET, true);
+		pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 		return;
 	}
 
@@ -52,7 +61,7 @@ void pink_http_conn::process(){
 		close_conn();
 	}
 	// 准备好写的数据了，通知epoll，写出
-	pink_epoll_modfd(epollfd, sockfd, EPOLLOUT | EPOLLET, true);
+	pink_epoll_modfd(epollfd, sockfd, this, (EPOLLOUT | EPOLLET), true);
 }
 
 
@@ -90,7 +99,7 @@ bool pink_http_conn::write(){
 	
 	// 没东西写
 	if(bytes_to_send == 0){
-		pink_epoll_modfd(epollfd, sockfd, EPOLLIN | EPOLLET, true);
+		pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 		init();
 		return true;
 	}
@@ -103,7 +112,7 @@ bool pink_http_conn::write(){
 			// TCP 写缓冲区没有空间，等待下一轮 EPOLLOUT 事件
 			// EAGAIN: Resource temporarily unavailable
 			if(errno == EAGAIN){
-				pink_epoll_modfd(epollfd, sockfd, EPOLLOUT | EPOLLET, true);
+				pink_epoll_modfd(epollfd, sockfd, this, (EPOLLOUT | EPOLLET), true);
 				return true;
 			}
 			// 其他错误原因，就不返回了
@@ -119,11 +128,11 @@ bool pink_http_conn::write(){
 			machine.unmap();
 			if(machine.get_linger()){
 				init();
-				pink_epoll_modfd(epollfd, sockfd, EPOLLIN | EPOLLET, true);
+				pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 				return true;
 			}
 			else{
-				pink_epoll_modfd(epollfd, sockfd, EPOLLIN | EPOLLET, true);
+				pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 				return false;
 			}
 		}

@@ -12,9 +12,9 @@ int pink_epoll_create(const int size){
 	return epoll_fd;
 }
 
-int pink_epoll_addfd(int epollfd, int fd, int event_code, bool one_shot){
+int pink_epoll_addfd(int epollfd, int fd, void *conn, int event_code, bool one_shot){
 	struct epoll_event event;
-	event.data.fd = fd;
+	event.data.ptr = conn;
 	event.events = event_code;
 	if(one_shot){
 		event.events |= EPOLLONESHOT;
@@ -25,9 +25,9 @@ int pink_epoll_addfd(int epollfd, int fd, int event_code, bool one_shot){
 	}
 }
 
-int pink_epoll_modfd(int epollfd, int fd, int event_code, bool one_shot){
+int pink_epoll_modfd(int epollfd, int fd, void *conn, int event_code, bool one_shot){
 	struct epoll_event event;
-	event.data.fd = fd;
+	event.data.ptr = conn;
 	event.events = event_code;
 	if(one_shot){
 		event.events |= EPOLLONESHOT;

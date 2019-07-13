@@ -46,18 +46,8 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	// 创建连接池
-	unique_ptr<pink_connpool<pink_http_conn> > c_pool = nullptr;
-	try{
-		c_pool.reset(new pink_connpool<pink_http_conn>(PRE_CONN, MAX_CONN));
-	}
-	catch( ... ){
-		perror("create connection pool failed");
-		return 1;
-	}
-
 	// 开启I/O复用
-	epoll_et(epollfd, listenfd, t_pool, c_pool);
+	epoll_et(epollfd, listenfd, t_pool);
 	//epoll_lt(epollfd, listenfd, t_pool, c_pool);
 
 	close(epollfd);
