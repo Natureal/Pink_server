@@ -29,27 +29,31 @@ LINE_BAD	pink_http_machine.h	/^	enum LINE_STATUS{ LINE_OK = 0, LINE_BAD, LINE_OP
 LINE_OK	pink_http_machine.h	/^	enum LINE_STATUS{ LINE_OK = 0, LINE_BAD, LINE_OPEN };$/;"	e	enum:pink_http_machine::LINE_STATUS
 LINE_OPEN	pink_http_machine.h	/^	enum LINE_STATUS{ LINE_OK = 0, LINE_BAD, LINE_OPEN };$/;"	e	enum:pink_http_machine::LINE_STATUS
 LINE_STATUS	pink_http_machine.h	/^	enum LINE_STATUS{ LINE_OK = 0, LINE_BAD, LINE_OPEN };$/;"	g	class:pink_http_machine
-LISTENQUEUE_LEN	tools/socket_tool.h	/^const int LISTENQUEUE_LEN = 1024;$/;"	v
-MAX_EVENT_NUMBER	pink_epoll.h	/^const int MAX_EVENT_NUMBER = 10000;$/;"	v
+LISTENQUEUE_LEN	tools/socket_tool.h	/^const int LISTENQUEUE_LEN = 4096;$/;"	v
+MAX_CONN	main.cpp	/^const int MAX_CONN = 10000;$/;"	v
 MAX_EVENT_NUMBER	test/pressure_test.cpp	/^const int MAX_EVENT_NUMBER = 10000;$/;"	v
-MAX_FD	main.cpp	/^const int MAX_FD = 65535;$/;"	v
+MAX_EVENT_NUMBER	tools/pink_epoll_tool.h	/^const int MAX_EVENT_NUMBER = 100000;$/;"	v
 METHOD	pink_http_machine.h	/^	enum METHOD{ GET=0, POST, HEAD, PUT, DELETE, TRACE,$/;"	g	class:pink_http_machine
 NOT_COMPLETED	pink_http_machine.h	/^	enum HTTP_CODE{ NOT_COMPLETED, GET_REQUEST, BAD_REQUEST, NO_RESOURCE, FORBIDDEN_REQUEST, $/;"	e	enum:pink_http_machine::HTTP_CODE
 NO_RESOURCE	pink_http_machine.h	/^	enum HTTP_CODE{ NOT_COMPLETED, GET_REQUEST, BAD_REQUEST, NO_RESOURCE, FORBIDDEN_REQUEST, $/;"	e	enum:pink_http_machine::HTTP_CODE
 OPTIONS	pink_http_machine.h	/^					OPTIONS, CONNECT, PATCH, UNKNOWN_METHOD };$/;"	e	enum:pink_http_machine::METHOD
+OP_TYPE	pink_http_conn.h	/^	enum OP_TYPE{ READ = 0, WRITE };$/;"	g	class:pink_http_conn
 PATCH	pink_http_machine.h	/^					OPTIONS, CONNECT, PATCH, UNKNOWN_METHOD };$/;"	e	enum:pink_http_machine::METHOD
 PATH_LEN	tools/basic_tool.h	/^const short PATH_LEN = 128;$/;"	v
 PINK_EPOLL_H	pink_epoll.h	2;"	d
+PINK_EPOLL_TOOL_H	tools/pink_epoll_tool.h	2;"	d
 PINK_HTTP_CONN_H	pink_http_conn.h	2;"	d
 PINK_HTTP_MACHINE_H	pink_http_machine.h	2;"	d
 PINK_THREADPOOL_H	pink_threadpool.h	2;"	d
 POST	pink_http_machine.h	/^	enum METHOD{ GET=0, POST, HEAD, PUT, DELETE, TRACE,$/;"	e	enum:pink_http_machine::METHOD
-PRE_FD	main.cpp	/^const int PRE_FD = 10000; \/\/ 预分配的FD数量$/;"	v
+PRE_CONN	main.cpp	/^const int PRE_CONN = 10000; \/\/ 预分配的FD数量$/;"	v
 PUT	pink_http_machine.h	/^	enum METHOD{ GET=0, POST, HEAD, PUT, DELETE, TRACE,$/;"	e	enum:pink_http_machine::METHOD
+READ	pink_http_conn.h	/^	enum OP_TYPE{ READ = 0, WRITE };$/;"	e	enum:pink_http_conn::OP_TYPE
 READ_BUFFER_SIZE	pink_http_conn.h	/^	static const int READ_BUFFER_SIZE = 2048;   \/\/ 读缓冲区的大小$/;"	m	class:pink_http_conn
 SOCKET_TOOL_H	tools/socket_tool.h	2;"	d
 TRACE	pink_http_machine.h	/^	enum METHOD{ GET=0, POST, HEAD, PUT, DELETE, TRACE,$/;"	e	enum:pink_http_machine::METHOD
 UNKNOWN_METHOD	pink_http_machine.h	/^					OPTIONS, CONNECT, PATCH, UNKNOWN_METHOD };$/;"	e	enum:pink_http_machine::METHOD
+WRITE	pink_http_conn.h	/^	enum OP_TYPE{ READ = 0, WRITE };$/;"	e	enum:pink_http_conn::OP_TYPE
 WRITE_BUFFER_SIZE	pink_http_conn.h	/^	static const int WRITE_BUFFER_SIZE = 1024;  \/\/ 写缓冲区的大小$/;"	m	class:pink_http_conn
 accept	pink_http_machine.h	/^	char *accept;$/;"	m	class:pink_http_machine
 accept_charset	pink_http_machine.h	/^	char *accept_charset;$/;"	m	class:pink_http_machine
@@ -59,13 +63,14 @@ accept_language	pink_http_machine.h	/^	char *accept_language;$/;"	m	class:pink_h
 add_blank_line	pink_http_machine.cpp	/^bool pink_http_machine::add_blank_line(){$/;"	f	class:pink_http_machine
 add_content	pink_http_machine.cpp	/^bool pink_http_machine::add_content(const char *content){$/;"	f	class:pink_http_machine
 add_content_length	pink_http_machine.cpp	/^bool pink_http_machine::add_content_length(int content_len){$/;"	f	class:pink_http_machine
+add_content_type	pink_http_machine.cpp	/^bool pink_http_machine::add_content_type(const char *content_type){$/;"	f	class:pink_http_machine
 add_headers	pink_http_machine.cpp	/^bool pink_http_machine::add_headers(int content_len){$/;"	f	class:pink_http_machine
 add_linger	pink_http_machine.cpp	/^bool pink_http_machine::add_linger(){$/;"	f	class:pink_http_machine
 add_response	pink_http_machine.cpp	/^bool pink_http_machine::add_response(const char *format, ...){$/;"	f	class:pink_http_machine
 add_signal	tools/basic_tool.cpp	/^void add_signal(const int sig, void (handler)(int), bool restart){$/;"	f
 add_status_line	pink_http_machine.cpp	/^bool pink_http_machine::add_status_line(int status, const char *title){$/;"	f	class:pink_http_machine
 address	pink_http_conn.h	/^	sockaddr_in address;			  \/\/ 对方的socket地址$/;"	m	class:pink_http_conn
-append	pink_threadpool.h	/^bool threadpool<T>::append(T *request){$/;"	f	class:threadpool
+append	pink_threadpool.h	/^bool threadpool<T>::append(T *request, int flag){$/;"	f	class:threadpool
 bind_and_listen	tools/socket_tool.cpp	/^int bind_and_listen(int port){$/;"	f
 c	tools/IPC_tool.h	/^	pthread_cond_t c;$/;"	m	class:cond
 c11	Makefile	/^c11 = g++ -std=c++11$/;"	m
@@ -74,7 +79,7 @@ check_state	pink_http_machine.h	/^	CHECK_STATE check_state;          \/\/ 主状
 checked_idx	pink_http_machine.h	/^	int checked_idx;                  \/\/ 下一个要分析的字符在缓冲区的位置$/;"	m	class:pink_http_machine
 client_email	pink_http_machine.h	/^	char *client_email;				  \/\/ 提供客户端 email 地址$/;"	m	class:pink_http_machine
 client_ip	pink_http_machine.h	/^	char *client_ip;$/;"	m	class:pink_http_machine
-close_conn	pink_http_conn.cpp	/^void pink_http_conn::close_conn(bool read_close){$/;"	f	class:pink_http_conn
+close_conn	pink_http_conn.cpp	/^void pink_http_conn::close_conn(){$/;"	f	class:pink_http_conn
 close_conn	test/pressure_test.cpp	/^void close_conn(int epoll_fd, int sockfd){$/;"	f
 cond	tools/IPC_tool.h	/^	cond(){$/;"	f	class:cond
 cond	tools/IPC_tool.h	/^class cond{$/;"	c
@@ -89,6 +94,9 @@ date	pink_http_machine.h	/^	char *date;						  \/\/ 提供报文创建时间$/;"
 do_request	pink_http_machine.cpp	/^pink_http_machine::HTTP_CODE pink_http_machine::do_request(){$/;"	f	class:pink_http_machine
 doc_root	tools/basic_tool.h	/^	char doc_root[PATH_LEN];$/;"	m	struct:configuration
 epoll_addfd	test/pressure_test.cpp	/^void epoll_addfd(int epoll_fd, int fd, const int events){$/;"	f
+epoll_et	pink_epoll.cpp	/^void epoll_et(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> > &t_pool){$/;"	f
+epoll_et	tools/basic_tool.h	/^	bool epoll_et;$/;"	m	struct:configuration
+epoll_lt	pink_epoll.cpp	/^void epoll_lt(int epollfd, int listenfd, unique_ptr<threadpool<pink_http_conn> > &t_pool){$/;"	f
 epollfd	pink_http_conn.cpp	/^int pink_http_conn::epollfd = -1;$/;"	m	class:pink_http_conn	file:
 epollfd	pink_http_conn.h	/^	static int epollfd;               \/\/ 所有socket上的事件都被注册到同一个epoll内核事件表中$/;"	m	class:pink_http_conn
 error_400_form	pink_http_machine.cpp	/^const char *error_400_form = "Your request has bad syntax or is inherently impossible to satisfy.\\n"; $/;"	v
@@ -99,14 +107,16 @@ error_404_form	pink_http_machine.cpp	/^const char *error_404_form = "The request
 error_404_title	pink_http_machine.cpp	/^const char *error_404_title = "Not Found";$/;"	v
 error_500_form	pink_http_machine.cpp	/^const char *error_500_form = "There was an unusual problem serving the requested file.\\n";$/;"	v
 error_500_title	pink_http_machine.cpp	/^const char *error_500_title = "Internal Error";$/;"	v
-events	pink_epoll.cpp	/^struct epoll_event *events;$/;"	v	typeref:struct:epoll_event
+events	tools/pink_epoll_tool.cpp	/^struct epoll_event *events;$/;"	v	typeref:struct:epoll_event
 file_address	pink_http_machine.h	/^	char *file_address;               \/\/ 客户请求的目标文件被mmap到内存中的起始位置$/;"	m	class:pink_http_machine
 file_stat	pink_http_machine.h	/^	struct stat file_stat;            \/\/ 目标文件的状态，通过它判断文件是否存在，是否为目录，是否可读，文件大小等$/;"	m	class:pink_http_machine	typeref:struct:pink_http_machine::stat
+get_fd	pink_http_conn.cpp	/^int pink_http_conn::get_fd(){$/;"	f	class:pink_http_conn
 get_linger	pink_http_machine.cpp	/^bool pink_http_machine::get_linger(){$/;"	f	class:pink_http_machine
 host	pink_http_machine.h	/^	char *host;                       \/\/ 主机名$/;"	m	class:pink_http_machine
 init	pink_http_conn.cpp	/^void pink_http_conn::init(){$/;"	f	class:pink_http_conn
 init	pink_http_conn.cpp	/^void pink_http_conn::init(int sockfd, const sockaddr_in &addr){$/;"	f	class:pink_http_conn
 init	pink_http_machine.cpp	/^void pink_http_machine::init(char *read_buf, char *write_buf, int *read_idx, $/;"	f	class:pink_http_machine
+init_listen	pink_http_conn.cpp	/^void pink_http_conn::init_listen(int sockfd){$/;"	f	class:pink_http_conn
 iv	pink_http_conn.h	/^	struct iovec iv[2];$/;"	m	class:pink_http_conn	typeref:struct:pink_http_conn::iovec
 iv_count	pink_http_conn.h	/^	int iv_count;                      \/\/ 表示被写内存块的数量$/;"	m	class:pink_http_conn
 linger	pink_http_machine.h	/^	bool linger;                      \/\/ HTTP请求是否要求保持连接$/;"	m	class:pink_http_machine
@@ -122,7 +132,7 @@ m_write_idx	pink_http_machine.h	/^	int *m_write_idx;				  \/\/ 同理$/;"	m	clas
 machine	pink_http_conn.h	/^	pink_http_machine machine;$/;"	m	class:pink_http_conn
 main	main.cpp	/^int main(int argc, char *argv[]){$/;"	f
 main	test/pressure_test.cpp	/^int main(int argc, char* argv[]){$/;"	f
-make_shared_array	pink_threadpool.h	/^std::shared_ptr<pthread_t> threadpool<T>::make_shared_array(size_t size){$/;"	f	class:threadpool
+make_shared_array	pink_threadpool.h	/^shared_ptr<pthread_t> threadpool<T>::make_shared_array(size_t size){$/;"	f	class:threadpool
 max_requests	pink_threadpool.h	/^	int max_requests; \/\/ 允许的最大请求数$/;"	m	class:threadpool
 max_thread_number	tools/basic_tool.h	/^	int max_thread_number;$/;"	m	struct:configuration
 method	pink_http_machine.h	/^	METHOD method;                    \/\/ 请求方法$/;"	m	class:pink_http_machine
@@ -138,18 +148,18 @@ parse_headers	pink_http_machine.cpp	/^pink_http_machine::HTTP_CODE pink_http_mac
 parse_line	pink_http_machine.cpp	/^pink_http_machine::LINE_STATUS pink_http_machine::parse_line(){$/;"	f	class:pink_http_machine
 parse_request_line	pink_http_machine.cpp	/^pink_http_machine::HTTP_CODE pink_http_machine::parse_request_line(char *text){$/;"	f	class:pink_http_machine
 parse_request_method	pink_http_machine.cpp	/^pink_http_machine::METHOD pink_http_machine::parse_request_method(char *text){$/;"	f	class:pink_http_machine
-pink_epoll_addfd	pink_epoll.cpp	/^int pink_epoll_addfd(int epollfd, int fd, int events, bool one_shot){$/;"	f
-pink_epoll_create	pink_epoll.cpp	/^int pink_epoll_create(const int size){$/;"	f
-pink_epoll_modfd	pink_epoll.cpp	/^int pink_epoll_modfd(int epollfd, int fd, int events){$/;"	f
-pink_epoll_removefd	pink_epoll.cpp	/^int pink_epoll_removefd(int epollfd, int fd){$/;"	f
-pink_epoll_wait	pink_epoll.cpp	/^int pink_epoll_wait(int epollfd, struct epoll_event *events, int max_event_number, int timeout){$/;"	f
+pink_epoll_addfd	tools/pink_epoll_tool.cpp	/^int pink_epoll_addfd(int epollfd, int fd, void *conn, int event_code, bool one_shot){$/;"	f
+pink_epoll_create	tools/pink_epoll_tool.cpp	/^int pink_epoll_create(const int size){$/;"	f
+pink_epoll_modfd	tools/pink_epoll_tool.cpp	/^int pink_epoll_modfd(int epollfd, int fd, void *conn, int event_code, bool one_shot){$/;"	f
+pink_epoll_removefd	tools/pink_epoll_tool.cpp	/^int pink_epoll_removefd(int epollfd, int fd){$/;"	f
+pink_epoll_wait	tools/pink_epoll_tool.cpp	/^int pink_epoll_wait(int epollfd, struct epoll_event *events, int max_event_number, int timeout){$/;"	f
 pink_http_conn	pink_http_conn.h	/^	pink_http_conn(){}$/;"	f	class:pink_http_conn
 pink_http_conn	pink_http_conn.h	/^class pink_http_conn{$/;"	c
 pink_http_machine	pink_http_machine.h	/^	pink_http_machine(){}$/;"	f	class:pink_http_machine
 pink_http_machine	pink_http_machine.h	/^class pink_http_machine{$/;"	c
 port	tools/basic_tool.h	/^	int port;$/;"	m	struct:configuration
 post	tools/IPC_tool.h	/^	bool post(){$/;"	f	class:sem
-process	pink_http_conn.cpp	/^void pink_http_conn::process(){$/;"	f	class:pink_http_conn
+process	pink_http_conn.cpp	/^void pink_http_conn::process(int flag){$/;"	f	class:pink_http_conn
 process_read	pink_http_machine.cpp	/^pink_http_machine::HTTP_CODE pink_http_machine::process_read(){$/;"	f	class:pink_http_machine
 process_write	pink_http_machine.cpp	/^bool pink_http_machine::process_write(HTTP_CODE ret, struct iovec *iv, int &iv_count){$/;"	f	class:pink_http_machine
 queue_locker	pink_threadpool.h	/^	mutex queue_locker; \/\/ 保护请求队列的互斥锁$/;"	m	class:threadpool
@@ -160,9 +170,9 @@ read_conf	tools/basic_tool.cpp	/^int read_conf(const char *filename, conf_t &con
 read_idx	pink_http_conn.h	/^	int read_idx;                     \/\/ 已经读入的客户数据最后一个字节的下一个位置$/;"	m	class:pink_http_conn
 read_once	test/pressure_test.cpp	/^bool read_once(int sockfd, char* buffer, int len){$/;"	f
 referer	pink_http_machine.h	/^	char *referer;$/;"	m	class:pink_http_machine
-request_close	test/pressure_test.cpp	/^static const char* request_close = "GET http:\/\/localhost\/index.html HTTP\/1.1\\r\\nConnection: close\\r\\n\\r\\nxxxxxxxxxxxxxx";$/;"	v	file:
+request_close	test/pressure_test.cpp	/^static const char* request_close = "GET http:\/\/127.0.0.1:3000\/index.html HTTP\/1.1\\r\\nConnection: close\\r\\n\\r\\nxxxxxxxxxxxxxx";$/;"	v	file:
 request_file	pink_http_machine.h	/^	char request_file[FILENAME_LEN];     \/\/ 客户请求的文件的完整路径，内容为：doc_root(网站根目录） + m_url$/;"	m	class:pink_http_machine
-request_keep_alive	test/pressure_test.cpp	/^static const char* request_keep_alive = "GET http:\/\/localhost\/index.html HTTP\/1.1\\r\\nConnection: keep-alive\\r\\n\\r\\nxxxxxxxxxxxxxx";$/;"	v	file:
+request_keep_alive	test/pressure_test.cpp	/^static const char* request_keep_alive = "GET \/index.html HTTP\/1.1\\r\\nConnection: keep-alive\\r\\nHost: 127.0.0.1\\r\\n\\r\\n";$/;"	v	file:
 run	pink_threadpool.h	/^void threadpool<T>::run(){$/;"	f	class:threadpool
 s	tools/IPC_tool.h	/^	sem_t s;$/;"	m	class:sem
 sem	tools/IPC_tool.h	/^	sem(){$/;"	f	class:sem
@@ -178,7 +188,7 @@ thread_number	pink_threadpool.h	/^	int thread_number; \/\/ 线程池中的线程
 thread_stop	pink_threadpool.h	/^	bool thread_stop; \/\/ 是否结束线程$/;"	m	class:threadpool
 threadpool	pink_threadpool.h	/^class threadpool{$/;"	c
 threadpool	pink_threadpool.h	/^threadpool<T>::threadpool(int thread_number, int max_requests):$/;"	f	class:threadpool
-threads	pink_threadpool.h	/^	std::shared_ptr<pthread_t> threads; \/\/ 进程池数组$/;"	m	class:threadpool
+threads	pink_threadpool.h	/^	shared_ptr<pthread_t> threads; \/\/ 进程池数组$/;"	m	class:threadpool
 unlock	tools/IPC_tool.h	/^	bool unlock(){$/;"	f	class:mutex
 unmap	pink_http_machine.cpp	/^void pink_http_machine::unmap(){$/;"	f	class:pink_http_machine
 url	pink_http_machine.h	/^	char *url;                        \/\/ 客户请求的目标文件的文件名$/;"	m	class:pink_http_machine
@@ -188,7 +198,7 @@ user_count	pink_http_conn.h	/^	static int user_count;            \/\/ 统计用�
 version	pink_http_machine.h	/^	char *version;                    \/\/ HTTP协议版本号，这里仅支持HTTP\/1.1$/;"	m	class:pink_http_machine
 wait	tools/IPC_tool.h	/^	bool wait(){$/;"	f	class:cond
 wait	tools/IPC_tool.h	/^	bool wait(){$/;"	f	class:sem
-work_queue	pink_threadpool.h	/^	std::list<T*> work_queue; \/\/ 请求队列$/;"	m	class:threadpool
+work_queue	pink_threadpool.h	/^	list<pair<T*, int> > work_queue; \/\/ 请求队列$/;"	m	class:threadpool
 worker	pink_threadpool.h	/^void *threadpool<T>::worker(void *arg){$/;"	f	class:threadpool
 write	pink_http_conn.cpp	/^bool pink_http_conn::write(){$/;"	f	class:pink_http_conn
 write_buf	pink_http_conn.h	/^	char write_buf[WRITE_BUFFER_SIZE];\/\/ 写缓冲区$/;"	m	class:pink_http_conn

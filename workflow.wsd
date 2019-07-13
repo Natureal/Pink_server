@@ -1,0 +1,11 @@
+@startuml
+
+客户端 -> 监听socket : TCP连接请求
+
+监听socket -> epoll_wait : 注册就绪事件
+
+epoll_wait -> 监听socket : accept连接
+
+
+
+@enduml

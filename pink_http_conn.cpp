@@ -66,7 +66,11 @@ void pink_http_conn::process(int flag){
 			close_conn();
 			return;
 		}
-		pink_epoll_modfd(epollfd, sockfd, this, (EPOLLOUT | EPOLLET), true);
+		// 处理完请求直接写
+		if(!write()){
+			close_conn();
+			return;
+		}
 	}
 	else if(flag == WRITE){
 		if(!write()){
