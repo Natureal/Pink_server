@@ -22,11 +22,11 @@
 
 - **3. 测压工具**
 
-(1) 单线程 I/O 复用方式: test/pressure_test.cpp
+(1) 单线程 I/O 复用方式: ./test/pressure_test.cpp
 
-(2) 多进程并发方法: webbench
+(2) 多进程并发方法: **[webbench](http://home.tiscali.cz/~cz210552/webbench.html)**
 
-
+(3) 多线程 I/O 复用方式 (最高压力):  **[wrk](https://github.com/wg/wrk)**
 
 #### To do list:
 
