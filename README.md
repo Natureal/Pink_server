@@ -1,6 +1,6 @@
 #### Pink: A High Performance HTTP Server
 
-**Navigator**: **[基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)** | **[架构与模块]()** | **[压力测试]()**
+**Navigator**: **[基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)** | **[架构与模块](https://github.com/Natureal/Pink_server/blob/master/knowledge/architecture.md)** | **[压力测试](https://github.com/Natureal/Pink_server/blob/master/knowledge/evaluation.md)**
 
 
 **Motivation**: 翻阅了书本以及学习了一些开源项目后，决定自己写一个 server，巩固知识，实现一些小想法。
@@ -15,9 +15,9 @@
 
 - **2. 开发工具**
 
-(1) Vim + Sublime Text 3
+(1) Vim + Sublime Text 3 (C++11)
 
-(2) ctags 源码定位工具
+(2) CMake + ctags (源码定位器)
 
 
 - **3. 测压工具**
