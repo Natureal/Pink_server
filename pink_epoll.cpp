@@ -89,7 +89,6 @@ void epoll_et(int epollfd, int listenfd){
 		if(event_number == 0){
 			time_heap->tick();
 			next_timeout = time(NULL) + timeout;
-			cout << "=====================================================" << endl;
 			continue;
 		}
 
@@ -97,7 +96,6 @@ void epoll_et(int epollfd, int listenfd){
 		if(next_timeout <= time(NULL)){
 			time_heap->tick();
 			next_timeout = time(NULL) + timeout;
-			cout << "=====================================================" << endl;
 		}
 	}
 
