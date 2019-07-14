@@ -2,10 +2,14 @@
 #define PINK_HTTP_CONN_H
 
 #include <iostream>
+//#include "pink_conn_pool.h"
 #include "tools/IPC_tool.h" 
 #include "tools/socket_tool.h"
 #include "tools/pink_epoll_tool.h"
 #include "pink_http_machine.h"
+#include "pink_conn_timer.h"
+
+using std::shared_ptr;
 
 // http 连接体类，负责建立/关闭http连接，读入缓冲区数据/输出数据到缓冲区
 class pink_http_conn{
@@ -39,6 +43,8 @@ public:
 	static const int WRITE_BUFFER_SIZE = 1024;  // 写缓冲区的大小
 	static int epollfd;               // 所有socket上的事件都被注册到同一个epoll内核事件表中
 	static int user_count;            // 统计用户数量
+	conn_timer *timer;
+	bool timeout;
 
 private:
 	int sockfd;                       // 该HTTP连接的socket
@@ -62,8 +68,6 @@ private:
 	int iv_count;                      // 表示被写内存块的数量
 
 	pink_http_machine machine;
-
-
 };
 
 #endif

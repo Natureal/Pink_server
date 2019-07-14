@@ -111,8 +111,6 @@ pink_http_machine::HTTP_CODE pink_http_machine::process_read(){
 
 		}
 		else{
-			cout << "line_status" << endl;
-
 			break;
 		}
 

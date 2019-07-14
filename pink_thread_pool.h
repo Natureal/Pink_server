@@ -1,11 +1,12 @@
-#ifndef PINK_THREADPOOL_H
-#define PINK_THREADPOOL_H
+#ifndef PINK_THREAD_POOL_H
+#define PINK_THREAD_POOL_H
 
 #include <list>
 #include <cstdio>
 #include <exception>
 #include <pthread.h>
 #include <memory>
+#include <iostream>
 #include "tools/IPC_tool.h"
 
 using std::shared_ptr;
@@ -20,10 +21,10 @@ using std::make_pair;
 
 // 线程池类
 template<typename T>
-class threadpool{
+class pink_threadpool{
 public:
-	threadpool(int thread_number = 8, int max_requests = 10000);
-	~threadpool();
+	pink_threadpool(int thread_number = 8, int max_requests = 100000);
+	~pink_threadpool();
 	bool append(T *request, int flag);
 
 private:
@@ -47,13 +48,13 @@ private:
 
 
 template<typename T>
-shared_ptr<pthread_t> threadpool<T>::make_shared_array(size_t size){
+shared_ptr<pthread_t> pink_threadpool<T>::make_shared_array(size_t size){
     return shared_ptr<pthread_t> (new pthread_t[size], default_delete <pthread_t[]> ());
 }
 
 // 构造函数
 template<typename T>
-threadpool<T>::threadpool(int thread_number, int max_requests):
+pink_threadpool<T>::pink_threadpool(int thread_number, int max_requests):
 	thread_number(thread_number), max_requests(max_requests),
 	thread_stop(false), threads(NULL)
 {
@@ -82,13 +83,13 @@ threadpool<T>::threadpool(int thread_number, int max_requests):
 
 // 析构函数
 template<typename T>
-threadpool<T>::~threadpool(){
+pink_threadpool<T>::~pink_threadpool(){
 	thread_stop = true;
 }
 
 // 往请求队列里添加任务
 template<typename T>
-bool threadpool<T>::append(T *request, int flag){
+bool pink_threadpool<T>::append(T *request, int flag){
 	// 操作工作队列时一定要加锁，因为它被所有线程共享
 	if(!queue_locker.lock()) return false;
 
@@ -104,14 +105,14 @@ bool threadpool<T>::append(T *request, int flag){
 
 // 工作线程运行的函数
 template<typename T>
-void *threadpool<T>::worker(void *arg){
-	threadpool *pool = (threadpool *)arg;
+void *pink_threadpool<T>::worker(void *arg){
+	pink_threadpool *pool = (pink_threadpool *)arg;
 	pool->run();  // 静态函数调用成员函数以使用成员变量
 	return pool;
 }
 
 template<typename T>
-void threadpool<T>::run(){
+void pink_threadpool<T>::run(){
 	// 线程循环（阻塞）等待工作队列来任务
 	while(!thread_stop){
 		queue_stat.wait(); // 等待任务处理的信号

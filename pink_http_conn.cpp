@@ -8,6 +8,7 @@ int pink_http_conn::get_fd(){
 }
 
 void pink_http_conn::close_conn(){
+	timer->cancel();
 	if(sockfd != -1){
 		pink_epoll_removefd(epollfd, sockfd);
 		sockfd = -1;
@@ -24,11 +25,10 @@ void pink_http_conn::init(int sockfd, const sockaddr_in &addr){
 	this->sockfd = sockfd;
 	this->address = addr;
 	// 如下两行可以避免TIME_WAIT，仅用于测试，实际中应该注释掉
-	//
 	int reuse = 1;
 	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 
-	pink_epoll_addfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
+	pink_epoll_add_connfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 	set_nonblocking(sockfd);
 
 	user_count++;
@@ -38,8 +38,10 @@ void pink_http_conn::init(int sockfd, const sockaddr_in &addr){
 
 void pink_http_conn::init(){
 
+	timeout = false;
 	read_idx = 0;
 	write_idx = 0;
+
 	memset(read_buf, '\0', READ_BUFFER_SIZE);
 	memset(write_buf, '\0', WRITE_BUFFER_SIZE);
 
@@ -80,7 +82,6 @@ void pink_http_conn::process(int flag){
 	}
 }
 
-
 // 循环读取客户数据，直到无数据或者对方关系连接
 bool pink_http_conn::read(){
 	if(read_idx >= READ_BUFFER_SIZE){
@@ -89,7 +90,6 @@ bool pink_http_conn::read(){
 
 	int bytes_read = 0;
 	while(true){
-
 		bytes_read = recv(sockfd, read_buf + read_idx, 
 							READ_BUFFER_SIZE - read_idx, 0);
 		//cout << "read: " << bytes_read << endl;

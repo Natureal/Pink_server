@@ -5,11 +5,11 @@ obj_dir = $(cur_dir)/obj
 
 all: pink
 
-pink: $(obj_dir)/main.o $(obj_dir)/pink_epoll.o $(obj_dir)/pink_http_conn.o $(obj_dir)/pink_http_machine.o $(obj_dir)/socket_tool.o $(obj_dir)/basic_tool.o $(obj_dir)/pink_epoll_tool.o
+pink: $(obj_dir)/main.o $(obj_dir)/pink_http_conn.o $(obj_dir)/pink_http_machine.o $(obj_dir)/pink_epoll.o  $(obj_dir)/socket_tool.o $(obj_dir)/basic_tool.o $(obj_dir)/pink_epoll_tool.o
 	$(c11) -pthread -o pink $^
 
 $(obj_dir)/main.o: main.cpp
-	$(c11) -c $< -o $@
+	$(c11) -o $@ -c $< 
 
 $(obj_dir)/pink_epoll.o: pink_epoll.cpp
 	$(c11) -c $< -o $@

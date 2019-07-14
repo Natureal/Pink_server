@@ -24,6 +24,12 @@ int read_conf(const char *filename, conf_t &conf){
 		else if(key == "max_thread_number"){
 			conf.max_thread_number = atoi(val.c_str());
 		}
+		else if(key == "timeslot"){
+			conf.timeslot = atoi(val.c_str());
+		}
+		else if(key == "conn_timeout"){
+			conf.conn_timeout = atoi(val.c_str());
+		}
 		else if(key == "epoll"){
 			if(val == "et"){
 				conf.epoll_et = true;

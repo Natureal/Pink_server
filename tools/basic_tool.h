@@ -21,6 +21,8 @@ typedef struct configuration{
 	char doc_root[PATH_LEN];
 	int port;
 	int max_thread_number;
+	int timeslot;
+	int conn_timeout;
 	bool epoll_et;
 }conf_t;
 
