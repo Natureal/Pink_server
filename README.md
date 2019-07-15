@@ -9,7 +9,7 @@
 |**[基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)**
 
 
-**Motivation**: 翻阅了书本以及学习了一些开源项目后，决定自己写一个 server，巩固知识，实现一些小想法。
+**Motivation**: 翻阅了书本以及学习了一些开源项目后，决定自己写一个 server，串联知识，探索一些小想法。
 
 ---
 
