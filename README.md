@@ -3,7 +3,10 @@
 **Preview:**
 基于 Reactor 的半同步/半异步并发模式 + 同步 epoll (ET) 事件循环 + 多线程 (线程池)
 
-**Navigator**: **[基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)** | **[架构与模块](https://github.com/Natureal/Pink_server/blob/master/knowledge/architecture.md)** | **[压力测试](https://github.com/Natureal/Pink_server/blob/master/knowledge/evaluation.md)**
+**Navigator**:
+**[架构与模块](https://github.com/Natureal/Pink_server/blob/master/knowledge/architecture.md)**
+|**[压力测试](https://github.com/Natureal/Pink_server/blob/master/knowledge/evaluation.md)**
+|**[基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)**
 
 
 **Motivation**: 翻阅了书本以及学习了一些开源项目后，决定自己写一个 server，巩固知识，实现一些小想法。
