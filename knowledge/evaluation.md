@@ -34,7 +34,7 @@
 
 #### 10K个客户并发
 
-此时，已经出现 socket errors，主要为 connect 错误。
+**此时，已经出现 socket errors，主要为 connect 错误。**
 
 **WRK: GET index.html ---> 约2.2万页面/秒，平均延时 5.05ms**
 ![](../imgs/wrk_ET_index_10000.png)
