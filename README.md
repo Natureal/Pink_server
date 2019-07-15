@@ -1,4 +1,4 @@
-#### Pink: A High Performance HTTP Server
+### Pink: A High Performance HTTP Server
 
 **Preview:**
 基于 Reactor 的半同步/半异步并发模式 + 同步 epoll (ET) 事件循环 + 多线程 (线程池)
@@ -13,7 +13,7 @@
 
 ---
 
-#### Tools
+### Tools
 
 - **1. 开发环境**
 
@@ -39,7 +39,7 @@
 ---
 
 
-#### To do list:
+### To do list:
 
 1. 实现自销毁的线程池(智能指针) **Finished**
 
