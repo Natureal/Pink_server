@@ -148,7 +148,6 @@ bool pink_http_conn::write(){
 				return true;
 			}
 			else{
-				//pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 				return false;
 			}
 		}
