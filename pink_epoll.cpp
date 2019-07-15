@@ -60,8 +60,7 @@ void epoll_et(int epollfd, int listenfd){
 					pink_http_conn *new_conn = new pink_http_conn;
 					new_conn->init(connfd, client_addr);
 					// 设置定时器
-					conn_timer* new_timer = new conn_timer(conf.conn_timeout,
-															&(new_conn->timeout));
+					conn_timer* new_timer = new conn_timer(conf.conn_timeout, &(new_conn->timeout));
 					new_conn->timer = new_timer;
 					// 将定时器添加到时间堆中
 					time_heap->push(new_timer);
@@ -130,8 +129,7 @@ void epoll_lt(int epollfd, int listenfd){
 				pink_http_conn *new_conn = new pink_http_conn;
 				new_conn->init(connfd, client_addr);
 				// 设置定时器
-				conn_timer* new_timer = new conn_timer(conf.conn_timeout,
-															&(new_conn->timeout));
+				conn_timer* new_timer = new conn_timer(conf.conn_timeout, &(new_conn->timeout));
 				new_conn->timer = new_timer;
 				// 将定时器添加到时间堆中
 				time_heap->push(new_timer);
