@@ -77,7 +77,7 @@ void start_conn(int epoll_fd, int num, const char *ip, int port){
 	address.sin_port = htons(port);
 	
 	for(int i = 0; i < num; ++i){
-		sleep(2);
+		sleep(1);
 		int sockfd = socket(PF_INET, SOCK_STREAM, 0);
 		if(sockfd < 0){
 			continue;

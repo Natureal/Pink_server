@@ -34,6 +34,8 @@ public:
 
 	enum OP_TYPE{ READ = 0, WRITE };
 
+	static void (*delete_cb_func)(pink_http_conn* conn);
+
 private:
 	// 空参初始化连接
 	void init();

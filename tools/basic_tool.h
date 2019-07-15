@@ -20,6 +20,8 @@ const short IMPORT_CONF_ERROR = -1;
 typedef struct configuration{
 	char doc_root[PATH_LEN];
 	int port;
+	int pre_conn_number;
+	int max_conn_number;
 	int max_thread_number;
 	int timeslot;
 	int conn_timeout;

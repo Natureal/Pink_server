@@ -16,15 +16,17 @@
 
 
 ---
+
+**采用本地运行 wrk，并给它开 2 线程，测试时间 20秒。**
+
 #### 1000个客户并发
 
-采用本地运行 wrk，并给它开 2 线程，测试时间 20秒。
 
-**WRK: GET index.html ---> 约5.1万页面/秒， 平均延时 5.28ms**
+**WRK: GET index.html ---> 约5万页面/秒， 平均延时 5.53ms**
 
 ![](../imgs/wrk_ET_index_1000.png)
 
-**WRK: GET baidu.html ---> 约4.7万页面/秒， 平均延时 5.77ms**
+**WRK: GET baidu.html ---> 约4.9万页面/秒， 平均延时 5.57ms**
 
 ![](../imgs/wrk_ET_baidu_1000.png)
 
@@ -32,23 +34,12 @@
 
 #### 10K个客户并发
 
-采用本地运行 wrk，并给它开 2 线程，测试时间 20秒。
+此时，已经出现 socket errors，主要为 connect 错误。
 
-**WRK: GET index.html ---> 约4.5万页面/秒，平均延时 6.32ms**
+**WRK: GET index.html ---> 约2.2万页面/秒，平均延时 5.05ms**
 ![](../imgs/wrk_ET_index_10000.png)
 
-**WRK: GET baidu.html ---> 约4.8万页面/秒，平均延时 5.73ms**
+**WRK: GET baidu.html ---> 约1.1万页面/秒，平均延时 5.08ms**
 ![](../imgs/wrk_ET_baidu_10000.png)
-
----
-
-#### 100K个客户并发
-
-采用本地运行 wrk，并给它开 2 线程，测试时间 20秒。
-
-**WRK: GET baidu.html ---> 约0.63万页面/秒，平均延时 5.41ms**
-
-![](../imgs/wrk_ET_baidu_100000.png)
-
 
 ---

@@ -3,6 +3,7 @@
 
 #include <netinet/in.h>
 #include "pink_thread_pool.h"
+#include "pink_conn_pool.h"
 #include "pink_http_conn.h"
 
 #include <iostream>

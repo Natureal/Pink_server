@@ -54,7 +54,7 @@ int pink_epoll_modfd(int epollfd, int fd, void *conn, int event_code, bool one_s
 void pink_epoll_removefd(int epollfd, int fd){
 	//std::cout << "remove fd: " << fd << std::endl;
 	if(epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, 0) == -1){
-		std::cout << "remove fd: " << fd << std::endl;
+		//std::cout << "remove fd: " << fd << std::endl;
 		perror("remove fd from epoll failed, fd");
 		return;
 	}

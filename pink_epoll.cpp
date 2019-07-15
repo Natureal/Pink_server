@@ -6,16 +6,31 @@ bool stop_server = false;
 
 unique_ptr<pink_threadpool<pink_http_conn> > t_pool = nullptr;
 unique_ptr<pink_time_heap> time_heap = nullptr;
+unique_ptr<pink_conn_pool<pink_http_conn> > c_pool = nullptr;
+
+void delete_cb_func(pink_http_conn* conn){
+	c_pool->return_conn(conn);
+}
 
 int epoll_run(int epollfd, int listenfd){
-	// 创建线程池 =================================================
+	// 创建连接池 ================================================
+	try{
+		c_pool.reset(new pink_conn_pool<pink_http_conn>
+							(conf.pre_conn_number, conf.max_conn_number));
+		cout << "Initialized " << conf.pre_conn_number << " connections in pool" << endl;
+	}catch( ... ){
+		perror("create connection pool failed");
+		return 1;
+	}
+	pink_http_conn::delete_cb_func = delete_cb_func;
+	// 创建线程池 ================================================
 	try{
 		t_pool.reset(new pink_threadpool<pink_http_conn>(conf.max_thread_number, 10000));
 	}catch( ... ){
 		perror("create threadpool failed");
 		return 1;
 	}
-	// 创建时间堆
+	// 创建时间堆 ================================================
 	try{
 		time_heap.reset(new pink_time_heap(2048));
 	}catch( ... ){
@@ -33,7 +48,7 @@ int epoll_run(int epollfd, int listenfd){
 void epoll_et(int epollfd, int listenfd){
 	// ET 模式，带 EPOLLONESHOT
 	cout << "Using Epoll ET mode for listenfd" << endl;
-	pink_http_conn *listen_conn = new pink_http_conn;
+	pink_http_conn *listen_conn = c_pool->get_conn();
 	listen_conn->init_listen(listenfd);
 	pink_epoll_add_connfd(epollfd, listenfd, listen_conn, (EPOLLIN | EPOLLET), true);
 
@@ -57,7 +72,7 @@ void epoll_et(int epollfd, int listenfd){
 						//cout << "Break" << endl;
 						break;
 					}
-					pink_http_conn *new_conn = new pink_http_conn;
+					pink_http_conn *new_conn = c_pool->get_conn();
 					new_conn->init(connfd, client_addr);
 					// 设置定时器
 					conn_timer* new_timer = new conn_timer(conf.conn_timeout, &(new_conn->timeout));
@@ -105,7 +120,7 @@ void epoll_et(int epollfd, int listenfd){
 void epoll_lt(int epollfd, int listenfd){
 	// LT 模式，沒有 EPOLLONESHOT
 	cout << "Using Epoll LT mode for listenfd" << endl;
-	pink_http_conn *listen_conn = new pink_http_conn;
+	pink_http_conn *listen_conn = c_pool->get_conn();
 	listen_conn->init_listen(listenfd);
 	pink_epoll_add_connfd(epollfd, listenfd, listen_conn, (EPOLLIN), false);
 
@@ -126,7 +141,7 @@ void epoll_lt(int epollfd, int listenfd){
 				int connfd = accept_conn(listenfd, client_addr);
 				if(connfd < 0)
 					continue;
-				pink_http_conn *new_conn = new pink_http_conn;
+				pink_http_conn *new_conn = c_pool->get_conn();
 				new_conn->init(connfd, client_addr);
 				// 设置定时器
 				conn_timer* new_timer = new conn_timer(conf.conn_timeout, &(new_conn->timeout));

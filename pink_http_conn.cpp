@@ -2,6 +2,7 @@
 
 int pink_http_conn::user_count = 0;
 int pink_http_conn::epollfd = -1;
+void (*pink_http_conn::delete_cb_func)(pink_http_conn*) = nullptr;
 
 int pink_http_conn::get_fd(){
 	return sockfd;
@@ -14,7 +15,7 @@ void pink_http_conn::close_conn(){
 		sockfd = -1;
 		user_count--;
 	}
-	delete this;
+	this->delete_cb_func(this);
 }
 
 void pink_http_conn::init_listen(int sockfd){
