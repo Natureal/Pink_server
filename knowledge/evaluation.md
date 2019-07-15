@@ -18,36 +18,37 @@
 ---
 #### 1000个客户并发
 
-**Webbench: GET index.html  ---> 366万页面/分钟，1642万字节/秒，0失败**
-![](../imgs/ET_index_1000.png)
+采用本地运行 wrk，并给它开 2 线程，测试时间 20秒。
 
-**Webbench: GET baidu.html --- 347万页面/分钟，1.48亿字节/秒，0失败**
-![](../imgs/ET_baidu_1000.png)
+**WRK: GET index.html ---> 约5.1万页面/秒， 平均延时 5.28ms**
 
-**WRK: GET baidu.html ---> 5.2万页面/秒， 平均延时 5.12ms**
+![](../imgs/wrk_ET_index_1000.png)
+
+**WRK: GET baidu.html ---> 约4.7万页面/秒， 平均延时 5.77ms**
 
 ![](../imgs/wrk_ET_baidu_1000.png)
 
 ---
 
-#### 2000个客户并发
-
-**Webbench: GET index.html ---> 23万页面/分钟，106万字节/秒，2失败**
-![](../imgs/ET_index_2000.png)
-
-**Webbench: GET baidu.html ---> 23万页面/分钟，1019万字节/秒，0失败**
-![](../imgs/ET_baidu_2000.png)
-
-**WRK: GET baidu.html ---> 4.6万页面/秒，平均延时 5.29ms**
-![](../imgs/wrk_ET_baidu_2000.png)
-
-
----
-
 #### 10K个客户并发
 
-**WRK: GET baidu.html ---> 4.8万页面/秒，平均延时 5.21ms**
+采用本地运行 wrk，并给它开 2 线程，测试时间 20秒。
+
+**WRK: GET index.html ---> 约4.5万页面/秒，平均延时 6.32ms**
+![](../imgs/wrk_ET_index_10000.png)
+
+**WRK: GET baidu.html ---> 约4.8万页面/秒，平均延时 5.73ms**
 ![](../imgs/wrk_ET_baidu_10000.png)
 
 ---
-1. 可以看到随着并发量的提高，每分钟响应的页面明显减少，说明线程切换
+
+#### 100K个客户并发
+
+采用本地运行 wrk，并给它开 2 线程，测试时间 20秒。
+
+**WRK: GET baidu.html ---> 约0.63万页面/秒，平均延时 5.41ms**
+
+![](../imgs/wrk_ET_baidu_100000.png)
+
+
+---

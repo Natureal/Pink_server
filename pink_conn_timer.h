@@ -14,6 +14,9 @@ public:
 	}
 	void cancel(){ canceled = true; }
 	void cb_func(){ *conn_timeout = true; }
+	void reset(int delay){
+		expire = time(NULL) + delay;
+	}
 
 public:
 	time_t expire;
