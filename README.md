@@ -1,8 +1,5 @@
 ### Pink: A High Performance HTTP Server
 
-**Preview:**
-基于 Reactor 的半同步/半异步并发模式 + 同步 epoll (ET) 事件循环 + 多线程 (线程池)
-
 **Navigator**:
 **[架构与模块](https://github.com/Natureal/Pink_server/blob/master/knowledge/architecture.md)**
 |**[压力测试](https://github.com/Natureal/Pink_server/blob/master/knowledge/evaluation.md)**
