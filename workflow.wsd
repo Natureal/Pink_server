@@ -1,0 +1,22 @@
+@startuml
+
+客户端 -> 监听socket : TCP连接请求
+
+监听socket -> epoll_wait : 注册就绪事件
+
+epoll_wait -> 客户端 : accept连接
+
+客户端 -> epoll_wait : 发送HTTP请求报文，注册读就绪事件
+
+epoll_wait -> 线程池工作队列 : 插入读取任务
+
+epoll_wait -> epoll_wait : 等待
+
+线程池工作队列 -> 工作线程 : 通知
+
+工作线程 -> 工作线程 : 处理请求
+
+工作线程 -> 客户端 : 发送响应报文
+
+
+@enduml

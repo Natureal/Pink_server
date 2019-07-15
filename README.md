@@ -1,5 +1,8 @@
 #### Pink: A High Performance HTTP Server
 
+**Preview:**
+基于优化的Reactor模式
+
 **Navigator**: **[基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)** | **[架构与模块](https://github.com/Natureal/Pink_server/blob/master/knowledge/architecture.md)** | **[压力测试](https://github.com/Natureal/Pink_server/blob/master/knowledge/evaluation.md)**
 
 
@@ -30,24 +33,22 @@
 
 #### To do list:
 
-1. 实现自销毁的线程池(智能指针) Finished
+1. 实现自销毁的线程池(智能指针) **Finished**
 
-2. ~~封装自销毁的连接池(智能指针) Finished~~
+2. 添加定时器 **Finished**
 
-  (取消连接池，采用内存池(to be continued)+动态分配连接)
+3. 实现内存池
 
-3. 添加定时器
+4. 优化并行模式 -> Reactor + 半同步半异步 **Finished**
 
-4. 实现内存池
+5. 生产者消费者，降低耦合 **Finished**
 
-5. 优化并行模式 -> Reactor 模式 Finished
+6. 守护进程配置
 
-6. 生产者消费者，降低耦合 To be continued
+7. 在线修改配置参数
 
-7. 守护进程配置
+8. 日志系统
 
-8. 在线修改配置参数
+9. 考虑线程池惊群问题
 
-9. 日志系统
-
-10. 考虑线程池惊群问题
+10. 探索完全异步 + 非阻塞模式 (AIO)
