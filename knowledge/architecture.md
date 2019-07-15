@@ -2,6 +2,8 @@
 
 #### 整体结构与详细工作流
 
+基于 Reactor 的半同步/半异步并发模式 + 同步 epoll (ET) 事件循环 + 多线程 (线程池)
+
 ![](../plantuml/workflow.png)
 
 ----
