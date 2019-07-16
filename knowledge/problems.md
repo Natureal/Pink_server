@@ -49,7 +49,7 @@ EPOLLRDHUP indeed comes if you continue to poll after receiving a zero-byte read
 解决方法：给 recv() 的最后一个参数设置成 MSG_WAITALL
 
 ### 16. epoll 中监听套接字的触发模式很重要
-详细：
+ET/LT 的区别
 
 ### 17. shared_ptr 操作数组的困难
 参考1：https://www.cnblogs.com/xiaoshiwang/p/9726511.html
@@ -58,3 +58,22 @@ EPOLLRDHUP indeed comes if you continue to poll after receiving a zero-byte read
 1，unique_ptr的数组智能指针，没有*和->操作，但支持下标操作[]
 2，shared_ptr的数组智能指针，有*和->操作，但不支持下标操作[]，只能通过get()去访问数组的元素。
 3，shared_ptr的数组智能指针，必须要自定义deleter
+
+### 18. 静态函数指针的初始化
+在 pink_http_conn 中设置的静态回调函数(用于放回连接到连接池)指针需要在 cpp 中进行初始化。
+
+### 19. 连接池链表需要线程安全
+通过互斥锁实现连接体链表的线程安全
+
+### 20. 如果将时间堆分离出一个头文件和cpp会出现 undefined referrence to 链接问题（待解决）
+
+### 21. unique_ptr 的初始化方式与 shared_ptr 不同
+可以先赋值为 nullptr，再用 unique_ptr.reset(new object) 的形式
+
+### 22. 工作线程逻辑的优化
+在解析完 HTTP 请求报文后尝试写出响应报文，只有当该次非阻塞 write 返回 EAGAIN 才注册 EPOLLOUT 事件，以提高效率。
+
+### 23. 关闭连接体的操作应该采用统一的接口
+全部统一到 pink_http_conn.close_conn() 函数中。
+
+### 24.
