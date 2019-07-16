@@ -14,6 +14,7 @@ public:
 	~pink_conn_pool();
 	T* get_conn(); // 从连接池获取一个连接的指针
 	void return_conn(T* conn); // 放回一个连接
+	int get_used_number();
 
 private:
 	int used;
@@ -71,6 +72,11 @@ T* pink_conn_pool<T>::get_conn(){
 	++used;
 	lst_locker.unlock();
 	return tmp;
+}
+
+template<typename T>
+int pink_conn_pool<T>::get_used_number(){
+	return used;
 }
 
 template<typename T>
