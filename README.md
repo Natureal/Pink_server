@@ -54,7 +54,7 @@
 
 9. 日志系统
 
-10. 考虑[线程池惊群问题](https://github.com/Natureal/Pink_server/knowledge/惊群问题.md)
+10. 考虑[线程池惊群问题](https://github.com/Natureal/Pink_server/blob/master/knowledge/%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98.md)
 
 11. 探索 Proactor 模式: 完全异步 + 非阻塞模式 (AIO)
 
