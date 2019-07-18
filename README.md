@@ -1,7 +1,7 @@
 ### Pink: A High Performance HTTP Server
 
 **Navigator**:
-**[架构与模块](https://github.com/Natureal/Pink_server/blob/master/knowledge/architecture.md)** || **[压力测试](https://github.com/Natureal/Pink_server/blob/master/knowledge/evaluation.md)** || **[问题记录](https://github.com/Natureal/Pink_server/blob/master/knowledge/problems.md)** || **[基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)** 
+**[架构与模块](https://github.com/Natureal/Pink_server/blob/master/knowledge/architecture.md)** || **[压力测试](https://github.com/Natureal/Pink_server/blob/master/knowledge/evaluation.md)** || **[问题记录](https://github.com/Natureal/Pink_server/blob/master/knowledge/problems.md)** || **[基础知识](https://github.com/Natureal/Pink_server/blob/master/knowledge/README.md)**
 
 
 **Motivation**: 翻阅了书本以及学习了一些开源项目后，决定自己写一个 server，串联知识，探索一些小想法。
@@ -54,7 +54,7 @@
 
 9. 日志系统
 
-10. 考虑线程池惊群问题
+10. 考虑[线程池惊群问题](https://github.com/Natureal/Pink_server/knowledge/惊群问题.md)
 
 11. 探索 Proactor 模式: 完全异步 + 非阻塞模式 (AIO)
 
