@@ -52,10 +52,14 @@
 
 8. 在线修改配置参数
 
-9. 日志系统
+9. 实现负载均衡（学习NginX）
 
 10. 考虑[线程池惊群问题](https://github.com/Natureal/Pink_server/blob/master/knowledge/%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98.md) **doing**
 
 11. 探索 Proactor 模式: 完全异步 + 非阻塞模式 (AIO)
 
-12. 封装进 Docker
+12. 考虑 HTTP 等幂性
+
+13. 日志系统
+
+14. 考虑封装进 Docker
