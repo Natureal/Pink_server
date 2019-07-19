@@ -40,26 +40,28 @@
 
 2. 添加定时器，实现自销毁的时间堆 **Finished**
 
-3. 实现自销毁的连接池 **Finished**
+3. 优化定时器实现，学习内核 hrtimer
 
-4. 实现内存池 **doing**
+4. 实现自销毁的连接池 **Finished**
 
-5. 优化并行模式 -> 优化的 Reactor 模式，省略一次性完成的写完成事件注册 **Finished**
+5. 实现内存池 **doing**
 
-6. 生产者消费者，降低耦合 **Finished**
+6. 优化并行模式 -> 优化的 Reactor 模式，省略一次性完成的写完成事件注册 **Finished**
 
-7. 守护进程配置
+7. 生产者消费者，降低耦合 **Finished**
 
-8. 在线修改配置参数
+8. 守护进程配置
 
-9. 实现负载均衡（学习NginX）
+9. 在线修改配置参数
 
-10. 考虑[线程池惊群问题](https://github.com/Natureal/Pink_server/blob/master/knowledge/%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98.md) **doing**
+10. 实现负载均衡（学习NginX）
 
-11. 探索 Proactor 模式: 完全异步 + 非阻塞模式 (AIO)
+11. 考虑[线程池惊群问题](https://github.com/Natureal/Pink_server/blob/master/knowledge/%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98.md) **doing**
 
-12. 考虑 HTTP 等幂性
+12. 探索 Proactor 模式: 完全异步 + 非阻塞模式 (AIO)
 
-13. 日志系统
+13. 考虑 HTTP 等幂性
 
-14. 考虑封装进 Docker
+14. 日志系统
+
+15. 考虑封装进 Docker
