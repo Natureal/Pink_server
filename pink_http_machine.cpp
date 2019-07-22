@@ -251,6 +251,7 @@ pink_http_machine::HTTP_CODE pink_http_machine::parse_request_line(char *text){
 
 inline bool check_and_move(char *&text, const char *prefix){
 	int len = strlen(prefix);
+	// strncasecmp，忽略大小写，比较前 n 个字符
 	if(strncasecmp(text, prefix, len) == 0){
 		text += len;
 		text += strspn(text, " \t");
