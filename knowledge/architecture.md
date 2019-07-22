@@ -15,7 +15,7 @@
 
 #### 1. Epoll 事件循环
 
-**pink_epoll(.h / .cpp) + tools/pink_epoll_tool(.h / .cpp)**
+**pink_epoll.h|cpp + tools/pink_epoll_tool.h|cpp**
 
 在整体架构中，epoll 属于同步的部分，由主线程同步运行。
 
@@ -51,7 +51,7 @@
 
 #### 3. 时间堆
 
-**pink_conn_timer.h + pink_epoll(.h / .cpp)**
+**pink_conn_timer.h + pink_epoll.h|cpp**
 
 - **结构**
 
