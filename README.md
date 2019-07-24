@@ -44,7 +44,7 @@
 
 4. 实现自销毁的连接池 **Finished**
 
-5. 实现内存池 **doing**
+5. 实现内存池（学习 tcmalloc/jemalloc）**doing**
 
 6. 优化并行模式 -> 优化的 Reactor 模式，省略一次性完成的写完成事件注册 **Finished**
 
