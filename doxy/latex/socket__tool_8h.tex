@@ -1,0 +1,121 @@
+\hypertarget{socket__tool_8h}{}\section{tools/socket\+\_\+tool.h File Reference}
+\label{socket__tool_8h}\index{tools/socket\+\_\+tool.\+h@{tools/socket\+\_\+tool.\+h}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$netinet/in.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$fcntl.\+h$>$}\newline
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+Include dependency graph for socket\+\_\+tool.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{socket__tool_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{socket__tool_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{socket__tool_8h_a5baf043d95dbad411813b113d02b69ef}{set\+\_\+nonblocking} (const int fd)
+\item 
+int \hyperlink{socket__tool_8h_a44b42a81603a883a46acb47f9b089e4e}{bind\+\_\+and\+\_\+listen} (int port)
+\item 
+int \hyperlink{socket__tool_8h_a4eebba31e7a52e34efc60e812a2952cf}{accept\+\_\+conn} (const int listenfd, sockaddr\+\_\+in \&client\+\_\+addr)
+\item 
+void \hyperlink{socket__tool_8h_a53e1d42a5b2c25dfa59c613e1bc8ce1e}{send\+\_\+error} (const int connfd, const char $\ast$info)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const int \hyperlink{socket__tool_8h_aa25ad5c76339b3c7af505bbb39b7bd76}{L\+I\+S\+T\+E\+N\+Q\+U\+E\+U\+E\+\_\+\+L\+EN} = 4096
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{socket__tool_8h_a4eebba31e7a52e34efc60e812a2952cf}\label{socket__tool_8h_a4eebba31e7a52e34efc60e812a2952cf}} 
+\index{socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}!accept\+\_\+conn@{accept\+\_\+conn}}
+\index{accept\+\_\+conn@{accept\+\_\+conn}!socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{accept\+\_\+conn()}{accept\_conn()}}
+{\footnotesize\ttfamily int accept\+\_\+conn (\begin{DoxyParamCaption}\item[{const int}]{listenfd,  }\item[{sockaddr\+\_\+in \&}]{client\+\_\+addr }\end{DoxyParamCaption})}
+
+
+
+Definition at line 48 of file socket\+\_\+tool.\+cpp.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{socket__tool_8h_a4eebba31e7a52e34efc60e812a2952cf_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{socket__tool_8h_a44b42a81603a883a46acb47f9b089e4e}\label{socket__tool_8h_a44b42a81603a883a46acb47f9b089e4e}} 
+\index{socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}!bind\+\_\+and\+\_\+listen@{bind\+\_\+and\+\_\+listen}}
+\index{bind\+\_\+and\+\_\+listen@{bind\+\_\+and\+\_\+listen}!socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{bind\+\_\+and\+\_\+listen()}{bind\_and\_listen()}}
+{\footnotesize\ttfamily int bind\+\_\+and\+\_\+listen (\begin{DoxyParamCaption}\item[{int}]{port }\end{DoxyParamCaption})}
+
+
+
+Definition at line 11 of file socket\+\_\+tool.\+cpp.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=238pt]{socket__tool_8h_a44b42a81603a883a46acb47f9b089e4e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{socket__tool_8h_a53e1d42a5b2c25dfa59c613e1bc8ce1e}\label{socket__tool_8h_a53e1d42a5b2c25dfa59c613e1bc8ce1e}} 
+\index{socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}!send\+\_\+error@{send\+\_\+error}}
+\index{send\+\_\+error@{send\+\_\+error}!socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{send\+\_\+error()}{send\_error()}}
+{\footnotesize\ttfamily void send\+\_\+error (\begin{DoxyParamCaption}\item[{const int}]{connfd,  }\item[{const char $\ast$}]{info }\end{DoxyParamCaption})}
+
+
+
+Definition at line 58 of file socket\+\_\+tool.\+cpp.
+
+\mbox{\Hypertarget{socket__tool_8h_a5baf043d95dbad411813b113d02b69ef}\label{socket__tool_8h_a5baf043d95dbad411813b113d02b69ef}} 
+\index{socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}!set\+\_\+nonblocking@{set\+\_\+nonblocking}}
+\index{set\+\_\+nonblocking@{set\+\_\+nonblocking}!socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{set\+\_\+nonblocking()}{set\_nonblocking()}}
+{\footnotesize\ttfamily int set\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const int}]{fd }\end{DoxyParamCaption})}
+
+
+
+Definition at line 19 of file pressure\+\_\+test.\+cpp.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{socket__tool_8h_a5baf043d95dbad411813b113d02b69ef_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{socket__tool_8h_aa25ad5c76339b3c7af505bbb39b7bd76}\label{socket__tool_8h_aa25ad5c76339b3c7af505bbb39b7bd76}} 
+\index{socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}!L\+I\+S\+T\+E\+N\+Q\+U\+E\+U\+E\+\_\+\+L\+EN@{L\+I\+S\+T\+E\+N\+Q\+U\+E\+U\+E\+\_\+\+L\+EN}}
+\index{L\+I\+S\+T\+E\+N\+Q\+U\+E\+U\+E\+\_\+\+L\+EN@{L\+I\+S\+T\+E\+N\+Q\+U\+E\+U\+E\+\_\+\+L\+EN}!socket\+\_\+tool.\+h@{socket\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{L\+I\+S\+T\+E\+N\+Q\+U\+E\+U\+E\+\_\+\+L\+EN}{LISTENQUEUE\_LEN}}
+{\footnotesize\ttfamily const int L\+I\+S\+T\+E\+N\+Q\+U\+E\+U\+E\+\_\+\+L\+EN = 4096}
+
+
+
+Definition at line 11 of file socket\+\_\+tool.\+h.
+

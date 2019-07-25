@@ -1,0 +1,9 @@
+<map id="pink_http_conn::write" name="pink_http_conn::write">
+<area shape="rect" id="node2" href="$pink__epoll__tool_8cpp.html#a2e0cc5da68f2857d542f7a5a628c08ec" title="pink_epoll_modfd" alt="" coords="208,5,331,32"/>
+<area shape="rect" id="node3" href="$classpink__http__conn.html#abff27697496d209cdc7375f99117f018" title="pink_http_conn::init" alt="" coords="202,80,337,107"/>
+<area shape="rect" id="node7" href="$classpink__http__machine.html#a26debab8c361df5c79966f11e2b2dd17" title="pink_http_machine::\lunmap" alt="" coords="200,131,339,173"/>
+<area shape="rect" id="node8" href="$classpink__http__machine.html#a01dcf59a537c21d5a4a92c1c25fbf3ab" title="pink_http_machine::\lget_linger" alt="" coords="200,197,339,238"/>
+<area shape="rect" id="node4" href="$pink__epoll__tool_8cpp.html#a7ffd9c2e6048a3ffacaa37fbe123d39a" title="pink_epoll_add_connfd" alt="" coords="387,29,542,56"/>
+<area shape="rect" id="node5" href="$pressure__test_8cpp.html#a450a9be7be692d8ac42f64acddbdaadd" title="set_nonblocking" alt="" coords="407,80,523,107"/>
+<area shape="rect" id="node6" href="$classpink__http__machine.html#a32b0ee47de1b90467d17194fa83b4eb0" title="pink_http_machine::init" alt="" coords="387,131,543,157"/>
+</map>

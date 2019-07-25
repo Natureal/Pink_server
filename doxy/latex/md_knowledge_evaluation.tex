@@ -1,0 +1,38 @@
+
+\begin{DoxyItemize}
+\item C\+PU\+: 满载3.4\+G\+Hz $\ast$ 8
+\item 测试工具1\+: {\bfseries \href{http://home.tiscali.cz/~cz210552/webbench.html}{\tt webbench}}\+: 轻量、源码简单方便修改，$\ast$$\ast$原理$\ast$$\ast$\+: 利用 fork() 实现多进程并发访问
+\item 测试工具2\+: {\bfseries \href{https://github.com/wg/wrk}{\tt wrk}}\+: 支持多线程、分析结果精细、架构卓越，$\ast$$\ast$原理$\ast$$\ast$\+: 基于 epoll (结合了redis内部的ae事件循环) + 异步非阻塞\+I/O + 多线程，可以极限施压
+\item 测试的\+H\+T\+T\+P请求\+: G\+ET
+\item {\bfseries 网页大小\+: index.\+html (172字节), baidu.\+html (2.\+5\+KB)}
+\item epoll\+: 监听 socket ET + 连接 socket ET
+\item 工作线程数\+: 4
+\end{DoxyItemize}
+
+
+
+
+
+{\bfseries 采用本地运行 wrk，并给它开 2 线程，测试时间 20秒。}
+
+\paragraph*{1000个客户并发}
+
+{\bfseries W\+RK\+: G\+ET index.\+html ---$>$ 约5万页面/秒， 平均延时 5.\+53ms}
+
+
+
+{\bfseries W\+RK\+: G\+ET baidu.\+html ---$>$ 约4.9万页面/秒， 平均延时 5.\+57ms}
+
+ 
+
+
+
+\paragraph*{10\+K个客户并发}
+
+{\bfseries 此时，已经出现 socket errors，主要为 connect 错误。}
+
+{\bfseries W\+RK\+: G\+ET index.\+html ---$>$ 约2.2万页面/秒，平均延时 5.\+05ms} 
+
+{\bfseries W\+RK\+: G\+ET baidu.\+html ---$>$ 约1.1万页面/秒，平均延时 5.\+08ms}  
+
+ 

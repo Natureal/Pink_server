@@ -1,0 +1,131 @@
+\hypertarget{basic__tool_8h}{}\section{tools/basic\+\_\+tool.h File Reference}
+\label{basic__tool_8h}\index{tools/basic\+\_\+tool.\+h@{tools/basic\+\_\+tool.\+h}}
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+Include dependency graph for basic\+\_\+tool.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{basic__tool_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{basic__tool_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structconfiguration}{configuration}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \hyperlink{structconfiguration}{configuration} \hyperlink{basic__tool_8h_aa8adc7b5bceb1e76cda9b5ec5471159a}{conf\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{basic__tool_8h_acfdeec5618ec7b4beaf26bf80166f157}{read\+\_\+conf} (const char $\ast$filename, \hyperlink{basic__tool_8h_aa8adc7b5bceb1e76cda9b5ec5471159a}{conf\+\_\+t} \&\hyperlink{pink__http__machine_8cpp_a40e427255962e28d8913a56db7b748b8}{conf})
+\item 
+void \hyperlink{basic__tool_8h_a32021ea5ad36d8f7da7d6360fef22395}{add\+\_\+signal} (const int sig, void(handler)(int), bool restart=true)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const short \hyperlink{basic__tool_8h_aac8fbc596a0261f72b1c34bec8fc40a6}{P\+A\+T\+H\+\_\+\+L\+EN} = 128
+\item 
+const short \hyperlink{basic__tool_8h_ad67173c6fc6d9b1905e90aadc6fce265}{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+S\+U\+C\+C\+E\+SS} = 0
+\item 
+const short \hyperlink{basic__tool_8h_a755a36f9089ac63645d42c8e7dd15880}{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+E\+R\+R\+OR} = -\/1
+\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\mbox{\Hypertarget{basic__tool_8h_aa8adc7b5bceb1e76cda9b5ec5471159a}\label{basic__tool_8h_aa8adc7b5bceb1e76cda9b5ec5471159a}} 
+\index{basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}!conf\+\_\+t@{conf\+\_\+t}}
+\index{conf\+\_\+t@{conf\+\_\+t}!basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{conf\+\_\+t}{conf\_t}}
+{\footnotesize\ttfamily typedef struct \hyperlink{structconfiguration}{configuration} \hyperlink{basic__tool_8h_aa8adc7b5bceb1e76cda9b5ec5471159a}{conf\+\_\+t}}
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{basic__tool_8h_a32021ea5ad36d8f7da7d6360fef22395}\label{basic__tool_8h_a32021ea5ad36d8f7da7d6360fef22395}} 
+\index{basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}!add\+\_\+signal@{add\+\_\+signal}}
+\index{add\+\_\+signal@{add\+\_\+signal}!basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{add\+\_\+signal()}{add\_signal()}}
+{\footnotesize\ttfamily void add\+\_\+signal (\begin{DoxyParamCaption}\item[{const int}]{sig,  }\item[{void(handler)(int)}]{,  }\item[{bool}]{restart = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Definition at line 51 of file basic\+\_\+tool.\+cpp.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=217pt]{basic__tool_8h_a32021ea5ad36d8f7da7d6360fef22395_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{basic__tool_8h_acfdeec5618ec7b4beaf26bf80166f157}\label{basic__tool_8h_acfdeec5618ec7b4beaf26bf80166f157}} 
+\index{basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}!read\+\_\+conf@{read\+\_\+conf}}
+\index{read\+\_\+conf@{read\+\_\+conf}!basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{read\+\_\+conf()}{read\_conf()}}
+{\footnotesize\ttfamily int read\+\_\+conf (\begin{DoxyParamCaption}\item[{const char $\ast$}]{filename,  }\item[{\hyperlink{basic__tool_8h_aa8adc7b5bceb1e76cda9b5ec5471159a}{conf\+\_\+t} \&}]{conf }\end{DoxyParamCaption})}
+
+
+
+Definition at line 3 of file basic\+\_\+tool.\+cpp.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=213pt]{basic__tool_8h_acfdeec5618ec7b4beaf26bf80166f157_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{basic__tool_8h_a755a36f9089ac63645d42c8e7dd15880}\label{basic__tool_8h_a755a36f9089ac63645d42c8e7dd15880}} 
+\index{basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}!I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+E\+R\+R\+OR@{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+E\+R\+R\+OR}}
+\index{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+E\+R\+R\+OR@{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+E\+R\+R\+OR}!basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+E\+R\+R\+OR}{IMPORT\_CONF\_ERROR}}
+{\footnotesize\ttfamily const short I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+E\+R\+R\+OR = -\/1}
+
+
+
+Definition at line 18 of file basic\+\_\+tool.\+h.
+
+\mbox{\Hypertarget{basic__tool_8h_ad67173c6fc6d9b1905e90aadc6fce265}\label{basic__tool_8h_ad67173c6fc6d9b1905e90aadc6fce265}} 
+\index{basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}!I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+S\+U\+C\+C\+E\+SS@{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+S\+U\+C\+C\+E\+SS}}
+\index{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+S\+U\+C\+C\+E\+SS@{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+S\+U\+C\+C\+E\+SS}!basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+S\+U\+C\+C\+E\+SS}{IMPORT\_CONF\_SUCCESS}}
+{\footnotesize\ttfamily const short I\+M\+P\+O\+R\+T\+\_\+\+C\+O\+N\+F\+\_\+\+S\+U\+C\+C\+E\+SS = 0}
+
+
+
+Definition at line 17 of file basic\+\_\+tool.\+h.
+
+\mbox{\Hypertarget{basic__tool_8h_aac8fbc596a0261f72b1c34bec8fc40a6}\label{basic__tool_8h_aac8fbc596a0261f72b1c34bec8fc40a6}} 
+\index{basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}!P\+A\+T\+H\+\_\+\+L\+EN@{P\+A\+T\+H\+\_\+\+L\+EN}}
+\index{P\+A\+T\+H\+\_\+\+L\+EN@{P\+A\+T\+H\+\_\+\+L\+EN}!basic\+\_\+tool.\+h@{basic\+\_\+tool.\+h}}
+\subsubsection{\texorpdfstring{P\+A\+T\+H\+\_\+\+L\+EN}{PATH\_LEN}}
+{\footnotesize\ttfamily const short P\+A\+T\+H\+\_\+\+L\+EN = 128}
+
+
+
+Definition at line 16 of file basic\+\_\+tool.\+h.
+

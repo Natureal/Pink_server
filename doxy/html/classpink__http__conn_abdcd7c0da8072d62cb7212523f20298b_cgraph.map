@@ -1,0 +1,4 @@
+<map id="pink_http_conn::close_conn" name="pink_http_conn::close_conn">
+<area shape="rect" id="node2" href="$classconn__timer.html#a543102358beb1bc590006310556182de" title="conn_timer::cancel" alt="" coords="242,5,374,32"/>
+<area shape="rect" id="node3" href="$pink__epoll__tool_8cpp.html#afb72622cf3eb6e48bdfedaa090bb9481" title="pink_epoll_removefd" alt="" coords="237,56,379,83"/>
+</map>

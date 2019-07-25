@@ -1,0 +1,8 @@
+<map id="pink_http_conn.h" name="pink_http_conn.h">
+<area shape="rect" id="node3" href="$_i_p_c__tool_8h.html" title="tools/IPC_tool.h" alt="" coords="249,80,365,107"/>
+<area shape="rect" id="node7" href="$socket__tool_8h.html" title="tools/socket_tool.h" alt="" coords="611,80,743,107"/>
+<area shape="rect" id="node14" href="$pink__epoll__tool_8h.html" title="tools/pink_epoll_tool.h" alt="" coords="781,80,931,107"/>
+<area shape="rect" id="node18" href="$pink__http__machine_8h.html" title="pink_http_machine.h" alt="" coords="1375,80,1518,107"/>
+<area shape="rect" id="node33" href="$pink__conn__timer_8h.html" title="pink_conn_timer.h" alt="" coords="2037,80,2165,107"/>
+<area shape="rect" id="node31" href="$basic__tool_8h.html" title="tools/basic_tool.h" alt="" coords="1385,155,1509,181"/>
+</map>

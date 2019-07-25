@@ -1,0 +1,8 @@
+<map id="pink_http_conn::close_conn" name="pink_http_conn::close_conn">
+<area shape="rect" id="node2" href="$pink__epoll_8h.html#ae30dffd8bcb9e6901638b8174108e760" title="epoll_et" alt="" coords="286,5,353,32"/>
+<area shape="rect" id="node5" href="$pink__epoll_8h.html#a56d0d7b624f8626293e482ff84181800" title="epoll_lt" alt="" coords="288,56,351,83"/>
+<area shape="rect" id="node6" href="$classpink__http__conn.html#a41ca12d76d0056562633f27d456d0b62" title="pink_http_conn::process" alt="" coords="237,107,401,133"/>
+<area shape="rect" id="node7" href="$classpink__http__conn.html#a83eb4a1a4b8afdc6bfa0959da37f0e91" title="pink_http_conn::~pink\l_http_conn" alt="" coords="449,114,600,155"/>
+<area shape="rect" id="node3" href="$pink__epoll_8h.html#ad15841527db9c5d3cc800ac21f750f23" title="epoll_run" alt="" coords="487,41,562,68"/>
+<area shape="rect" id="node4" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="648,41,699,68"/>
+</map>

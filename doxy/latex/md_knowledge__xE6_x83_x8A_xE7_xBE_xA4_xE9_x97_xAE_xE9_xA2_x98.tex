@@ -1,0 +1,167 @@
+
+\begin{DoxyItemize}
+\item {\bfseries 起因}
+\end{DoxyItemize}
+
+虽然 Pink 中采用单进程多线程，因此不存在 epoll\+\_\+wait() 惊群以及 accept() 惊群问题，但线程池内多个工作线程等待任务时，是否会产生惊群问题呢？
+
+首先，$\ast$$\ast$线程池的结构为：工作队列 + 多线程等待。即：半同步/半异步的 reactor 模型$\ast$$\ast$
+
+
+\begin{DoxyEnumerate}
+\item 工作线程利用互斥锁保护，且后文已经发现互斥锁没有惊群问题
+\item 目前的多线程等待任务采用信号量，那么信号量是否有惊群问题呢？？如果换成条件变量肯定能解决问题，那么直接换成互斥锁呢？？（待解决）
+\end{DoxyEnumerate}
+\begin{DoxyItemize}
+\item {\bfseries 条件变量}
+\end{DoxyItemize}
+
+经过实验，实现正确的条件变量，在调用 pthread\+\_\+cond\+\_\+signal() 时，只会唤醒一个线程，因此可以规避惊群问题。（pthread\+\_\+cond\+\_\+broadcast() 当然会唤醒所有。）
+
+
+\begin{DoxyItemize}
+\item {\bfseries 信号量}
+\item {\bfseries 线程互斥锁}
+\end{DoxyItemize}
+
+那么互斥锁是否会存在惊群问题呢？？？眼见为实！
+
+{\bfseries 先说结论，不存在惊群问题。}
+
+写一个双线程小程序实验了一下，并用 strace 查看系统调用。
+
+
+\begin{DoxyCode}
+\textcolor{preprocessor}{#include <stdio.h>}
+\textcolor{preprocessor}{#include <vector>}
+\textcolor{preprocessor}{#include <iostream>}
+\textcolor{preprocessor}{#include <memory>}
+\textcolor{preprocessor}{#include <time.h>}
+\textcolor{preprocessor}{#include <unistd.h>}
+\textcolor{preprocessor}{#include <list>}
+\textcolor{preprocessor}{#include <pthread.h>}
+\textcolor{keyword}{using namespace }std;
+
+\textcolor{keyword}{static} pthread\_mutex\_t mtx = PTHREAD\_MUTEX\_INITIALIZER;
+
+\textcolor{keyword}{static} \textcolor{keywordtype}{void}* func1(\textcolor{keywordtype}{void}* arg)\{
+    cout << \textcolor{stringliteral}{"func1 start"} << endl;
+    pthread\_mutex\_lock(&mtx);
+    cout << \textcolor{stringliteral}{"fun1 locked mutex"} << endl;
+    sleep(3);
+    \textcolor{keywordflow}{return} NULL;
+\}
+
+\textcolor{keyword}{static} \textcolor{keywordtype}{void}* func2(\textcolor{keywordtype}{void}* arg)\{
+    cout << \textcolor{stringliteral}{"func2 start"} << endl;
+    pthread\_mutex\_lock(&mtx);
+    cout << \textcolor{stringliteral}{"func2 locked mutex"} << endl;
+    sleep(3);
+    \textcolor{keywordflow}{return} NULL;
+\}
+
+\textcolor{keywordtype}{int} \hyperlink{main_8cpp_a0ddf1224851353fc92bfbff6f499fa97}{main}()\{
+
+    sleep(10);
+
+    pthread\_mutex\_lock(&mtx);
+
+    pthread\_t t1, t2;
+
+    cout << \textcolor{stringliteral}{"Creating threads"} << endl;
+    pthread\_create(&t1, NULL, func1, NULL);
+    pthread\_create(&t2, NULL, func2, NULL);
+
+    sleep(2);
+
+    cout << \textcolor{stringliteral}{"UNLOCK!!!"} << endl;
+    pthread\_mutex\_unlock(&mtx);
+
+    sleep(5);
+
+    cout << \textcolor{stringliteral}{"join"} << endl;
+    pthread\_join(t1, NULL);
+    pthread\_join(t2, NULL);
+
+    cout << \textcolor{stringliteral}{"end"} << endl;
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCode}
+
+
+结果当然是只有一个线程获得锁，但是在这个过程中唤醒了几个线程呢？？？让我们看看 strace 的结果
+
+
+\begin{DoxyCode}
+write(1, \textcolor{stringliteral}{"Creating threads\(\backslash\)n"}, 17)      = 17
+mmap(NULL, 8392704, PROT\_NONE, MAP\_PRIVATE|MAP\_ANONYMOUS|MAP\_STACK, -1, 0) = 0x7f79b85dd000
+mprotect(0x7f79b85de000, 8388608, PROT\_READ|PROT\_WRITE) = 0
+clone(child\_stack=0x7f79b8ddcfb0, flags=CLONE\_VM|CLONE\_FS|CLONE\_FILES|CLONE\_SIGHAND|CLONE\_THREAD|
+      CLONE\_SYSVSEM|CLONE\_SETTLS|CLONE\_PARENT\_SETTID|CLONE\_CHILD\_CLEARTID, parent\_tidptr=0x7f79b8ddd9d0, tls=0x7f79b8ddd700,
+       child\_tidptr=0x7f79b8ddd9d0) = 15199
+mmap(NULL, 8392704, PROT\_NONE, MAP\_PRIVATE|MAP\_ANONYMOUS|MAP\_STACK, -1, 0) = 0x7f79b7ddc000
+mprotect(0x7f79b7ddd000, 8388608, PROT\_READ|PROT\_WRITE) = 0
+clone(child\_stack=0x7f79b85dbfb0, flags=CLONE\_VM|CLONE\_FS|CLONE\_FILES|CLONE\_SIGHAND|CLONE\_THREAD|
+      CLONE\_SYSVSEM|CLONE\_SETTLS|CLONE\_PARENT\_SETTID|CLONE\_CHILD\_CLEARTID, parent\_tidptr=0x7f79b85dc9d0, tls=0x7f79b85dc700,
+       child\_tidptr=0x7f79b85dc9d0) = 15200
+nanosleep(\{tv\_sec=2, tv\_nsec=0\}, 0x7ffc60d081f0) = 0
+write(1, \textcolor{stringliteral}{"UNLOCK!!!\(\backslash\)n"}, 10)             = 10
+futex(0x55d7f89bc160, FUTEX\_WAKE\_PRIVATE, 1) = 1
+nanosleep(\{tv\_sec=5, tv\_nsec=0\}, 0x7ffc60d081f0) = 0
+write(1, \textcolor{stringliteral}{"join\(\backslash\)n"}, 5)                   = 5
+futex(0x7f79b85dc9d0, FUTEX\_WAIT, 15200, NULL) = ? ERESTARTSYS (To be restarted \textcolor{keywordflow}{if} SA\_RESTART is \textcolor{keyword}{set})
+--- SIGINT \{si\_signo=SIGINT, si\_code=SI\_KERNEL\} ---
++++ killed by SIGINT +++
+\end{DoxyCode}
+
+
+可以看到 write(1, \char`\"{}\+U\+N\+L\+O\+C\+K!!!\textbackslash{}n\char`\"{}, 10) 之后调用了 futex(.., F\+U\+T\+E\+X\+\_\+\+W\+A\+K\+E\+\_\+\+P\+R\+I\+V\+A\+TE, 1) 函数。
+
+查看定义 F\+U\+T\+E\+X\+\_\+\+W\+A\+KE\+: This operation wakes at most val processes waiting on this futex address。
+
+于是于是我们知道 pthread\+\_\+mutex\+\_\+t 的底层调用了 futex 并唤醒了一个线程！ 但是 futex 是如何唤醒线程的呢？继续查看其具体实现（kernel/futex.c）：
+
+（注释参考1：https\+://www.jianshu.\+com/p/604d277cbc6f ）
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{static} \textcolor{keywordtype}{int} futex\_wake(u32 \_\_user *uaddr, \textcolor{keywordtype}{int} fshared, \textcolor{keywordtype}{int} nr\_wake, u32 bitset)
+\{
+    \textcolor{keyword}{struct }futex\_hash\_bucket *hb;
+    \textcolor{keyword}{struct }futex\_q *\textcolor{keyword}{this}, *next;
+    \textcolor{keyword}{struct }plist\_head *head;
+    \textcolor{keyword}{union }futex\_key key = FUTEX\_KEY\_INIT;
+    \textcolor{keywordtype}{int} ret;
+
+    ...
+    \textcolor{comment}{//根据uaddr的值填充&key的内容}
+    ret = get\_futex\_key(uaddr, fshared, &key, VERIFY\_READ);
+    \textcolor{keywordflow}{if} (unlikely(ret != 0))
+        \textcolor{keywordflow}{goto} out;
+    \textcolor{comment}{//根据&key获得对应uaddr所在的futex\_hash\_bucket}
+    hb = hash\_futex(&key);
+    \textcolor{comment}{//对该hb加自旋锁}
+    spin\_lock(&hb->lock);
+    head = &hb->chain;
+    \textcolor{comment}{//遍历该hb的链表，注意链表中存储的节点是plist\_node类型，而而这里的this却是futex\_q类型，这种类型转换是通过c中的container\_of机制实现的}
+    plist\_for\_each\_entry\_safe(\textcolor{keyword}{this}, next, head, list) \{
+        \textcolor{keywordflow}{if} (match\_futex (&this->key, &key)) \{
+            ...
+            \textcolor{comment}{//唤醒对应进程}
+            wake\_futex(\textcolor{keyword}{this});
+            \textcolor{keywordflow}{if} (++ret >= nr\_wake)
+                \textcolor{keywordflow}{break};
+        \}
+    \}
+    \textcolor{comment}{//释放自旋锁}
+    spin\_unlock(&hb->lock);
+    put\_futex\_key(fshared, &key);
+out:
+    \textcolor{keywordflow}{return} ret;
+\}
+\end{DoxyCode}
+
+
+我们看到 futex 用了一个自选锁保护了一个 futex\+\_\+hash\+\_\+bucket 链表，里面存放等待唤醒的线程，在唤醒过程中，遍历链表逐一唤醒，一旦唤醒数量达到需求的唤醒量就 break。
+
+{\bfseries 综上所述，pthread\+\_\+mutex\+\_\+t 是不存在惊群问题的。} 

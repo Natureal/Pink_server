@@ -1,0 +1,10 @@
+<map id="tools/basic_tool.h" name="tools/basic_tool.h">
+<area shape="rect" id="node2" href="$pink__http__machine_8h.html" title="pink_http_machine.h" alt="" coords="178,80,321,107"/>
+<area shape="rect" id="node9" href="$basic__tool_8cpp.html" title="tools/basic_tool.cpp" alt="" coords="345,80,484,107"/>
+<area shape="rect" id="node3" href="$pink__http__conn_8h.html" title="pink_http_conn.h" alt="" coords="107,155,229,181"/>
+<area shape="rect" id="node8" href="$pink__http__machine_8cpp.html" title="pink_http_machine.cpp" alt="" coords="253,155,409,181"/>
+<area shape="rect" id="node4" href="$pink__epoll_8h.html" title="pink_epoll.h" alt="" coords="55,229,145,256"/>
+<area shape="rect" id="node7" href="$pink__http__conn_8cpp.html" title="pink_http_conn.cpp" alt="" coords="170,229,305,256"/>
+<area shape="rect" id="node5" href="$main_8cpp.html" title="main.cpp" alt="" coords="5,304,80,331"/>
+<area shape="rect" id="node6" href="$pink__epoll_8cpp.html" title="pink_epoll.cpp" alt="" coords="105,304,210,331"/>
+</map>

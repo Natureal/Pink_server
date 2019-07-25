@@ -1,0 +1,11 @@
+<map id="pink_epoll.h" name="pink_epoll.h">
+<area shape="rect" id="node3" href="$pink__thread__pool_8h.html" title="pink_thread_pool.h" alt="" coords="261,80,392,107"/>
+<area shape="rect" id="node12" href="$pink__conn__pool_8h.html" title="pink_conn_pool.h" alt="" coords="25,80,148,107"/>
+<area shape="rect" id="node13" href="$pink__http__conn_8h.html" title="pink_http_conn.h" alt="" coords="842,80,963,107"/>
+<area shape="rect" id="node38" href="$pink__conn__timer_8h.html" title="pink_conn_timer.h" alt="" coords="1743,155,1871,181"/>
+<area shape="rect" id="node10" href="$_i_p_c__tool_8h.html" title="tools/IPC_tool.h" alt="" coords="218,155,334,181"/>
+<area shape="rect" id="node14" href="$socket__tool_8h.html" title="tools/socket_tool.h" alt="" coords="837,155,969,181"/>
+<area shape="rect" id="node20" href="$pink__epoll__tool_8h.html" title="tools/pink_epoll_tool.h" alt="" coords="1001,155,1151,181"/>
+<area shape="rect" id="node23" href="$pink__http__machine_8h.html" title="pink_http_machine.h" alt="" coords="1575,155,1718,181"/>
+<area shape="rect" id="node36" href="$basic__tool_8h.html" title="tools/basic_tool.h" alt="" coords="2034,229,2158,256"/>
+</map>

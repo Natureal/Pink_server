@@ -1,0 +1,149 @@
+\hypertarget{classconn__timer}{}\section{conn\+\_\+timer Class Reference}
+\label{classconn__timer}\index{conn\+\_\+timer@{conn\+\_\+timer}}
+
+
+{\ttfamily \#include $<$pink\+\_\+conn\+\_\+timer.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classconn__timer_a0779436b23e1b67636349fb7c08cdf45}{conn\+\_\+timer} ()=default
+\item 
+\hyperlink{classconn__timer_a1f4ceab01f4274ab66147f4bb9fec535}{conn\+\_\+timer} (int delay, bool $\ast$init\+\_\+timeout)
+\item 
+void \hyperlink{classconn__timer_a543102358beb1bc590006310556182de}{cancel} ()
+\item 
+void \hyperlink{classconn__timer_a86d7a0d33b7423368bba281a0d0eaab9}{cb\+\_\+func} ()
+\item 
+void \hyperlink{classconn__timer_a6cb5ef510c4022acd31b002e15758d60}{reset} (int delay)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+time\+\_\+t \hyperlink{classconn__timer_a2c71b17e51d75dc27a4e0f1f7e443ec5}{expire}
+\item 
+bool \hyperlink{classconn__timer_a51dd2abd61d07bd63c37551404851bf5}{canceled}
+\item 
+bool $\ast$ \hyperlink{classconn__timer_a0f3fbb63bdf0764fffe4b5fd0fedc3db}{conn\+\_\+timeout}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 7 of file pink\+\_\+conn\+\_\+timer.\+h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classconn__timer_a0779436b23e1b67636349fb7c08cdf45}\label{classconn__timer_a0779436b23e1b67636349fb7c08cdf45}} 
+\index{conn\+\_\+timer@{conn\+\_\+timer}!conn\+\_\+timer@{conn\+\_\+timer}}
+\index{conn\+\_\+timer@{conn\+\_\+timer}!conn\+\_\+timer@{conn\+\_\+timer}}
+\subsubsection{\texorpdfstring{conn\+\_\+timer()}{conn\_timer()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily conn\+\_\+timer\+::conn\+\_\+timer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+\mbox{\Hypertarget{classconn__timer_a1f4ceab01f4274ab66147f4bb9fec535}\label{classconn__timer_a1f4ceab01f4274ab66147f4bb9fec535}} 
+\index{conn\+\_\+timer@{conn\+\_\+timer}!conn\+\_\+timer@{conn\+\_\+timer}}
+\index{conn\+\_\+timer@{conn\+\_\+timer}!conn\+\_\+timer@{conn\+\_\+timer}}
+\subsubsection{\texorpdfstring{conn\+\_\+timer()}{conn\_timer()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily conn\+\_\+timer\+::conn\+\_\+timer (\begin{DoxyParamCaption}\item[{int}]{delay,  }\item[{bool $\ast$}]{init\+\_\+timeout }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 10 of file pink\+\_\+conn\+\_\+timer.\+h.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classconn__timer_a543102358beb1bc590006310556182de}\label{classconn__timer_a543102358beb1bc590006310556182de}} 
+\index{conn\+\_\+timer@{conn\+\_\+timer}!cancel@{cancel}}
+\index{cancel@{cancel}!conn\+\_\+timer@{conn\+\_\+timer}}
+\subsubsection{\texorpdfstring{cancel()}{cancel()}}
+{\footnotesize\ttfamily void conn\+\_\+timer\+::cancel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 15 of file pink\+\_\+conn\+\_\+timer.\+h.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classconn__timer_a543102358beb1bc590006310556182de_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classconn__timer_a86d7a0d33b7423368bba281a0d0eaab9}\label{classconn__timer_a86d7a0d33b7423368bba281a0d0eaab9}} 
+\index{conn\+\_\+timer@{conn\+\_\+timer}!cb\+\_\+func@{cb\+\_\+func}}
+\index{cb\+\_\+func@{cb\+\_\+func}!conn\+\_\+timer@{conn\+\_\+timer}}
+\subsubsection{\texorpdfstring{cb\+\_\+func()}{cb\_func()}}
+{\footnotesize\ttfamily void conn\+\_\+timer\+::cb\+\_\+func (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 16 of file pink\+\_\+conn\+\_\+timer.\+h.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=328pt]{classconn__timer_a86d7a0d33b7423368bba281a0d0eaab9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classconn__timer_a6cb5ef510c4022acd31b002e15758d60}\label{classconn__timer_a6cb5ef510c4022acd31b002e15758d60}} 
+\index{conn\+\_\+timer@{conn\+\_\+timer}!reset@{reset}}
+\index{reset@{reset}!conn\+\_\+timer@{conn\+\_\+timer}}
+\subsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void conn\+\_\+timer\+::reset (\begin{DoxyParamCaption}\item[{int}]{delay }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Definition at line 17 of file pink\+\_\+conn\+\_\+timer.\+h.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classconn__timer_a6cb5ef510c4022acd31b002e15758d60_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classconn__timer_a51dd2abd61d07bd63c37551404851bf5}\label{classconn__timer_a51dd2abd61d07bd63c37551404851bf5}} 
+\index{conn\+\_\+timer@{conn\+\_\+timer}!canceled@{canceled}}
+\index{canceled@{canceled}!conn\+\_\+timer@{conn\+\_\+timer}}
+\subsubsection{\texorpdfstring{canceled}{canceled}}
+{\footnotesize\ttfamily bool conn\+\_\+timer\+::canceled}
+
+
+
+Definition at line 23 of file pink\+\_\+conn\+\_\+timer.\+h.
+
+\mbox{\Hypertarget{classconn__timer_a0f3fbb63bdf0764fffe4b5fd0fedc3db}\label{classconn__timer_a0f3fbb63bdf0764fffe4b5fd0fedc3db}} 
+\index{conn\+\_\+timer@{conn\+\_\+timer}!conn\+\_\+timeout@{conn\+\_\+timeout}}
+\index{conn\+\_\+timeout@{conn\+\_\+timeout}!conn\+\_\+timer@{conn\+\_\+timer}}
+\subsubsection{\texorpdfstring{conn\+\_\+timeout}{conn\_timeout}}
+{\footnotesize\ttfamily bool$\ast$ conn\+\_\+timer\+::conn\+\_\+timeout}
+
+
+
+Definition at line 24 of file pink\+\_\+conn\+\_\+timer.\+h.
+
+\mbox{\Hypertarget{classconn__timer_a2c71b17e51d75dc27a4e0f1f7e443ec5}\label{classconn__timer_a2c71b17e51d75dc27a4e0f1f7e443ec5}} 
+\index{conn\+\_\+timer@{conn\+\_\+timer}!expire@{expire}}
+\index{expire@{expire}!conn\+\_\+timer@{conn\+\_\+timer}}
+\subsubsection{\texorpdfstring{expire}{expire}}
+{\footnotesize\ttfamily time\+\_\+t conn\+\_\+timer\+::expire}
+
+
+
+Definition at line 22 of file pink\+\_\+conn\+\_\+timer.\+h.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{pink__conn__timer_8h}{pink\+\_\+conn\+\_\+timer.\+h}\end{DoxyCompactItemize}

@@ -1,0 +1,8 @@
+<map id="tools/socket_tool.h" name="tools/socket_tool.h">
+<area shape="rect" id="node2" href="$pink__http__conn_8h.html" title="pink_http_conn.h" alt="" coords="107,80,229,107"/>
+<area shape="rect" id="node7" href="$socket__tool_8cpp.html" title="tools/socket_tool.cpp" alt="" coords="253,80,400,107"/>
+<area shape="rect" id="node3" href="$pink__epoll_8h.html" title="pink_epoll.h" alt="" coords="55,155,145,181"/>
+<area shape="rect" id="node6" href="$pink__http__conn_8cpp.html" title="pink_http_conn.cpp" alt="" coords="170,155,305,181"/>
+<area shape="rect" id="node4" href="$main_8cpp.html" title="main.cpp" alt="" coords="5,229,80,256"/>
+<area shape="rect" id="node5" href="$pink__epoll_8cpp.html" title="pink_epoll.cpp" alt="" coords="105,229,210,256"/>
+</map>
