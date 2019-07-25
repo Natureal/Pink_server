@@ -117,6 +117,7 @@ void epoll_et(int epollfd, int listenfd){
 	delete listen_conn;
 }
 
+/*
 void epoll_lt(int epollfd, int listenfd){
 	// LT 模式，沒有 EPOLLONESHOT
 	cout << "Using Epoll LT mode for listenfd" << endl;
@@ -182,6 +183,7 @@ void epoll_lt(int epollfd, int listenfd){
 
 	delete listen_conn;
 }
+*/
 
 
 // =============================================================================

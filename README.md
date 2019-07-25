@@ -18,12 +18,16 @@
 
 - **2. 开发工具**
 
-(1) Vim + Sublime Text 3 (C++11)
+(1) Vim + Sublime Text 3
 
 (2) CMake + ctags (源码定位器)
 
-(3) doxygen (强大的调用关系图工具) [Reference](https://blog.csdn.net/ZeroLiko/article/details/78162408)	
+(3) doxygen (强大的调用关系图工具) [homepage](http://www.doxygen.nl/manual/starting.html), [Blog](https://blog.csdn.net/ZeroLiko/article/details/78162408)	
 
+```cpp
+解析源码:  $..:~/Pink_server$ doxygen Doxyfile)
+展示关系图: $..:~/Pink_server$ google-chrome doxy/html/index.html
+```
 
 - **3. 测压工具**
 
