@@ -22,7 +22,7 @@
 
 (2) CMake + ctags (源码定位器)
 
-(3) doxygen (强大的调用关系图工具) [Reference](https://blog.csdn.net/ZeroLiko/article/details/78162408)
+(3) doxygen (强大的调用关系图工具) [Reference](https://blog.csdn.net/ZeroLiko/article/details/78162408)	
 
 
 - **3. 测压工具**
@@ -49,7 +49,7 @@
 
 - 定期处理超时事件: 5s
 
-- Epoll 模式: et / lt
+- Epoll 模式: ET/LT
 
 ---
 
