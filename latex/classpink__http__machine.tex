@@ -1,0 +1,108 @@
+\hypertarget{classpink__http__machine}{}\section{pink\+\_\+http\+\_\+machine Class Reference}
+\label{classpink__http__machine}\index{pink\+\_\+http\+\_\+machine@{pink\+\_\+http\+\_\+machine}}
+
+
+Collaboration diagram for pink\+\_\+http\+\_\+machine\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=199pt]{classpink__http__machine__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpink__http__machine_a64bc87fde84112f9e18a09c7d439aa2b}\label{classpink__http__machine_a64bc87fde84112f9e18a09c7d439aa2b}} 
+enum {\bfseries M\+E\+T\+H\+OD} \{ \newline
+{\bfseries G\+ET} =0, 
+{\bfseries P\+O\+ST}, 
+{\bfseries H\+E\+AD}, 
+{\bfseries P\+UT}, 
+\newline
+{\bfseries D\+E\+L\+E\+TE}, 
+{\bfseries T\+R\+A\+CE}, 
+{\bfseries O\+P\+T\+I\+O\+NS}, 
+{\bfseries C\+O\+N\+N\+E\+CT}, 
+\newline
+{\bfseries P\+A\+T\+CH}, 
+{\bfseries U\+N\+K\+N\+O\+W\+N\+\_\+\+M\+E\+T\+H\+OD}
+ \}
+\item 
+\mbox{\Hypertarget{classpink__http__machine_aeb5dafe8258708065e5c09565dd37f9e}\label{classpink__http__machine_aeb5dafe8258708065e5c09565dd37f9e}} 
+enum {\bfseries C\+H\+E\+C\+K\+\_\+\+S\+T\+A\+TE} \{ {\bfseries C\+H\+E\+C\+K\+\_\+\+S\+T\+A\+T\+E\+\_\+\+R\+E\+Q\+U\+E\+S\+T\+L\+I\+NE} = 0, 
+{\bfseries C\+H\+E\+C\+K\+\_\+\+S\+T\+A\+T\+E\+\_\+\+H\+E\+A\+D\+ER}, 
+{\bfseries C\+H\+E\+C\+K\+\_\+\+S\+T\+A\+T\+E\+\_\+\+C\+O\+N\+T\+E\+NT}
+ \}
+\item 
+\mbox{\Hypertarget{classpink__http__machine_afb1e590cd61676c2f8859c4e01e5b150}\label{classpink__http__machine_afb1e590cd61676c2f8859c4e01e5b150}} 
+enum {\bfseries H\+T\+T\+P\+\_\+\+C\+O\+DE} \{ \newline
+{\bfseries N\+O\+T\+\_\+\+C\+O\+M\+P\+L\+E\+T\+ED}, 
+{\bfseries G\+E\+T\+\_\+\+R\+E\+Q\+U\+E\+ST}, 
+{\bfseries B\+A\+D\+\_\+\+R\+E\+Q\+U\+E\+ST}, 
+{\bfseries N\+O\+\_\+\+R\+E\+S\+O\+U\+R\+CE}, 
+\newline
+{\bfseries F\+O\+R\+B\+I\+D\+D\+E\+N\+\_\+\+R\+E\+Q\+U\+E\+ST}, 
+{\bfseries F\+I\+L\+E\+\_\+\+R\+E\+Q\+U\+E\+ST}, 
+{\bfseries I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+E\+R\+R\+OR}, 
+{\bfseries C\+L\+O\+S\+E\+D\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+ON}
+ \}
+\item 
+\mbox{\Hypertarget{classpink__http__machine_ab93a9e606b05f96c1b4b0f7079d1e279}\label{classpink__http__machine_ab93a9e606b05f96c1b4b0f7079d1e279}} 
+enum {\bfseries L\+I\+N\+E\+\_\+\+S\+T\+A\+T\+US} \{ {\bfseries L\+I\+N\+E\+\_\+\+OK} = 0, 
+{\bfseries L\+I\+N\+E\+\_\+\+B\+AD}, 
+{\bfseries L\+I\+N\+E\+\_\+\+O\+P\+EN}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpink__http__machine_a32b0ee47de1b90467d17194fa83b4eb0}\label{classpink__http__machine_a32b0ee47de1b90467d17194fa83b4eb0}} 
+void {\bfseries init} (char $\ast$read\+\_\+buf, char $\ast$write\+\_\+buf, int $\ast$read\+\_\+idx, int $\ast$write\+\_\+idx, const int read\+\_\+buf\+\_\+size, const int write\+\_\+buf\+\_\+size)
+\item 
+\mbox{\Hypertarget{classpink__http__machine_a7c937bd8da6bdfbf4894e6af9a712d60}\label{classpink__http__machine_a7c937bd8da6bdfbf4894e6af9a712d60}} 
+H\+T\+T\+P\+\_\+\+C\+O\+DE {\bfseries process\+\_\+read} ()
+\item 
+\mbox{\Hypertarget{classpink__http__machine_a7144e4279cd09ab8ce56873bd3906f24}\label{classpink__http__machine_a7144e4279cd09ab8ce56873bd3906f24}} 
+bool {\bfseries process\+\_\+write} (H\+T\+T\+P\+\_\+\+C\+O\+DE ret, struct iovec $\ast$iv, int \&iv\+\_\+count)
+\item 
+\mbox{\Hypertarget{classpink__http__machine_a26debab8c361df5c79966f11e2b2dd17}\label{classpink__http__machine_a26debab8c361df5c79966f11e2b2dd17}} 
+void {\bfseries unmap} ()
+\item 
+\mbox{\Hypertarget{classpink__http__machine_a01dcf59a537c21d5a4a92c1c25fbf3ab}\label{classpink__http__machine_a01dcf59a537c21d5a4a92c1c25fbf3ab}} 
+bool {\bfseries get\+\_\+linger} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpink__http__machine_ad6d404392628f4b2c94a4b30fefb62f8}\label{classpink__http__machine_ad6d404392628f4b2c94a4b30fefb62f8}} 
+static unordered\+\_\+map$<$ string, string $>$ {\bfseries mime\+\_\+map\+\_\+init} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpink__http__machine_a33993ee83910b37ae5672c6e6c94cac3}\label{classpink__http__machine_a33993ee83910b37ae5672c6e6c94cac3}} 
+static constexpr int {\bfseries F\+I\+L\+E\+N\+A\+M\+E\+\_\+\+L\+EN} = 1024
+\item 
+static unordered\+\_\+map$<$ string, string $>$ {\bfseries mime\+\_\+type}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classpink__http__machine_a4373363c5bd675e182f502d300157aa9}\label{classpink__http__machine_a4373363c5bd675e182f502d300157aa9}} 
+\index{pink\+\_\+http\+\_\+machine@{pink\+\_\+http\+\_\+machine}!mime\+\_\+type@{mime\+\_\+type}}
+\index{mime\+\_\+type@{mime\+\_\+type}!pink\+\_\+http\+\_\+machine@{pink\+\_\+http\+\_\+machine}}
+\subsubsection{\texorpdfstring{mime\+\_\+type}{mime\_type}}
+{\footnotesize\ttfamily std\+::unordered\+\_\+map$<$ string, string $>$ pink\+\_\+http\+\_\+machine\+::mime\+\_\+type\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+= 
+                                pink\_http\_machine::mime\_map\_init()
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+pink\+\_\+http\+\_\+machine.\+h\item 
+pink\+\_\+http\+\_\+machine.\+cpp\end{DoxyCompactItemize}

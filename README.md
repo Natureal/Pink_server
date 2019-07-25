@@ -22,6 +22,8 @@
 
 (2) CMake + ctags (源码定位器)
 
+(3) doxygen (强大的调用关系图工具) [Reference](https://blog.csdn.net/ZeroLiko/article/details/78162408)
+
 
 - **3. 测压工具**
 
@@ -33,6 +35,23 @@
 
 ---
 
+### Configuration
+
+- 端口号: 7777
+
+- 页面根目录: ./web
+
+- 连接池初始连接数: 2000（最大: 10K）
+
+- 线程池线程数量: 4
+
+- 非活动连接超时时间: 10s
+
+- 定期处理超时事件: 5s
+
+- Epoll 模式: et / lt
+
+---
 
 ### To do list:
 
@@ -44,7 +63,7 @@
 
 4. 实现自销毁的连接池 **Finished v1.0**
 
-5. 实现内存池（学习 tcmalloc/jemalloc）**doing**
+5. 实现内存池（学习 STL memory pool/tcmalloc/jemalloc）**doing**
 
 6. 优化并行模式 -> 优化的 Reactor 模式，省略一次性完成的写完成事件注册 **Finished v1.0**
 

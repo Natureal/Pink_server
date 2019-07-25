@@ -1,0 +1,77 @@
+\hypertarget{classpink__http__conn}{}\section{pink\+\_\+http\+\_\+conn Class Reference}
+\label{classpink__http__conn}\index{pink\+\_\+http\+\_\+conn@{pink\+\_\+http\+\_\+conn}}
+
+
+Collaboration diagram for pink\+\_\+http\+\_\+conn\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=163pt]{classpink__http__conn__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a7959fd18f89efd188dcbc662ff65ddcb}\label{classpink__http__conn_a7959fd18f89efd188dcbc662ff65ddcb}} 
+enum {\bfseries O\+P\+\_\+\+T\+Y\+PE} \{ {\bfseries R\+E\+AD} = 0, 
+{\bfseries W\+R\+I\+TE}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpink__http__conn_abff27697496d209cdc7375f99117f018}\label{classpink__http__conn_abff27697496d209cdc7375f99117f018}} 
+void {\bfseries init} (int sockfd, const sockaddr\+\_\+in \&addr)
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a14ed30d2643f52ec95c45b11b13b2411}\label{classpink__http__conn_a14ed30d2643f52ec95c45b11b13b2411}} 
+void {\bfseries init\+\_\+listen} (int sockfd)
+\item 
+\mbox{\Hypertarget{classpink__http__conn_abdcd7c0da8072d62cb7212523f20298b}\label{classpink__http__conn_abdcd7c0da8072d62cb7212523f20298b}} 
+void {\bfseries close\+\_\+conn} ()
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a41ca12d76d0056562633f27d456d0b62}\label{classpink__http__conn_a41ca12d76d0056562633f27d456d0b62}} 
+void {\bfseries process} (int flag)
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a254c09e8b962e5a0bc116f8da271b5ed}\label{classpink__http__conn_a254c09e8b962e5a0bc116f8da271b5ed}} 
+bool {\bfseries read} ()
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a362df085394bbf2818c8af93932c80d5}\label{classpink__http__conn_a362df085394bbf2818c8af93932c80d5}} 
+bool {\bfseries write} ()
+\item 
+\mbox{\Hypertarget{classpink__http__conn_aa304899ec9a7f6d7a2a9d738309a9570}\label{classpink__http__conn_aa304899ec9a7f6d7a2a9d738309a9570}} 
+int {\bfseries get\+\_\+fd} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a0b34c6a8a6b8f65fa882adb109990e43}\label{classpink__http__conn_a0b34c6a8a6b8f65fa882adb109990e43}} 
+\hyperlink{classconn__timer}{conn\+\_\+timer} $\ast$ {\bfseries timer}
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a8687eb679249e4ae085c319dd2d4dfc7}\label{classpink__http__conn_a8687eb679249e4ae085c319dd2d4dfc7}} 
+bool {\bfseries timeout}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a36a48a19aa593001494eb51106628ebd}\label{classpink__http__conn_a36a48a19aa593001494eb51106628ebd}} 
+static void($\ast$ {\bfseries delete\+\_\+cb\+\_\+func} )(\hyperlink{classpink__http__conn}{pink\+\_\+http\+\_\+conn} $\ast$conn) = nullptr
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a240ddaa8b2707d66601b1b82c002ef96}\label{classpink__http__conn_a240ddaa8b2707d66601b1b82c002ef96}} 
+static const int {\bfseries R\+E\+A\+D\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE} = 2048
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a7764e0564be1e1ae66c44cf34550efea}\label{classpink__http__conn_a7764e0564be1e1ae66c44cf34550efea}} 
+static const int {\bfseries W\+R\+I\+T\+E\+\_\+\+B\+U\+F\+F\+E\+R\+\_\+\+S\+I\+ZE} = 1024
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a106c011c818e2a80dbb14c61abbe9a2a}\label{classpink__http__conn_a106c011c818e2a80dbb14c61abbe9a2a}} 
+static int {\bfseries epollfd} = -\/1
+\item 
+\mbox{\Hypertarget{classpink__http__conn_a4796952e9f7dc2a940e5681bc8f04139}\label{classpink__http__conn_a4796952e9f7dc2a940e5681bc8f04139}} 
+static int {\bfseries user\+\_\+count} = 0
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+pink\+\_\+http\+\_\+conn.\+h\item 
+pink\+\_\+http\+\_\+conn.\+cpp\end{DoxyCompactItemize}
