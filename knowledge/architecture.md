@@ -6,7 +6,7 @@
 
 #### 整体结构与详细工作流
 
-![](../plantuml/workflow.png)
+![](../imgs/plantuml/workflow.png)
 
 ----
 
