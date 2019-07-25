@@ -24,8 +24,8 @@
 
 (3) doxygen (强大的调用关系图工具) [homepage](http://www.doxygen.nl/manual/starting.html), [Blog](https://blog.csdn.net/ZeroLiko/article/details/78162408)	
 
-```cpp
-解析源码:  $..:~/Pink_server$ doxygen Doxyfile)
+```shell
+解析源码:  $..:~/Pink_server$ doxygen Doxyfile
 展示关系图: $..:~/Pink_server$ google-chrome doxy/html/index.html
 ```
 
