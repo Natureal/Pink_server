@@ -36,19 +36,19 @@
 
 ### To do list:
 
-1. 实现自销毁的线程池(智能指针) **Finished**
+1. 实现自销毁的线程池(智能指针) **Finished v1.0**
 
-2. 添加定时器，实现自销毁的时间堆 **Finished**
+2. 添加定时器，实现自销毁的时间堆 **Finished v1.0**
 
 3. 优化定时器触发机制，学习内核 hrtimer
 
-4. 实现自销毁的连接池 **Finished**
+4. 实现自销毁的连接池 **Finished v1.0**
 
 5. 实现内存池（学习 tcmalloc/jemalloc）**doing**
 
-6. 优化并行模式 -> 优化的 Reactor 模式，省略一次性完成的写完成事件注册 **Finished**
+6. 优化并行模式 -> 优化的 Reactor 模式，省略一次性完成的写完成事件注册 **Finished v1.0**
 
-7. 生产者消费者，降低耦合 **Finished**
+7. 生产者消费者，降低耦合 **Finished v1.0**
 
 8. 守护进程配置
 
