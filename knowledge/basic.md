@@ -76,7 +76,16 @@ Apache 有三种稳定的 MPM（multi-processing module），即多进程处理�
 
 缺点：对于 HTTPS 连接，仍然是类似 worker 模式，线程会一直被占用的。
 
-**2. NginX**
+**2. Tomcat**
+
+Tomcat 服务器是一个免费的开放源代码的Web 应用服务器，属于轻量级应用服务器。由于技术先进、性能稳定，而且免费，因而深受Java 爱好者的喜爱并得到了部分软件开发商的认可，成为目前比较流行的 Web 应用服务器。
+
+实际上Tomcat是Apache 服务器的扩展，但运行时它是独立运行的，所以当你运行tomcat 时，它实际上作为一个与Apache 独立的进程单独运行的。
+
+![](../imgs/tomcat_structure.png)
+
+
+**3. NginX**
 
 参考1：https://www.jianshu.com/p/a253d21e4b16
 
@@ -84,7 +93,23 @@ Apache 有三种稳定的 MPM（multi-processing module），即多进程处理�
 
 轻量级的异步非阻塞高性能 HTTP/ 反向代理 服务器。（也可以作为邮件服务器）
 
-特点：
+**1. Structure:**
+
+![](../imgs/nginx_structure.png)
+
+**2. Work flow:**
+
+（1）master进程会接收来自外界发来的信号，再根据信号做不同的事情。
+
+（2）在master进程里面，先建立好 listenfd 之后，然后再 fork 出多个 worker 进程。
+
+（3）为保证只有一个进程处理该连接，所有 worker 进程事先抢 accept_mutex，抢到互斥锁的那个进程注册 listenfd 读事件，在读事件里调用 accept 接受该连接。
+
+（4）worker 读取请求，解析请求，处理请求，产生数据后，再返回给客户端，最后才断开连接一个请求，完全由 worker 进程来处理，而且只在一个 worker 进程中处理。（worker 进程之间互不影响。）
+
+（5）
+
+**3. Features:**
 
 （1) 多进程，分为 master 和多个 worker 进程。
 
@@ -92,9 +117,7 @@ Apache 有三种稳定的 MPM（multi-processing module），即多进程处理�
 
 （3）定时器处理方法：每次 epoll_wait 的超时时间设置为最近要超时的定时器到现在的时间差。
 
-
-
-伪代码：
+伪代码（逻辑为先处理 task 任务，再处理超时任务，最后 epoll）：
 ```cpp
 while (true) {
     for t in run_tasks:
@@ -122,14 +145,51 @@ while (true) {
 
 （4）解析 HTTP 请求报文中的 method 时，将四个字符转换成一个整型，然后一次比较以减少cpu的指令数。
 
+**4. Components:**
 
-优点：
+（1）ngx_connection_t
+
+对tcp连接的封装，其中包括连接的socket，读事件，写事件。建立连接，发送与接受数据。
+
+worker_connections
+
+（2）ngx_http_request_t
+
+
+（3）ngx_pool_t
+
+
+（4）ngx_array_t
+
+ngx_hash_t
+
+ngx_hash_wildcard_t
+
+ngx_hash_combined_t
+
+ngx_hash_keys_arrays_t
+
+ngx_chain_t
+
+ngx_buf_t
+
+ngx_list_t
+
+ngx_queue_t
+
+nginx.conf
+
+
+
+**5. Advantages:**
 
 （1）轻量级，比 apache 占用更少的内存资源。
 
 （2）高度模块化的设计。
 
 （3）性能强大，静态处理性能比 apache 高三倍以上。
+
+
 
 ---
 
