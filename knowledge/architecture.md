@@ -110,8 +110,16 @@
 
 **主调用框架**
 
+- delete_cb_func() 为定时器超时事件的 callback 函数（关闭超时连接）。
+
 ![](../imgs/main_call_graph.png)
 
 **工作线程的运行函数 process() 调用框架**
 
+- pink_http_conn 连接类中的成员变量 machine 为 HTTP 解析状态机，用于解析请求和构建响应。
+
+- 静态文件请求利用 mmap()/munmap() 系统调用实现。
+
 ![](../imgs/process_call_graph.png)
+
+---
