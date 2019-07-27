@@ -76,7 +76,15 @@ Apache 有三种稳定的 M\+P\+M（multi-\/processing module），即多进程�
 
 缺点：对于 H\+T\+T\+PS 连接，仍然是类似 worker 模式，线程会一直被占用的。
 
-{\bfseries 2. NginX}
+{\bfseries 2. Tomcat}
+
+Tomcat 服务器是一个免费的开放源代码的\+Web 应用服务器，属于轻量级应用服务器。由于技术先进、性能稳定，而且免费，因而深受\+Java 爱好者的喜爱并得到了部分软件开发商的认可，成为目前比较流行的 Web 应用服务器。
+
+实际上\+Tomcat是\+Apache 服务器的扩展，但运行时它是独立运行的，所以当你运行tomcat 时，它实际上作为一个与\+Apache 独立的进程单独运行的。
+
+
+
+{\bfseries 3. NginX}
 
 参考1：https\+://www.jianshu.\+com/p/a253d21e4b16
 
@@ -84,7 +92,23 @@ Apache 有三种稳定的 M\+P\+M（multi-\/processing module），即多进程�
 
 轻量级的异步非阻塞高性能 H\+T\+T\+P/ 反向代理 服务器。（也可以作为邮件服务器）
 
-特点：
+{\bfseries 1. Structure\+:}
+
+
+
+{\bfseries 2. Work flow\+:}
+
+（1）master进程会接收来自外界发来的信号，再根据信号做不同的事情。
+
+（2）在master进程里面，先建立好 listenfd 之后，然后再 fork 出多个 worker 进程。
+
+（3）为保证只有一个进程处理该连接，所有 worker 进程事先抢 accept\+\_\+mutex，抢到互斥锁的那个进程注册 listenfd 读事件，在读事件里调用 accept 接受该连接。
+
+（4）worker 读取请求，解析请求，处理请求，产生数据后，再返回给客户端，最后才断开连接一个请求，完全由 worker 进程来处理，而且只在一个 worker 进程中处理。（worker 进程之间互不影响。）
+
+（5）
+
+{\bfseries 3. Features\+:}
 
 （1) 多进程，分为 master 和多个 worker 进程。
 
@@ -92,7 +116,7 @@ Apache 有三种稳定的 M\+P\+M（multi-\/processing module），即多进程�
 
 （3）定时器处理方法：每次 epoll\+\_\+wait 的超时时间设置为最近要超时的定时器到现在的时间差。
 
-伪代码： 
+伪代码（逻辑为先处理 task 任务，再处理超时任务，最后 epoll）： 
 \begin{DoxyCode}
 \textcolor{keywordflow}{while} (\textcolor{keyword}{true}) \{
     \textcolor{keywordflow}{for} t in run\_tasks:
@@ -121,13 +145,47 @@ Apache 有三种稳定的 M\+P\+M（multi-\/processing module），即多进程�
 
 （4）解析 H\+T\+TP 请求报文中的 method 时，将四个字符转换成一个整型，然后一次比较以减少cpu的指令数。
 
-优点：
+{\bfseries 4. Components\+:}
+
+（1）ngx\+\_\+connection\+\_\+t
+
+对tcp连接的封装，其中包括连接的socket，读事件，写事件。建立连接，发送与接受数据。
+
+worker\+\_\+connections
+
+（2）ngx\+\_\+http\+\_\+request\+\_\+t
+
+（3）ngx\+\_\+pool\+\_\+t
+
+（4）ngx\+\_\+array\+\_\+t
+
+ngx\+\_\+hash\+\_\+t
+
+ngx\+\_\+hash\+\_\+wildcard\+\_\+t
+
+ngx\+\_\+hash\+\_\+combined\+\_\+t
+
+ngx\+\_\+hash\+\_\+keys\+\_\+arrays\+\_\+t
+
+ngx\+\_\+chain\+\_\+t
+
+ngx\+\_\+buf\+\_\+t
+
+ngx\+\_\+list\+\_\+t
+
+ngx\+\_\+queue\+\_\+t
+
+nginx.\+conf
+
+{\bfseries 5. Advantages\+:}
 
 （1）轻量级，比 apache 占用更少的内存资源。
 
 （2）高度模块化的设计。
 
-（3）性能强大，静态处理性能比 apache 高三倍以上。 
+（3）性能强大，静态处理性能比 apache 高三倍以上。
+
+
 
 
 
