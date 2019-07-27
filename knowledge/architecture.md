@@ -8,11 +8,6 @@
 
 ![](../imgs/plantuml/workflow.png)
 
----
-
-### Call graph
-
-![](../imgs/main_call_graph.png)
 
 ---
 
@@ -108,3 +103,15 @@
 （4）把响应报文写入到内核缓冲区: 非阻塞 write，（遇到 EAGAIN 则返回）
 
 3. **如果能一次性处理完则不再通知 epoll**
+
+---
+
+### Call graph
+
+**主调用框架**
+
+![](../imgs/main_call_graph.png)
+
+**工作线程的运行函数 process() 调用框架**
+
+![](../imgs/process_call_graph.png)
