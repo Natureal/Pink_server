@@ -76,4 +76,9 @@ ET/LT 的区别
 ### 23. 关闭连接体的操作应该采用统一的接口
 全部统一到 pink_http_conn.close_conn() 函数中。
 
-### 24.
+### 24. 线程池中线程结束资源释放问题
+工作线程全部设置为 detached 模式（通过 pthread_detach），从而避免使用 pthread_join，防止资源泄露。
+
+使用 valgrind 检查内存泄露时，会提醒使用 pthread_create 可能会泄露内存（possibly lost)，这就提醒我们用 detached 模式/及时 join。
+
+参考更多：https://stackoverflow.com/questions/5610677/valgrind-memory-leak-errors-when-using-pthread-create

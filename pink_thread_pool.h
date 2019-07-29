@@ -74,7 +74,7 @@ pink_threadpool<T>::pink_threadpool(int thread_number, int max_requests):
 		if(pthread_create(threads.get() + i, NULL, worker, this) != 0){
 			throw std::exception();
 		}
-		// 将所有进程都标记为脱离模式
+		// 将所有进程都标记为脱离模式，则该线程运行结束后会自动释放所有资源。
 		if(pthread_detach(*(threads.get() + i))){
 			throw std::exception();
 		}
@@ -84,6 +84,7 @@ pink_threadpool<T>::pink_threadpool(int thread_number, int max_requests):
 // 析构函数
 template<typename T>
 pink_threadpool<T>::~pink_threadpool(){
+
 	thread_stop = true;
 }
 
@@ -108,6 +109,7 @@ template<typename T>
 void *pink_threadpool<T>::worker(void *arg){
 	pink_threadpool *pool = (pink_threadpool *)arg;
 	pool->run();  // 静态函数调用成员函数以使用成员变量
+	pthread_exit(NULL);
 	return pool;
 }
 
