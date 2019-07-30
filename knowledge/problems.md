@@ -1,6 +1,15 @@
 # 碰到的问题
 
 ### 0. epoll 中的 listenfd 不能注册 EPOLLONESHOT 事件！
+v1.0 中实现的 epoll ET 模式一直存在一个问题：每次 listenfd 触发事件 accept 连接后，都需要调用 pink_epoll_modfd 重新注册监听事件，否则就会出现主线程从头到尾只接受一个连接的情况！
+
+这个问题是由于给 listenfd 注册了 EPOLLONESHOT 导致的，使得后续的连接请求不再触发 listenfd 上的 EPOLLIN 事件。而重新注册治标不治本地解决了这个问题。
+
+**Extension**
+
+在解决了这个问题后，还是遇到只接受一个连接的问题！这个问题在 v1.0 中已经解决，采用了每次 listenfd 触发后，循环 accept 直至监听队列为空，accept 返回 -1，errno = EAGAIN。
+
+原因：ET 模式在有连接时，由于状态从“无连接”到“有连接”，所以会通知一次。但这时如果不接受所有并发进来的若干个连接，监听队列中仍然剩下连接，状态就无法回到“无连接”的状态，也就无法触发电平边沿。
 
 ### 1. 指针的引用
 在 pink_http_machine.cpp 中，传递给工具函数 check_and_move() 的 text 指针必须是引用形式，否则无法在函数内对其本身的值进行更改
