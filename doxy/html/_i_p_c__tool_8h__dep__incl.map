@@ -1,9 +1,0 @@
-<map id="tools/IPC_tool.h" name="tools/IPC_tool.h">
-<area shape="rect" id="node2" href="$pink__thread__pool_8h.html" title="pink_thread_pool.h" alt="" coords="5,80,136,107"/>
-<area shape="rect" id="node6" href="$pink__conn__pool_8h.html" title="pink_conn_pool.h" alt="" coords="160,80,283,107"/>
-<area shape="rect" id="node7" href="$pink__http__conn_8h.html" title="pink_http_conn.h" alt="" coords="307,80,429,107"/>
-<area shape="rect" id="node3" href="$pink__epoll_8h.html" title="pink_epoll.h" alt="" coords="176,155,267,181"/>
-<area shape="rect" id="node4" href="$main_8cpp.html" title="main.cpp" alt="" coords="127,229,201,256"/>
-<area shape="rect" id="node5" href="$pink__epoll_8cpp.html" title="pink_epoll.cpp" alt="" coords="226,229,331,256"/>
-<area shape="rect" id="node8" href="$pink__http__conn_8cpp.html" title="pink_http_conn.cpp" alt="" coords="301,155,435,181"/>
-</map>

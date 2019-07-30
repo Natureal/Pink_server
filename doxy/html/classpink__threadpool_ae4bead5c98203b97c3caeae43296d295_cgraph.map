@@ -1,6 +1,0 @@
-<map id="pink_threadpool::append" name="pink_threadpool::append">
-<area shape="rect" id="node2" href="$classmutex.html#afc56ba139d699d2d9d388141209c6e43" title="mutex::lock" alt="" coords="223,5,313,32"/>
-<area shape="rect" id="node3" href="$classmutex.html#a47bc4d60f08056af411b57e321959fe1" title="mutex::unlock" alt="" coords="216,56,320,83"/>
-<area shape="rect" id="node4" href="$classsem.html#a258d9983b317cba4b528f6204545f849" title="sem::post" alt="" coords="228,107,308,133"/>
-<area shape="rect" id="node5" href="$classsem.html#a0195e3b2273cb8d2c814778b0521e847" title="sem::wait" alt="" coords="229,157,307,184"/>
-</map>

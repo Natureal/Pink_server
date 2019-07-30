@@ -1,5 +1,0 @@
-<map id="pink_http_machine::process_read" name="pink_http_machine::process_read">
-<area shape="rect" id="node2" href="$classpink__http__conn.html#a41ca12d76d0056562633f27d456d0b62" title="pink_http_conn::process" alt="" coords="192,13,356,39"/>
-<area shape="rect" id="node4" href="$classpink__http__machine.html#a38d1d6228955fc97c752d330d4c126c2" title="pink_http_machine::\l~pink_http_machine" alt="" coords="205,64,343,105"/>
-<area shape="rect" id="node3" href="$classpink__http__conn.html#a83eb4a1a4b8afdc6bfa0959da37f0e91" title="pink_http_conn::~pink\l_http_conn" alt="" coords="404,5,555,47"/>
-</map>

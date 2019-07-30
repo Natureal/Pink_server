@@ -1,7 +1,0 @@
-<map id="pink_http_machine::~pink_http_machine" name="pink_http_machine::~pink_http_machine">
-<area shape="rect" id="node2" href="$classpink__http__machine.html#a32b0ee47de1b90467d17194fa83b4eb0" title="pink_http_machine::init" alt="" coords="192,5,348,32"/>
-<area shape="rect" id="node3" href="$classpink__http__machine.html#a7c937bd8da6bdfbf4894e6af9a712d60" title="pink_http_machine::\lprocess_read" alt="" coords="201,57,339,98"/>
-<area shape="rect" id="node4" href="$classpink__http__machine.html#a7144e4279cd09ab8ce56873bd3906f24" title="pink_http_machine::\lprocess_write" alt="" coords="201,122,339,163"/>
-<area shape="rect" id="node5" href="$classpink__http__machine.html#a26debab8c361df5c79966f11e2b2dd17" title="pink_http_machine::\lunmap" alt="" coords="201,187,339,229"/>
-<area shape="rect" id="node6" href="$classpink__http__machine.html#a01dcf59a537c21d5a4a92c1c25fbf3ab" title="pink_http_machine::\lget_linger" alt="" coords="201,253,339,294"/>
-</map>
