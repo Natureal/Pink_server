@@ -11,6 +11,10 @@ v1.0 中实现的 epoll ET 模式一直存在一个问题：每次 listenfd 触�
 
 原因：ET 模式在有连接时，由于状态从“无连接”到“有连接”，所以会通知一次。但这时如果不接受所有并发进来的若干个连接，监听队列中仍然剩下连接，状态就无法回到“无连接”的状态，也就无法触发电平边沿。
 
+Reference: [stackoverflow](https://stackoverflow.com/questions/12145668/blocking-accept)
+
+"You need to call accept in a loop until you return -1 with error EAGAIN or EWOULDBLOCK -- there may be multiple connection requests waiting at once, and edge-triggered polling only alerts you on state changes, so you need to drain the socket."
+
 **One more extentsion**
 
 为了搞清这个问题，感觉还是要去看 epoll 源码 **doing**
