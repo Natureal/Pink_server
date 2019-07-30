@@ -69,6 +69,7 @@ void epoll_et(int epollfd, int listenfd){
 					sockaddr_in client_addr;
 					int connfd = accept_conn(listenfd, client_addr);
 					if(connfd < 0){
+						// errno = EAGAIN
 						//cout << "Break" << endl;
 						break;
 					}
@@ -80,8 +81,8 @@ void epoll_et(int epollfd, int listenfd){
 					// 将定时器添加到时间堆中
 					time_heap->push(new_timer);
 					//cout << "Accepted: " << connfd << endl;
-					pink_epoll_modfd(epollfd, listenfd, listen_conn, (EPOLLIN | EPOLLET), true);
 				}
+				pink_epoll_modfd(epollfd, listenfd, listen_conn, (EPOLLIN | EPOLLET), true);
 			}
 			else if(events[i].events & (EPOLLIN)){
 				//cout << "read event from: " << fd << endl; // for debug
