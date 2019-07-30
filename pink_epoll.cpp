@@ -50,7 +50,7 @@ void epoll_et(int epollfd, int listenfd){
 	cout << "Using Epoll ET mode for listenfd" << endl;
 	pink_http_conn *listen_conn = c_pool->get_conn();
 	listen_conn->init_listen(listenfd);
-	pink_epoll_add_connfd(epollfd, listenfd, listen_conn, (EPOLLIN | EPOLLET), true);
+	pink_epoll_add_connfd(epollfd, listenfd, listen_conn, (EPOLLIN | EPOLLET), false);
 
 	int timeout = conf.timeslot;
 	time_t next_timeout = time(NULL) + timeout;
@@ -72,6 +72,7 @@ void epoll_et(int epollfd, int listenfd){
 						// errno = EAGAIN
 						//cout << "Break" << endl;
 						break;
+						//continue;
 					}
 					pink_http_conn *new_conn = c_pool->get_conn();
 					new_conn->init(connfd, client_addr);
@@ -82,7 +83,6 @@ void epoll_et(int epollfd, int listenfd){
 					time_heap->push(new_timer);
 					//cout << "Accepted: " << connfd << endl;
 				}
-				pink_epoll_modfd(epollfd, listenfd, listen_conn, (EPOLLIN | EPOLLET), true);
 			}
 			else if(events[i].events & (EPOLLIN)){
 				//cout << "read event from: " << fd << endl; // for debug

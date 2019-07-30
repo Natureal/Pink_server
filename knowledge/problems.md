@@ -1,5 +1,7 @@
 # 碰到的问题
 
+### 0. epoll 中的 listenfd 不能注册 EPOLLONESHOT 事件！
+
 ### 1. 指针的引用
 在 pink_http_machine.cpp 中，传递给工具函数 check_and_move() 的 text 指针必须是引用形式，否则无法在函数内对其本身的值进行更改
 
