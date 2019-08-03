@@ -63,3 +63,9 @@ Reference:
 In general, there is no need to worry about "still reachable" blocks. They don't pose the sort of problem that true memory leaks can cause. For instance, there is normally no potential for heap exhaustion from "still reachable" blocks. This is because these blocks are usually one-time allocations, references to which are kept throughout the duration of the process's lifetime. While you could go through and ensure that your program frees all allocated memory, there is usually no practical benefit from doing so since the operating system will reclaim all of the process's memory after the process terminates, anyway. Contrast this with true memory leaks which, if left unfixed, could cause a process to run out of memory if left running long enough, or will simply cause a process to consume far more memory than is necessary.
 
 ![](../imgs/Pink_v1_valgrind_10000.png)
+
+## CPU Pressure
+
+1K 并发，wrk 双线程，Pink 4 工作线程
+
+![](../imgs/resource_status_1000.png)

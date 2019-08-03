@@ -56,7 +56,10 @@ void epoll_et(int epollfd, int listenfd){
 	time_t next_timeout = time(NULL) + timeout;
 
 	while(!stop_server){
-		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, timeout * 1000);
+
+		time_t recent_timeout = std::min(time_heap->find_timeout(), time_t(timeout));
+
+		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, recent_timeout * 1000);
 		if(event_number < 0 && errno != EINTR){
 			perror("epoll failed:");
 			break;
@@ -130,7 +133,10 @@ void epoll_lt(int epollfd, int listenfd){
 	time_t next_timeout = time(NULL) + timeout;
 
 	while(!stop_server){
-		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, timeout * 1000);
+
+		time_t recent_timeout = std::min(time_heap->find_timeout(), time_t(timeout));
+
+		int event_number = pink_epoll_wait(epollfd, events, MAX_EVENT_NUMBER, recent_timeout * 1000);
 		if(event_number < 0 && errno != EINTR){
 			perror("epoll failed:");
 			break;
@@ -244,11 +250,22 @@ void pink_time_heap::pop(){
 	}
 }
 
+time_t pink_time_heap::find_timeout(){
+	while(!empty()){
+		conn_timer* tmp = top();
+		if(!tmp->canceled){
+			return tmp->expire - time(NULL);
+		}
+		pop();
+	}
+	return time_t(10);
+}
+
 void pink_time_heap::tick(){
 	time_t cur_time = time(NULL);
 	while(!empty()){
 		conn_timer* tmp = top();
-		if(tmp == nullptr || tmp->expire > cur_time)
+		if(tmp->expire > cur_time)
 			break;
 		if(!tmp->canceled){
 			tmp->cb_func();
@@ -280,6 +297,7 @@ void pink_time_heap::swap_down(int pos){
 	array[pos] = temp;
 }
 
+// 类似 vector 扩容
 void pink_time_heap::resize(){
 	conn_timer** tmp = new conn_timer*[2 * cap];
 	if(tmp == nullptr)

@@ -61,6 +61,7 @@ void pink_http_conn::process(int flag){
 		pink_http_machine::HTTP_CODE process_read_ret = machine.process_read();
 		if(process_read_ret == pink_http_machine::NOT_COMPLETED){
 			// 请求还不完整，通知epoll，再读
+			// 这里再注册一次，是因为使用了 EPOLLONESHOT，所以需要重置 flag，否则该连接上的事件就检测不到了。
 			pink_epoll_modfd(epollfd, sockfd, this, (EPOLLIN | EPOLLET), true);
 			return;
 		}

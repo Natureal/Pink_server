@@ -30,6 +30,7 @@ public:
 	void cancel(conn_timer *t);
 	conn_timer* top() const;
 	void pop();
+	time_t find_timeout();
 	void tick();
 	bool empty() const;
 
