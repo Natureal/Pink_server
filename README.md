@@ -18,9 +18,9 @@
 
 - **2. 开发工具**
 
-(1) Vim + Sublime Text 3
+(1) C++11 + CMake
 
-(2) CMake
+(2) Vim + Sublime Text 3
 
 (3) doxygen (强大的调用关系图工具) [manual](http://www.doxygen.nl/manual/starting.html), [Blog](https://blog.csdn.net/ZeroLiko/article/details/78162408)	
 
