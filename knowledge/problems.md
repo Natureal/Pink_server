@@ -58,6 +58,8 @@ Host 是 HTTP/1.1 特有的，具体和 1.0 的区别可以参考：https://www.
 
 ### 13. 关闭连接时忘记 close(fd)
 
+忘记关闭 fd，可能会导致处于 CLOSE_WAIT 状态的连接过多。
+
 ### 14. EPOLLRDHUP 不可靠！
 在给监听 socket 开启 EPOLLRDHUP 后，客户端一连接上并发数据，这个错误就跳出来。
 EPOLLRDHUP indeed comes if you continue to poll after receiving a zero-byte read.
@@ -68,7 +70,8 @@ EPOLLRDHUP indeed comes if you continue to poll after receiving a zero-byte read
 解决方法：给 recv() 的最后一个参数设置成 MSG_WAITALL
 
 ### 16. epoll 中监听套接字的触发模式很重要
-ET/LT 的区别
+
+对于监听 socket，基本只能用 LT，用 ET 将会徒增复杂度（在每次循环 accept 后需要重新注册事件(epoll mod))。
 
 ### 17. shared_ptr 操作数组的困难
 参考1：https://www.cnblogs.com/xiaoshiwang/p/9726511.html

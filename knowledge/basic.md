@@ -99,7 +99,9 @@ Tomcat 服务器是一个免费的开放源代码的Web 应用服务器，属于
 
 （1）多进程单线程模式
 
-（2）
+（2）大部分 event 采用 ET epoll 事件驱动，监听 socket 为 LT 模式。
+
+
 
 **2. Work flow:**
 
@@ -166,6 +168,23 @@ Nginx 内存/文件池，提供了一种机制，帮助管理一系列的资源�
   - （i）对于内存，进行池化管理。
 
   - （ii）对于文件，统一登记到 ngx_pool_t 对象中，在对象销毁时释放（关闭文件）。
+
+**具体定义：**
+
+```cpp
+typedef struct ngx_pool_s        ngx_pool_t;
+
+struct ngx_pool_s {
+    ngx_pool_data_t       d;         //
+    size_t                max;
+    ngx_pool_t           *current;
+    ngx_chain_t          *chain;
+    ngx_pool_large_t     *large;
+    ngx_pool_cleanup_t   *cleanup;
+    ngx_log_t            *log;
+};
+```
+
 
 （4）ngx_array_t
 
