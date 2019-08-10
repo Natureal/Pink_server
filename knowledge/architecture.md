@@ -123,3 +123,20 @@
 ![](../imgs/process_call_graph.png)
 
 ---
+
+### File tree
+
+.
+├── Doxyfile       # doxy 生成的文件
+├── imgs           # 图片
+│   ├── plantuml   # 流程图语言文件
+├── knowledge      # 知识储备
+├── Makefile       # CMake
+├── obj            # objects 
+├── pink           # 可执行文件
+├── pink_conf.conf # pink 的配置文件
+├── README.md      #
+├── src            # 源代码
+│   └── tools      # 工具级源代码
+├── test           # 单线程IO复用测试工具
+└── web            # 静态页面资源
