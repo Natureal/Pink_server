@@ -20,7 +20,7 @@
 
 (1) Vim + Sublime Text 3
 
-(2) CMake + ctags (源码定位器)
+(2) CMake
 
 (3) doxygen (强大的调用关系图工具) [manual](http://www.doxygen.nl/manual/starting.html), [Blog](https://blog.csdn.net/ZeroLiko/article/details/78162408)	
 
