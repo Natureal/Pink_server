@@ -126,17 +126,17 @@
 
 ### File tree
 
-.
-├── Doxyfile       # doxy 生成的文件
-├── imgs           # 图片
-│   ├── plantuml   # 流程图语言文件
-├── knowledge      # 知识储备
-├── Makefile       # CMake
-├── obj            # objects 
-├── pink           # 可执行文件
-├── pink_conf.conf # pink 的配置文件
-├── README.md      #
-├── src            # 源代码
-│   └── tools      # 工具级源代码
-├── test           # 单线程IO复用测试工具
-└── web            # 静态页面资源
+. <br>
+├── Doxyfile       # doxy 生成的文件 <br>
+├── imgs           # 图片 <br>
+│   ├── plantuml   # 流程图语言文件 <br>
+├── knowledge      # 知识储备 <br>
+├── Makefile       # CMake <br>
+├── obj            # objects <br>
+├── pink           # 可执行文件 <br>
+├── pink_conf.conf # pink 的配置文件 <br>
+├── README.md      # <br>
+├── src            # 源代码 <br>
+│   └── tools      # 工具级源代码 <br>
+├── test           # 单线程IO复用测试工具 <br>
+└── web            # 静态页面资源 <br>
