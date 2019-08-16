@@ -12,7 +12,7 @@
 
 - **网页大小: index.html (172字节), baidu.html (2.5KB)**
 
-- epoll: 监听 socket ET + 连接 socket ET
+- epoll: 监听 socket LT + 连接 socket ET
 
 - 工作线程数: 4
 

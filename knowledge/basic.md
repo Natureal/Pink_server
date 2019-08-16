@@ -101,6 +101,60 @@ Tomcat 服务器是一个免费的开放源代码的Web 应用服务器，属于
 
 （2）大部分 event 采用 ET epoll 事件驱动，监听 socket 为 LT 模式。
 
+**1.5 Nginx 信号详解**
+
+（1）**Reload 重载配置**
+
+作用：给 master 发送 SIGHUP 信号，让其重启一批新的 worker/cache 子进程（优雅关闭老的子进程）。
+
+  - nginx -s reload
+
+  - kill -SIGHUP [master-pid]
+
+（2）**直接终止 master 进程**
+
+作用：终止整个 nginx
+
+  - nginx -s stop
+
+  - kill -SIGTERM [master-pid]
+
+（3）**优雅终止 master 进程**
+
+作用：优雅终止整个 nginx
+
+  - nginx -s quit
+
+  - kill -SIGQUIT [master-pid]
+
+（4）**（优雅）终止 worker 进程**
+
+作用：给 worker 发送 SIGTERM/SIGQUIT 信号，使其退出（并给 maste 发送 CHILD 信号），master 会重新拉起一个新的 worker 进程。
+
+  - kill -SIGTERM [worker-pid]
+
+  - kill -SIGQUIT [worker-pid] # 优雅终止
+
+（5）**重新打开日志文件**
+
+作用：日志切割，可以先把原日志文件 mv 走（但此时 nginx 还是在写入这个文件，因为还有该文件的 inode 信息），然后再重开日志文件，作为新日志文件。**可以写成 bash 脚本。**
+
+  - nginx -s reopen
+
+  - kill -USR1 [master-pid]
+
+（6）**平滑升级 nginx**
+
+作用：老 master 创建新 master （子进程），并停止监听，所有新请求将由新 master 和新 worker 来处理。但是老 master 和老 worker 依然存在。
+
+  - kill -USR2 [old-master-pid]
+
+下一步，优雅关闭所有老 worker：
+
+  - kill -WINCH [old-master-pid]
+
+此时，老的 nginx 只剩一个老 master 进程，用来回滚（向老 master 发送 HUP，向新 master 发送 QUIT。）
+
 
 
 **2. Work flow:**
@@ -117,39 +171,11 @@ Tomcat 服务器是一个免费的开放源代码的Web 应用服务器，属于
 
 **3. Features:**
 
-（1) 多进程，分为 master 和多个 worker 进程。
+（1) 多进程单线程。
 
-（2）每个进程单线程，因此省去了线程切换的开销，可以看成单线程循环处理一系列准备好的任务，十分高效。
+（2）支持热升级。
 
-（3）定时器处理方法：每次 epoll_wait 的超时时间设置为最近要超时的定时器到现在的时间差。
 
-伪代码（逻辑为先处理 task 任务，再处理超时任务，最后 epoll）：
-```cpp
-while (true) {
-    for t in run_tasks:
-        t.handler();
-    update_time(&now);
-    timeout = ETERNITY;
-    for t in wait_tasks: /* sorted already */
-        if (t.time <= now) {
-            t.timeout_handler();
-        } else {
-            timeout = t.time - now;
-            break;
-        }
-    nevents = poll_function(events, timeout);
-    for i in nevents:
-        task t;
-        if (events[i].type == READ) {
-            t.handler = read_handler;
-        } else { /* events[i].type == WRITE */
-            t.handler = write_handler;
-        }
-        run_tasks_add(t);
-}
-```
-
-（4）解析 HTTP 请求报文中的 method 时，将四个字符转换成一个整型，然后一次比较以减少cpu的指令数。
 
 **4. Components:**
 
