@@ -47,10 +47,10 @@ int epoll_run(int epollfd, int listenfd){
 
 void epoll_et(int epollfd, int listenfd){
 	// ET 模式，带 EPOLLONESHOT
-	cout << "Using Epoll ET mode for listenfd" << endl;
+	cout << "Using Epoll ET mode for connfd" << endl;
 	pink_http_conn *listen_conn = c_pool->get_conn();
 	listen_conn->init_listen(listenfd);
-	pink_epoll_add_connfd(epollfd, listenfd, listen_conn, (EPOLLIN | EPOLLET), false);
+	pink_epoll_add_connfd(epollfd, listenfd, listen_conn, (EPOLLIN), false);
 
 	int timeout = conf.timeslot;
 	time_t next_timeout = time(NULL) + timeout;
@@ -88,7 +88,7 @@ void epoll_et(int epollfd, int listenfd){
 				}
 			}
 			else if(events[i].events & (EPOLLIN)){
-				//cout << "read event from: " << fd << endl; // for debug
+				cout << "read event from: " << fd << endl; // for debug
 				cur_conn->timer->reset(conf.conn_timeout);
 				if(t_pool->append(cur_conn, pink_http_conn::READ) == false)
 					cur_conn->close_conn();
@@ -124,7 +124,7 @@ void epoll_et(int epollfd, int listenfd){
 
 void epoll_lt(int epollfd, int listenfd){
 	// LT 模式，沒有 EPOLLONESHOT
-	cout << "Using Epoll LT mode for listenfd" << endl;
+	cout << "Using Epoll LT mode for connfd" << endl;
 	pink_http_conn *listen_conn = c_pool->get_conn();
 	listen_conn->init_listen(listenfd);
 	pink_epoll_add_connfd(epollfd, listenfd, listen_conn, (EPOLLIN), false);
