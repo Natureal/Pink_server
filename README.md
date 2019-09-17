@@ -22,7 +22,7 @@
 
 (2) Vim + Sublime Text 3
 
-(3) doxygen (强大的调用关系图工具) [manual](http://www.doxygen.nl/manual/starting.html), [Blog](https://blog.csdn.net/ZeroLiko/article/details/78162408)	
+(3) doxygen (强大的调用关系图工具) [manual](http://www.doxygen.nl/manual/starting.html), [Blog](https://blog.csdn.net/ZeroLiko/article/details/78162408)
 
 ```shell
 解析源代码:  $..:~/Pink_server$ doxygen Doxyfile
@@ -79,7 +79,7 @@
 
 10. 实现负载均衡（学习NginX）
 
-11. 考虑[线程池惊群问题](https://github.com/Natureal/Pink_server/blob/master/knowledge/%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98.md) **doing**
+11. 考虑[线程池惊群问题](https://github.com/Natureal/Pink_server/blob/master/knowledge/%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98.md) **Finished**
 
 12. 探索 Proactor 模式: 完全异步 + 非阻塞模式 (AIO)
 

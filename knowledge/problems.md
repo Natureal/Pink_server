@@ -104,3 +104,7 @@ EPOLLRDHUP indeed comes if you continue to poll after receiving a zero-byte read
 使用 valgrind 检查内存泄露时，会提醒使用 pthread_create 可能会泄露内存（possibly lost)，这就提醒我们用 detached 模式/及时 join。
 
 参考更多：https://stackoverflow.com/questions/5610677/valgrind-memory-leak-errors-when-using-pthread-create
+
+### 25. 线程池中的惊群问题
+
+-> [线程池惊群问题](https://github.com/Natureal/Pink_server/blob/master/knowledge/%E6%83%8A%E7%BE%A4%E9%97%AE%E9%A2%98.md)
